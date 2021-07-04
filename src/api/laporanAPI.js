@@ -1,14 +1,29 @@
 import axiosInstance from "./axiosInstance";
 
-const saveLaporan = (desa, kecamatan, kota, provinsi) => {
+const saveLaporan = (
+  name,
+  date,
+  kegiatan,
+  keterangan,
+  foto,
+  lokasi,
+  keluhan,
+  saran = "",
+  userId
+) => {
   const { getInstance, routes } = axiosInstance;
   return new Promise((resolve, reject) => {
     getInstance()
-      .post(routes.kanwil(), {
-        desa,
-        kecamatan,
-        kota,
-        provinsi
+      .post(routes.laporan(), {
+        fieldstaff_name: name,
+        tanggal_laporan: date,
+        kegiatan,
+        keterangan,
+        foto,
+        lokasi,
+        keluhan,
+        saran,
+        id_fieldstaff: userId
       })
       .then(() => {
         resolve();
@@ -17,4 +32,28 @@ const saveLaporan = (desa, kecamatan, kota, provinsi) => {
   });
 };
 
-export default { saveLaporan };
+const getLaporan = () => {
+  const { getInstance, routes } = axiosInstance;
+  return new Promise((resolve, reject) => {
+    getInstance()
+      .get(routes.laporan())
+      .then(res => {
+        resolve(res.data);
+      })
+      .catch(reject);
+  });
+};
+
+const getUserLaporan = userId => {
+  const { getInstance, routes } = axiosInstance;
+  return new Promise((resolve, reject) => {
+    getInstance()
+      .get(routes.laporanUser(userId))
+      .then(res => {
+        resolve(res.data);
+      })
+      .catch(reject);
+  });
+};
+
+export default { saveLaporan, getLaporan, getUserLaporan };

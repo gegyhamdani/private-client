@@ -1,10 +1,19 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from "react";
-import { Button, DatePicker, Form, Input, Upload } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
+import { useSelector } from "react-redux";
+import { useRouter } from "next/router";
+import { Button, DatePicker, Form, Input, Upload, notification } from "antd";
+import {
+  UploadOutlined,
+  MinusCircleOutlined,
+  PlusOutlined
+} from "@ant-design/icons";
 
 import Checkbox from "antd/lib/checkbox/Checkbox";
 import styles from "./index.module.css";
+import laporanAPI from "../../../../api/laporanAPI";
+
+const { TextArea } = Input;
 
 const config = {
   rules: [
@@ -17,9 +26,12 @@ const config = {
 };
 
 const InputLaporan = () => {
-  const normFile = e => {
-    console.log("Upload event:", e);
+  const [form] = Form.useForm();
+  const router = useRouter();
+  const username = useSelector(state => state.auth.username);
+  const userId = useSelector(state => state.auth.userId);
 
+  const normFile = e => {
     if (Array.isArray(e)) {
       return e;
     }
@@ -27,18 +39,92 @@ const InputLaporan = () => {
     return e && e.fileList;
   };
 
-  const onFinish = values => {
-    console.log("Received values of form: ", values);
+  const openNotificationSuccess = onSuccess => {
+    notification.success({
+      message: "Data fieldstaff berhasil ditambahkan",
+      duration: 2
+    });
+    setTimeout(() => onSuccess(), 1000);
+  };
+
+  const openNotificationError = errMsg => {
+    notification.error({
+      message: `Data laporan gagal ditambahkan${errMsg ? `, ${errMsg}` : ""}`,
+      duration: 2
+    });
+  };
+
+  const saveLaporan = values => {
+    const {
+      name,
+      date,
+      kegiatan,
+      keterangan,
+      foto,
+      location,
+      keluhan
+    } = values;
+    return laporanAPI.saveLaporan(
+      name,
+      date,
+      kegiatan,
+      keterangan,
+      foto,
+      location,
+      keluhan,
+      "",
+      userId
+    );
+  };
+
+  const onFinish = fields => {
+    const koordinasi = { koordinasi: fields.koordinasi || false };
+    const kunjungan = { kunjungan: fields.kunjungan || false };
+    const meeting = { meeting: fields.meeting || false };
+    const pendampingan = { pendampingan: fields.pendampingan || false };
+    const other = { other: fields.other || false };
+
+    const kegiatan = [koordinasi, kunjungan, meeting, pendampingan, other];
+    const convertedKegiatan = JSON.stringify(kegiatan);
+
+    const values = {
+      keluhan: fields.keluhan !== undefined ? fields.keluhan[0].keluhan : "",
+      name: fields.name,
+      date: fields.date.format("YYYY-MM-DD"),
+      kegiatan: convertedKegiatan,
+      location: fields.location,
+      keterangan: fields.keterangan,
+      foto: fields.upload
+    };
+
+    saveLaporan(values)
+      .then(() => {
+        openNotificationSuccess(() => {
+          form.resetFields();
+          router.push("/datalaporan");
+        });
+      })
+      .catch(err => {
+        if (err.response) {
+          if (err.response.status === 401) {
+            openNotificationError("Username telah digunakan");
+          } else {
+            openNotificationError();
+          }
+        }
+      });
   };
 
   return (
     <div className={styles.container}>
       <Form
+        form={form}
         name="input-fieldstaff"
         className={styles.login__form}
         layout="vertical"
         initialValues={{
-          remember: true
+          remember: true,
+          name: username
         }}
         onFinish={onFinish}
       >
@@ -52,7 +138,7 @@ const InputLaporan = () => {
             }
           ]}
         >
-          <Input />
+          <Input disabled />
         </Form.Item>
 
         <Form.Item name="date" label="TANGGAL" labelAlign="left" {...config}>
@@ -100,7 +186,7 @@ const InputLaporan = () => {
             }
           ]}
         >
-          <Input />
+          <TextArea />
         </Form.Item>
 
         <Form.Item
@@ -113,6 +199,42 @@ const InputLaporan = () => {
             <Button icon={<UploadOutlined />}>Click to upload</Button>
           </Upload>
         </Form.Item>
+
+        <Form.List name="keluhan">
+          {(fields, { add, remove }) => {
+            return (
+              <>
+                {fields.map(({ key, name, fieldKey, ...restField }) => (
+                  <div key={key} className={styles["form__keluhan--container"]}>
+                    <Form.Item
+                      {...restField}
+                      {...restField}
+                      name={[name, "keluhan"]}
+                      fieldKey={[fieldKey, "keluhan"]}
+                      label="keluhan"
+                      labelAlign="left"
+                      className={styles.form__keluhan}
+                    >
+                      <TextArea />
+                    </Form.Item>
+                    <MinusCircleOutlined onClick={() => remove(name)} />
+                  </div>
+                ))}
+                <Form.Item>
+                  <Button
+                    type="dashed"
+                    onClick={() => add()}
+                    block
+                    icon={<PlusOutlined />}
+                    disabled={fields.length >= 1}
+                  >
+                    Tambah keluhan
+                  </Button>
+                </Form.Item>
+              </>
+            );
+          }}
+        </Form.List>
 
         <Form.Item>
           <Button type="primary" htmlType="submit">

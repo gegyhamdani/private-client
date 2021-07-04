@@ -24,6 +24,7 @@ const routes = {
   kantah: (id = "") => (id ? `kantah/${id}` : "kantah"),
   fieldstaff: (id = "") => (id ? `fieldstaff/${id}` : "fieldstaff"),
   laporan: (id = "") => (id ? `laporan/${id}` : "laporan"),
+  laporanUser: (id = "") => `laporan/user/${id}`,
   location: (id = "") => (id ? `location/${id}` : "location")
 };
 

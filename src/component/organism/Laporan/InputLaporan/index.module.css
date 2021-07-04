@@ -5,3 +5,15 @@
 .login__form {
     max-width: 360px;
 }
+
+.form__keluhan--container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.form__keluhan {
+    width: 94%;
+    margin-right: 10px;
+}
