@@ -54,6 +54,13 @@ const InputLaporan = () => {
     });
   };
 
+  const openNotificationFormError = () => {
+    notification.error({
+      message: `Pilih minimal 1 kegiatan`,
+      duration: 2
+    });
+  };
+
   const saveLaporan = values => {
     const {
       name,
@@ -82,9 +89,18 @@ const InputLaporan = () => {
     const kunjungan = { kunjungan: fields.kunjungan || false };
     const meeting = { meeting: fields.meeting || false };
     const pendampingan = { pendampingan: fields.pendampingan || false };
-    const other = { other: fields.other || false };
+    const lainnya = { lainnya: fields.lainnya || false };
 
-    const kegiatan = [koordinasi, kunjungan, meeting, pendampingan, other];
+    if (
+      !fields.koordinasi &&
+      !fields.kunjungan &&
+      !fields.meeting &&
+      !fields.penampingan &&
+      !fields.lainnya
+    )
+      return openNotificationFormError();
+
+    const kegiatan = [koordinasi, kunjungan, meeting, pendampingan, lainnya];
     const convertedKegiatan = JSON.stringify(kegiatan);
 
     const values = {
@@ -97,7 +113,7 @@ const InputLaporan = () => {
       foto: fields.upload
     };
 
-    saveLaporan(values)
+    return saveLaporan(values)
       .then(() => {
         openNotificationSuccess(() => {
           form.resetFields();
@@ -107,7 +123,7 @@ const InputLaporan = () => {
       .catch(err => {
         if (err.response) {
           if (err.response.status === 401) {
-            openNotificationError("Username telah digunakan");
+            openNotificationError("Laporan error");
           } else {
             openNotificationError();
           }
@@ -149,6 +165,7 @@ const InputLaporan = () => {
           name="location"
           label="LOKASI PEMBERDAYAAN"
           labelAlign="left"
+          required
           rules={[
             {
               message: "Tolong masukan lokasi pemberdayaan"
@@ -171,7 +188,7 @@ const InputLaporan = () => {
           <Form.Item name="kunjungan" valuePropName="checked">
             <Checkbox>Melakukan Kunjungan</Checkbox>
           </Form.Item>
-          <Form.Item name="other" valuePropName="checked">
+          <Form.Item name="lainnya" valuePropName="checked">
             <Checkbox>Lainnya</Checkbox>
           </Form.Item>
         </Form.Item>
@@ -180,6 +197,7 @@ const InputLaporan = () => {
           name="keterangan"
           label="KETERANGAN"
           labelAlign="left"
+          required
           rules={[
             {
               message: "Tolong masukan keterangan"
@@ -211,7 +229,7 @@ const InputLaporan = () => {
                       {...restField}
                       name={[name, "keluhan"]}
                       fieldKey={[fieldKey, "keluhan"]}
-                      label="keluhan"
+                      label="KELUHAN"
                       labelAlign="left"
                       className={styles.form__keluhan}
                     >

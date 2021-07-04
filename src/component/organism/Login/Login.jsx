@@ -59,7 +59,7 @@ const Login = () => {
         const findUser = findValueOnArray(res, "username", username);
         const findPassword = findValueOnArray(res, "password", password);
         if (findUser && findPassword)
-          return login(username, users.Kanwil, findPassword.id);
+          return login(username, users.Kanwil, findUser.id);
         return incorrectLoginAndFinishLoading();
       });
     }
@@ -68,7 +68,7 @@ const Login = () => {
         const findUser = findValueOnArray(res, "username", username);
         const findPassword = findValueOnArray(res, "password", password);
         if (findUser && findPassword)
-          return login(username, users.Kantah, findPassword.id);
+          return login(username, users.Kantah, findUser.id);
         return incorrectLoginAndFinishLoading();
       });
     }
@@ -77,7 +77,7 @@ const Login = () => {
         const findUser = findValueOnArray(res, "username", username);
         const findPassword = findValueOnArray(res, "password", password);
         if (findUser && findPassword)
-          return login(username, users.Fieldstaff, findPassword.id);
+          return login(username, users.Fieldstaff, findUser.id);
         return incorrectLoginAndFinishLoading();
       });
     }

@@ -40,4 +40,16 @@ const getFieldstaff = () => {
   });
 };
 
-export default { saveFieldstaff, getFieldstaff };
+const getFieldstaffKantah = id => {
+  const { getInstance, routes } = axiosInstance;
+  return new Promise((resolve, reject) => {
+    getInstance()
+      .get(routes.fieldstaffKantah(id))
+      .then(res => {
+        resolve(res.data);
+      })
+      .catch(reject);
+  });
+};
+
+export default { saveFieldstaff, getFieldstaff, getFieldstaffKantah };

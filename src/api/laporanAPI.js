@@ -32,11 +32,38 @@ const saveLaporan = (
   });
 };
 
-const getLaporan = () => {
+const updateLaporan = (
+  id,
+  kegiatan,
+  keterangan,
+  foto,
+  lokasi,
+  keluhan,
+  saran = ""
+) => {
   const { getInstance, routes } = axiosInstance;
   return new Promise((resolve, reject) => {
     getInstance()
-      .get(routes.laporan())
+      .put(routes.laporan(id), {
+        kegiatan,
+        keterangan,
+        foto,
+        lokasi,
+        keluhan,
+        saran
+      })
+      .then(() => {
+        resolve();
+      })
+      .catch(reject);
+  });
+};
+
+const getLaporan = id => {
+  const { getInstance, routes } = axiosInstance;
+  return new Promise((resolve, reject) => {
+    getInstance()
+      .get(routes.laporan(id))
       .then(res => {
         resolve(res.data);
       })
@@ -56,4 +83,4 @@ const getUserLaporan = userId => {
   });
 };
 
-export default { saveLaporan, getLaporan, getUserLaporan };
+export default { saveLaporan, updateLaporan, getLaporan, getUserLaporan };

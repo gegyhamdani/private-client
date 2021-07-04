@@ -3,3 +3,30 @@
   font-size: 1.5em;
   font-weight: bold;
 }
+
+.container {
+  margin-top: 6em;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.card {
+  text-align: center;
+}
+
+.card h2 {
+  line-height: 25px;
+  margin: 0;
+}
+
+.card p {
+  font-size: 14px;
+  color: red;
+  margin-top: 1em;
+}
+
+.card__fieldstaff {
+  margin-top: 3.7em;
+}
