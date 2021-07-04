@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const apiUrl = process.env.SERVER_URL;
+const apiUrl = "https://agraria-api.herokuapp.com";
 
 const errorResponseHandler = error => {
   return Promise.reject(error);
