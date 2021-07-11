@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { Table, Input, Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 
@@ -13,7 +14,7 @@ const columns = [
     dataIndex: "name",
     key: "name",
     defaultSortOrder: "descend",
-    sorter: (a, b) => a.name.length - b.name.length
+    sorter: (a, b) => a.name.localeCompare(b.name)
   },
   {
     title: "Tanggal Lahir",
@@ -21,10 +22,10 @@ const columns = [
     key: "date_born"
   },
   {
-    title: "Lokasi Pembedayaan",
-    dataIndex: "location",
-    key: "location",
-    sorter: (a, b) => a.location.length - b.location.length
+    title: "Alamat",
+    dataIndex: "alamat",
+    key: "alamat",
+    sorter: (a, b) => a.alamat.localeCompare(b.alamat)
   }
 ];
 
@@ -32,6 +33,8 @@ const ViewFieldstaff = () => {
   const [initData, setInitData] = useState([]);
   const [data, setData] = useState([]);
   const [isLoading, setLoading] = useState(false);
+
+  const userId = useSelector(state => state.auth.userId);
 
   const antIcon = <LoadingOutlined style={{ fontSize: 72 }} spin />;
 
@@ -47,7 +50,7 @@ const ViewFieldstaff = () => {
   useEffect(() => {
     setLoading(true);
     fieldstaffAPI
-      .getFieldstaff()
+      .getFieldstaffKantah(userId)
       .then(res => {
         const value = res.map(val => {
           const date = new Date(val.date_born);
@@ -69,7 +72,7 @@ const ViewFieldstaff = () => {
       .catch(() => {
         setLoading(false);
       });
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     if (initData.length > 0) {
