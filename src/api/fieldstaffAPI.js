@@ -3,7 +3,8 @@ import axiosInstance from "./axiosInstance";
 const saveFieldstaff = (
   name,
   date,
-  location,
+  alamat,
+  phoneNumber,
   username,
   password,
   level,
@@ -15,7 +16,8 @@ const saveFieldstaff = (
       .post(routes.fieldstaff(), {
         name,
         date_born: date,
-        location,
+        alamat,
+        phone_number: phoneNumber,
         username,
         password,
         level,

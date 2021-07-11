@@ -1,22 +1,12 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from "react";
-import { Button, DatePicker, Form, Input, notification } from "antd";
+import { Button, Form, Input, notification } from "antd";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/router";
 
 import styles from "./index.module.css";
 import kantahAPI from "../../../../api/kantahAPI";
 import users from "../../../../constant/user";
-
-const config = {
-  rules: [
-    {
-      type: "object",
-      required: true,
-      message: "Tolong pilih tanggal"
-    }
-  ]
-};
 
 const InputKantah = () => {
   const [form] = Form.useForm();
@@ -39,25 +29,12 @@ const InputKantah = () => {
   };
 
   const saveKantah = values => {
-    const { name, date, location, username, password } = values;
-    return kantahAPI.saveKantah(
-      name,
-      date,
-      location,
-      username,
-      password,
-      users.Kantah,
-      userId
-    );
+    const { name, username, password } = values;
+    return kantahAPI.saveKantah(name, username, password, users.Kantah, userId);
   };
 
   const onFinish = field => {
-    const values = {
-      ...field,
-      date: field.date.format("YYYY-MM-DD")
-    };
-
-    saveKantah(values)
+    saveKantah(field)
       .then(() => {
         openNotificationSuccess(() => {
           form.resetFields();
@@ -100,28 +77,7 @@ const InputKantah = () => {
         >
           <Input />
         </Form.Item>
-        <Form.Item
-          name="date"
-          label="TANGGAL LAHIR"
-          labelAlign="left"
-          {...config}
-        >
-          <DatePicker />
-        </Form.Item>
 
-        <Form.Item
-          name="location"
-          label="LOKASI PEMBERDAYAAN"
-          labelAlign="left"
-          rules={[
-            {
-              required: true,
-              message: "Tolong masukan lokasi pemberdayaan"
-            }
-          ]}
-        >
-          <Input />
-        </Form.Item>
         <Form.Item
           name="username"
           label="USERNAME"

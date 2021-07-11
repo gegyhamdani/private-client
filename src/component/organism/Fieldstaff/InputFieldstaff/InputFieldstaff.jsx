@@ -41,11 +41,12 @@ const InputFieldStaff = () => {
   };
 
   const saveFieldstaff = values => {
-    const { name, date, location, username, password } = values;
+    const { name, date, alamat, phone, username, password } = values;
     return fieldstaffAPI.saveFieldstaff(
       name,
       date,
-      location,
+      alamat,
+      phone,
       username,
       password,
       users.Fieldstaff,
@@ -109,18 +110,33 @@ const InputFieldStaff = () => {
         </Form.Item>
 
         <Form.Item
-          name="location"
-          label="LOKASI PEMBERDAYAAN"
+          name="alamat"
+          label="ALAMAT"
           labelAlign="left"
           rules={[
             {
               required: true,
-              message: "Tolong masukan lokasi pemberdayaan"
+              message: "Tolong masukan alamat"
             }
           ]}
         >
           <Input />
         </Form.Item>
+
+        <Form.Item
+          name="phone"
+          label="NO. TELEPON"
+          labelAlign="left"
+          rules={[
+            {
+              required: true,
+              message: "Tolong masukan no.telepon"
+            }
+          ]}
+        >
+          <Input />
+        </Form.Item>
+
         <Form.Item
           name="username"
           label="USERNAME"
