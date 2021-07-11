@@ -20,7 +20,7 @@ const DashboardTemplate = ({ children }) => {
   const router = useRouter();
 
   const userLevel = useSelector(state => state.auth.level);
-  const username = useSelector(state => state.auth.username);
+  const name = useSelector(state => state.auth.name);
 
   const setLogout = () => {
     return authRL.logoutAdmin().then(() => {
@@ -128,7 +128,7 @@ const DashboardTemplate = ({ children }) => {
         <Header className={styles.header}>
           <h4 className={styles.username}>
             Selamat datang kembali,
-            <span className={styles.uppercase}>{` ${username}`}</span>
+            <span className={styles.uppercase}>{` ${name}`}</span>
           </h4>
           <Dropdown
             overlay={logoutItem}

@@ -8,6 +8,7 @@ import {
   MinusCircleOutlined,
   PlusOutlined
 } from "@ant-design/icons";
+import moment from "moment";
 
 import Checkbox from "antd/lib/checkbox/Checkbox";
 import styles from "./index.module.css";
@@ -19,7 +20,6 @@ const config = {
   rules: [
     {
       type: "object",
-      required: true,
       message: "Tolong pilih tanggal"
     }
   ]
@@ -28,7 +28,7 @@ const config = {
 const InputLaporan = () => {
   const [form] = Form.useForm();
   const router = useRouter();
-  const username = useSelector(state => state.auth.username);
+  const nameUser = useSelector(state => state.auth.name);
   const userId = useSelector(state => state.auth.userId);
 
   const normFile = e => {
@@ -54,9 +54,9 @@ const InputLaporan = () => {
     });
   };
 
-  const openNotificationFormError = () => {
+  const openNotificationFormCheckboxError = errMsg => {
     notification.error({
-      message: `Pilih minimal 1 kegiatan`,
+      message: `Pilih minimal 1 ${errMsg}`,
       duration: 2
     });
   };
@@ -66,6 +66,7 @@ const InputLaporan = () => {
       name,
       date,
       kegiatan,
+      penyuluhan,
       keterangan,
       foto,
       location,
@@ -75,6 +76,7 @@ const InputLaporan = () => {
       name,
       date,
       kegiatan,
+      penyuluhan,
       keterangan,
       foto,
       location,
@@ -91,6 +93,17 @@ const InputLaporan = () => {
     const pendampingan = { pendampingan: fields.pendampingan || false };
     const lainnya = { lainnya: fields.lainnya || false };
 
+    const prosesPemetaan = { prosesPemetaan: fields.prosespemetaan || false };
+    const selesaiPemetaan = {
+      selesaiPemetaan: fields.selesaipemetaan || false
+    };
+    const prosesPenyuluhan = {
+      prosesPenyuluhan: fields.prosespenyuluhan || false
+    };
+    const selesaiPenyuluhan = {
+      selesaiPenyuluhan: fields.selesaipenyuluhan || false
+    };
+
     if (
       !fields.koordinasi &&
       !fields.kunjungan &&
@@ -98,16 +111,32 @@ const InputLaporan = () => {
       !fields.penampingan &&
       !fields.lainnya
     )
-      return openNotificationFormError();
+      return openNotificationFormCheckboxError("kegiatan");
+
+    if (
+      !fields.prosespemetaan &&
+      !fields.selesaipemetaan &&
+      !fields.prosespenyuluhan &&
+      !fields.selesaipenyuluhan
+    )
+      return openNotificationFormCheckboxError("penyuluhan");
 
     const kegiatan = [koordinasi, kunjungan, meeting, pendampingan, lainnya];
+    const penyuluhan = [
+      prosesPemetaan,
+      selesaiPemetaan,
+      prosesPenyuluhan,
+      selesaiPenyuluhan
+    ];
     const convertedKegiatan = JSON.stringify(kegiatan);
+    const convertedPenyuluhan = JSON.stringify(penyuluhan);
 
     const values = {
       keluhan: fields.keluhan !== undefined ? fields.keluhan[0].keluhan : "",
       name: fields.name,
       date: fields.date.format("YYYY-MM-DD"),
       kegiatan: convertedKegiatan,
+      penyuluhan: convertedPenyuluhan,
       location: fields.location,
       keterangan: fields.keterangan,
       foto: fields.upload
@@ -140,58 +169,53 @@ const InputLaporan = () => {
         layout="vertical"
         initialValues={{
           remember: true,
-          name: username
+          name: nameUser,
+          date: moment()
         }}
         onFinish={onFinish}
       >
-        <Form.Item
-          name="name"
-          label="NAMA FS"
-          labelAlign="left"
-          rules={[
-            {
-              message: "Tolong masukan nama"
-            }
-          ]}
-        >
+        <Form.Item name="name" label="NAMA FS" labelAlign="left">
           <Input disabled />
         </Form.Item>
 
         <Form.Item name="date" label="TANGGAL" labelAlign="left" {...config}>
-          <DatePicker />
+          <DatePicker disabled />
         </Form.Item>
 
-        <Form.Item
-          name="location"
-          label="LOKASI PEMBERDAYAAN"
-          labelAlign="left"
-          required
-          rules={[
-            {
-              message: "Tolong masukan lokasi pemberdayaan"
-            }
-          ]}
-        >
-          <Input />
-        </Form.Item>
+        <div className={styles["form__checkbox--group"]}>
+          <Form.Item label="KEGIATAN">
+            <Form.Item name="koordinasi" valuePropName="checked">
+              <Checkbox>Koordinasi dengan kantah</Checkbox>
+            </Form.Item>
+            <Form.Item name="pendampingan" valuePropName="checked">
+              <Checkbox>Melakukan Pendampingan</Checkbox>
+            </Form.Item>
+            <Form.Item name="meeting" valuePropName="checked">
+              <Checkbox>Rapat/Meeting</Checkbox>
+            </Form.Item>
+            <Form.Item name="kunjungan" valuePropName="checked">
+              <Checkbox>Melakukan Kunjungan</Checkbox>
+            </Form.Item>
+            <Form.Item name="lainnya" valuePropName="checked">
+              <Checkbox>Lainnya</Checkbox>
+            </Form.Item>
+          </Form.Item>
 
-        <Form.Item label="KEGIATAN">
-          <Form.Item name="koordinasi" valuePropName="checked">
-            <Checkbox>Koordinasi dengan kantah</Checkbox>
+          <Form.Item label="TAHAPAN AKSES REFORMA">
+            <Form.Item name="prosespemetaan" valuePropName="checked">
+              <Checkbox>Proses Pemetaan</Checkbox>
+            </Form.Item>
+            <Form.Item name="selesaipemetaan" valuePropName="checked">
+              <Checkbox>Selesai Pemetaan</Checkbox>
+            </Form.Item>
+            <Form.Item name="prosespenyuluhan" valuePropName="checked">
+              <Checkbox>Proses Penyuluhan</Checkbox>
+            </Form.Item>
+            <Form.Item name="selesaipenyuluhan" valuePropName="checked">
+              <Checkbox>Selesai Penyuluhan</Checkbox>
+            </Form.Item>
           </Form.Item>
-          <Form.Item name="pendampingan" valuePropName="checked">
-            <Checkbox>Melakukan Pendampingan</Checkbox>
-          </Form.Item>
-          <Form.Item name="meeting" valuePropName="checked">
-            <Checkbox>Rapat/Meeting</Checkbox>
-          </Form.Item>
-          <Form.Item name="kunjungan" valuePropName="checked">
-            <Checkbox>Melakukan Kunjungan</Checkbox>
-          </Form.Item>
-          <Form.Item name="lainnya" valuePropName="checked">
-            <Checkbox>Lainnya</Checkbox>
-          </Form.Item>
-        </Form.Item>
+        </div>
 
         <Form.Item
           name="keterangan"

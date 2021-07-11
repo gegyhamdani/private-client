@@ -8,6 +8,8 @@ import styles from "./index.module.css";
 import fieldstaffAPI from "../../../../api/fieldstaffAPI";
 import users from "../../../../constant/user";
 
+const { TextArea } = Input;
+
 const config = {
   rules: [
     {
@@ -120,7 +122,7 @@ const InputFieldStaff = () => {
             }
           ]}
         >
-          <Input />
+          <TextArea />
         </Form.Item>
 
         <Form.Item

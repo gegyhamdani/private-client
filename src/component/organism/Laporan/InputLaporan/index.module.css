@@ -3,7 +3,7 @@
 }
 
 .login__form {
-    max-width: 360px;
+    max-width: 480px;
 }
 
 .form__keluhan--container {
@@ -16,4 +16,9 @@
 .form__keluhan {
     width: 94%;
     margin-right: 10px;
+}
+
+.form__checkbox--group {
+    display: flex;
+    justify-content: space-between;
 }
