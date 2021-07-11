@@ -4,10 +4,9 @@ const saveLaporan = (
   name,
   date,
   kegiatan,
-  penyuluhan,
+  tahapan,
   keterangan,
   foto,
-  lokasi,
   keluhan,
   saran = "",
   userId
@@ -19,10 +18,9 @@ const saveLaporan = (
         fieldstaff_name: name,
         tanggal_laporan: date,
         kegiatan,
+        tahapan,
         keterangan,
-        penyuluhan,
         foto,
-        lokasi,
         keluhan,
         saran,
         id_fieldstaff: userId
@@ -37,9 +35,9 @@ const saveLaporan = (
 const updateLaporan = (
   id,
   kegiatan,
+  tahapan,
   keterangan,
   foto,
-  lokasi,
   keluhan,
   saran = ""
 ) => {
@@ -48,9 +46,9 @@ const updateLaporan = (
     getInstance()
       .put(routes.laporan(id), {
         kegiatan,
+        tahapan,
         keterangan,
         foto,
-        lokasi,
         keluhan,
         saran
       })

@@ -86,16 +86,20 @@ const ViewLaporan = () => {
 
   useEffect(() => {
     if (uId) {
-      getLaporanData(uId).then(res => setInitData(res));
+      getLaporanData(uId).then(res => {
+        if (res.length === 0) setLoading(false);
+        setInitData(res);
+      });
     }
   }, [uId]);
 
   useEffect(() => {
     if (userFieldstaff.length > 0) {
       userFieldstaff.map(val => {
-        return getLaporanData(val.id).then(res =>
-          setInitData(state => [...state, res])
-        );
+        return getLaporanData(val.id).then(res => {
+          if (res.length === 0) setLoading(false);
+          setInitData(state => [...state, res]);
+        });
       });
     }
   }, [userFieldstaff]);
@@ -145,11 +149,6 @@ const ViewLaporan = () => {
               title="Tanggal Laporan"
               dataIndex="tanggal_laporan"
               key="tanggal_laporan"
-            />
-            <Column
-              title="Keterangan"
-              dataIndex="keterangan"
-              key="keterangan"
             />
             <Column title="Kegiatan" dataIndex="kegiatan" key="kegiatan" />
             <Column

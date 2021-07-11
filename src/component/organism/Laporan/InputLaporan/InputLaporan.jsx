@@ -14,8 +14,6 @@ import Checkbox from "antd/lib/checkbox/Checkbox";
 import styles from "./index.module.css";
 import laporanAPI from "../../../../api/laporanAPI";
 
-const { TextArea } = Input;
-
 const config = {
   rules: [
     {
@@ -41,7 +39,7 @@ const InputLaporan = () => {
 
   const openNotificationSuccess = onSuccess => {
     notification.success({
-      message: "Data fieldstaff berhasil ditambahkan",
+      message: "Data laporan berhasil ditambahkan",
       duration: 2
     });
     setTimeout(() => onSuccess(), 1000);
@@ -62,24 +60,14 @@ const InputLaporan = () => {
   };
 
   const saveLaporan = values => {
-    const {
-      name,
-      date,
-      kegiatan,
-      penyuluhan,
-      keterangan,
-      foto,
-      location,
-      keluhan
-    } = values;
+    const { name, date, kegiatan, tahapan, keterangan, foto, keluhan } = values;
     return laporanAPI.saveLaporan(
       name,
       date,
       kegiatan,
-      penyuluhan,
+      tahapan,
       keterangan,
       foto,
-      location,
       keluhan,
       "",
       userId
@@ -119,25 +107,24 @@ const InputLaporan = () => {
       !fields.prosespenyuluhan &&
       !fields.selesaipenyuluhan
     )
-      return openNotificationFormCheckboxError("penyuluhan");
+      return openNotificationFormCheckboxError("tahapan");
 
     const kegiatan = [koordinasi, kunjungan, meeting, pendampingan, lainnya];
-    const penyuluhan = [
+    const tahapan = [
       prosesPemetaan,
       selesaiPemetaan,
       prosesPenyuluhan,
       selesaiPenyuluhan
     ];
     const convertedKegiatan = JSON.stringify(kegiatan);
-    const convertedPenyuluhan = JSON.stringify(penyuluhan);
+    const convertedTahapan = JSON.stringify(tahapan);
 
     const values = {
       keluhan: fields.keluhan !== undefined ? fields.keluhan[0].keluhan : "",
       name: fields.name,
       date: fields.date.format("YYYY-MM-DD"),
       kegiatan: convertedKegiatan,
-      penyuluhan: convertedPenyuluhan,
-      location: fields.location,
+      tahapan: convertedTahapan,
       keterangan: fields.keterangan,
       foto: fields.upload
     };
@@ -221,14 +208,14 @@ const InputLaporan = () => {
           name="keterangan"
           label="KETERANGAN"
           labelAlign="left"
-          required
           rules={[
             {
-              message: "Tolong masukan keterangan"
+              message: "Tolong masukan keterangan",
+              required: true
             }
           ]}
         >
-          <TextArea />
+          <Input.TextArea />
         </Form.Item>
 
         <Form.Item
@@ -257,7 +244,7 @@ const InputLaporan = () => {
                       labelAlign="left"
                       className={styles.form__keluhan}
                     >
-                      <TextArea />
+                      <Input.TextArea />
                     </Form.Item>
                     <MinusCircleOutlined onClick={() => remove(name)} />
                   </div>
