@@ -4,7 +4,17 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
   height: 100vh;
+  background-color: #F5F5F5;
+}
+
+.icon__login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1em;
+  margin-left: -15px;
 }
 
 .main {

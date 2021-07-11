@@ -1,9 +1,8 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from "react";
 import { Card, Dropdown, Menu, Form, Input, Button } from "antd";
-import { UserOutlined } from "@ant-design/icons";
+import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { useRouter } from "next/router";
-import Image from "next/image";
 
 import authRL from "../../../redux/logic/authRL";
 import users from "../../../constant/user";
@@ -18,20 +17,6 @@ import {
 } from "../../../helpers/arrayHelper";
 
 const title = "Silahkan Masuk";
-
-const layout = {
-  labelCol: {
-    span: 6
-  },
-  wrapperCol: {
-    span: 16
-  }
-};
-const tailLayout = {
-  wrapperCol: {
-    offset: 9
-  }
-};
 
 const Login = () => {
   const arrUser = convertObjectToArray(users);
@@ -117,16 +102,12 @@ const Login = () => {
   );
 
   return (
-    <Card style={{ width: 600 }}>
-      <div className={styles.icon}>
-        <Image
-          src="/Logo-3.png"
-          alt="Kementrian"
-          width={226}
-          height={211}
-          quality="100"
-        />
-      </div>
+    <Card
+      style={{
+        width: 400,
+        boxShadow: "0 0 1px rgb(0 0 0 / 13%), 0 1px 3px rgb(0 0 0 / 20%)"
+      }}
+    >
       <div className={styles.header}>
         <h1>{title}</h1>
 
@@ -145,7 +126,6 @@ const Login = () => {
             <span className={styles.user}>{` ${arrUser[selectedUser]}`}</span>
           </p>
           <Form
-            {...layout}
             name="login"
             initialValues={{
               remember: true
@@ -154,7 +134,6 @@ const Login = () => {
             onFinishFailed={onFinishFailed}
           >
             <Form.Item
-              label="Username"
               name="username"
               rules={[
                 {
@@ -163,11 +142,13 @@ const Login = () => {
                 }
               ]}
             >
-              <Input />
+              <Input
+                prefix={<UserOutlined className="site-form-item-icon" />}
+                placeholder="Username"
+              />
             </Form.Item>
 
             <Form.Item
-              label="Password"
               name="password"
               rules={[
                 {
@@ -176,17 +157,21 @@ const Login = () => {
                 }
               ]}
             >
-              <Input.Password />
+              <Input
+                prefix={<LockOutlined className="site-form-item-icon" />}
+                type="password"
+                placeholder="Password"
+              />
             </Form.Item>
 
-            <Form.Item {...tailLayout}>
+            <Form.Item>
               <Button
                 type="primary"
                 htmlType="submit"
-                className={styles.button}
                 disabled={isLoading}
+                block
               >
-                LOGIN
+                Masuk
               </Button>
             </Form.Item>
           </Form>
