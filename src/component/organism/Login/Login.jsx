@@ -25,8 +25,8 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  const login = (username, level, userId) => {
-    return authRL.loginAdmin(username, level, userId).then(() => {
+  const login = (username, level, userId, name) => {
+    return authRL.loginAdmin(username, level, userId, name).then(() => {
       setIncorrectLogin(false);
       setIsLoading(false);
       router.push("/dashboard");
@@ -44,7 +44,7 @@ const Login = () => {
         const findUser = findValueOnArray(res, "username", username);
         const findPassword = findValueOnArray(res, "password", password);
         if (findUser && findPassword)
-          return login(username, users.Kanwil, findUser.id);
+          return login(username, users.Kanwil, findUser.id, res.name);
         return incorrectLoginAndFinishLoading();
       });
     }
@@ -53,7 +53,7 @@ const Login = () => {
         const findUser = findValueOnArray(res, "username", username);
         const findPassword = findValueOnArray(res, "password", password);
         if (findUser && findPassword)
-          return login(username, users.Kantah, findUser.id);
+          return login(username, users.Kantah, findUser.id, res.name);
         return incorrectLoginAndFinishLoading();
       });
     }
@@ -62,13 +62,13 @@ const Login = () => {
         const findUser = findValueOnArray(res, "username", username);
         const findPassword = findValueOnArray(res, "password", password);
         if (findUser && findPassword)
-          return login(username, users.Fieldstaff, findUser.id);
+          return login(username, users.Fieldstaff, findUser.id, res.name);
         return incorrectLoginAndFinishLoading();
       });
     }
     if (arrUser[selectedUser] === users.SuperAdmin) {
       if (username === "superadmin" && password === "admin")
-        return login(username, password, users.SuperAdmin);
+        return login(username, password, users.SuperAdmin, "superadmin");
       return incorrectLoginAndFinishLoading();
     }
     return incorrectLoginAndFinishLoading();

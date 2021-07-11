@@ -5,7 +5,8 @@ import {
   setLevel,
   setUsername,
   setLogout,
-  setUserId
+  setUserId,
+  setName
 } from "../actions/auth";
 import store from "../store";
 
@@ -60,6 +61,14 @@ const dispatchSetUserId = userId => {
 };
 
 /**
+ * Dispatch setUsername action
+ * @param {string} name name admin
+ */
+const dispatchSetName = name => {
+  return Promise.resolve(dispatch(setName(name)));
+};
+
+/**
  * Dispatch Logout action
  * @param {string} username username admin
  */
@@ -73,13 +82,14 @@ const dispatchLogout = () => {
  * @param {string} username level admin
  * @param {string} username user id input
  */
-const loginAdmin = (username, level, userId) => {
+const loginAdmin = (username, level, userId, name) => {
   return new Promise((resolve, reject) => {
     dispatchSetAuthentication(true)
       .then(() => dispatchSetToken(1))
       .then(() => dispatchSetLevel(level))
       .then(() => dispatchSetUsername(username))
       .then(() => dispatchSetUserId(userId))
+      .then(() => dispatchSetName(name))
       .then(() => dispatchSetAuthentication(false))
       .then(() => dispatchSetLogin(true))
       .then(() => resolve())

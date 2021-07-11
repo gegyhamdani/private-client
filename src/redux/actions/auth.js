@@ -7,6 +7,7 @@ const {
   SET_LEVEL,
   SET_USERNAME,
   SET_USER_ID,
+  SET_NAME,
   SET_LOGOUT
 } = ACTION_TYPES_AUTH;
 
@@ -54,6 +55,14 @@ export const setUserId = userId => dispatch => {
   dispatch({
     type: SET_USER_ID,
     userId
+  });
+  return Promise.resolve();
+};
+
+export const setName = name => dispatch => {
+  dispatch({
+    type: SET_NAME,
+    name
   });
   return Promise.resolve();
 };

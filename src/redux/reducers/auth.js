@@ -17,6 +17,7 @@ const auth = (state = initialState, action) => {
     SET_LEVEL,
     SET_USERNAME,
     SET_USER_ID,
+    SET_NAME,
     SET_LOGOUT
   } = ACTION_TYPES_AUTH;
   const {
@@ -26,6 +27,7 @@ const auth = (state = initialState, action) => {
     isAuthentication,
     level,
     username,
+    name,
     userId
   } = action;
 
@@ -71,6 +73,13 @@ const auth = (state = initialState, action) => {
     };
   };
 
+  const setName = () => {
+    return {
+      ...state,
+      name
+    };
+  };
+
   const setLogout = () => {
     return {
       isLogin: false,
@@ -78,7 +87,8 @@ const auth = (state = initialState, action) => {
       isAuthenticating: false,
       level: "",
       username: "",
-      userId: ""
+      userId: "",
+      name: ""
     };
   };
 
@@ -97,6 +107,8 @@ const auth = (state = initialState, action) => {
       return setUserId();
     case SET_LOGOUT:
       return setLogout();
+    case SET_NAME:
+      return setName();
     default:
       return state;
   }
