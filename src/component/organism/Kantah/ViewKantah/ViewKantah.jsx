@@ -4,6 +4,7 @@ import { LoadingOutlined } from "@ant-design/icons";
 
 import styles from "./index.module.css";
 import kantahAPI from "../../../../api/kantahAPI";
+import fieldstaffAPI from "../../../../api/fieldstaffAPI";
 
 const { Search } = Input;
 
@@ -13,18 +14,14 @@ const columns = [
     dataIndex: "name",
     key: "name",
     defaultSortOrder: "descend",
-    sorter: (a, b) => a.name.length - b.name.length
+    sorter: (a, b) => a.name.localeCompare(b.name)
   },
   {
-    title: "Tanggal Lahir",
-    dataIndex: "date_born",
-    key: "date_born"
-  },
-  {
-    title: "Lokasi Pembedayaan",
-    dataIndex: "location",
-    key: "location",
-    sorter: (a, b) => a.location.length - b.location.length
+    title: "Total Fieldstaff",
+    dataIndex: "t_fs",
+    key: "t_fs",
+    defaultSortOrder: "descend",
+    sorter: (a, b) => a.t_fs - b.t_fs
   }
 ];
 
@@ -49,23 +46,21 @@ const ViewKantah = () => {
     kantahAPI
       .getKantah()
       .then(res => {
-        const value = res.map(val => {
-          const date = new Date(val.date_born);
-          const dateDay =
-            date.getDate().toString().length < 2
-              ? `0${date.getDate()}`
-              : date.getDate();
-          const dateMonth = date.getMonth().toString().length
-            ? `0${date.getMonth() + 1}`
-            : date.getMonth() + 1;
-          return {
-            ...val,
-            date_born: `${dateDay} - ${dateMonth} - ${date.getFullYear()}`
-          };
+        const sort = res.sort((a, b) => b.id - a.id);
+        const datas = [];
+        const promises = [];
+        sort.map(val => {
+          return promises.push(
+            fieldstaffAPI.getFieldstaffKantah(val.id).then(fsVal => {
+              datas.push({ ...val, t_fs: fsVal.length });
+            })
+          );
         });
-        const sort = value.sort((a, b) => b.id - a.id);
-        setInitData(sort);
+        return new Promise(resolve =>
+          Promise.all(promises).then(() => resolve(datas))
+        );
       })
+      .then(val => setInitData(val))
       .catch(() => {
         setLoading(false);
       });
