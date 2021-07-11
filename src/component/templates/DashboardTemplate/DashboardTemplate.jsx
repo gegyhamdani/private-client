@@ -97,8 +97,8 @@ const DashboardTemplate = ({ children }) => {
     return (
       <span>
         {/* eslint-disable-next-line react/jsx-one-expression-per-line */}
-        Copyright © <span>{new Date().getFullYear()}</span> Kementerian Agraria
-        dan Tata Ruang/BPN RI Pontianak.
+        Copyright © <span>{new Date().getFullYear()}</span> Kantor Wilayah
+        Provinsi Kalimantan Barat.
       </span>
     );
   };
