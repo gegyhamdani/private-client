@@ -14,7 +14,7 @@ class MyDocument extends Document {
         <Head>
           <link rel="shortcut icon" href="/icon.ico" />
           <link rel="apple-touch-icon" href="/icon.ico" />
-          <title>Kementerian Agraria dan Tata Ruang/BPN RI Pontianak</title>
+          <title>Kantor Wilayah Provinsi Kalimantan Barat.</title>
         </Head>
         <body>
           <Main />
