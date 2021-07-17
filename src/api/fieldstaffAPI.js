@@ -30,11 +30,23 @@ const saveFieldstaff = (
   });
 };
 
-const getFieldstaff = () => {
+const getAllFieldstaff = () => {
   const { getInstance, routes } = axiosInstance;
   return new Promise((resolve, reject) => {
     getInstance()
       .get(routes.fieldstaff())
+      .then(res => {
+        resolve(res.data);
+      })
+      .catch(reject);
+  });
+};
+
+const getFieldstaff = id => {
+  const { getInstance, routes } = axiosInstance;
+  return new Promise((resolve, reject) => {
+    getInstance()
+      .get(routes.fieldstaff(id))
       .then(res => {
         resolve(res.data);
       })
@@ -54,4 +66,35 @@ const getFieldstaffKantah = id => {
   });
 };
 
-export default { saveFieldstaff, getFieldstaff, getFieldstaffKantah };
+const updateFieldstaff = (
+  id,
+  name,
+  alamat,
+  phoneNumber,
+  username,
+  password
+) => {
+  const { getInstance, routes } = axiosInstance;
+  return new Promise((resolve, reject) => {
+    getInstance()
+      .put(routes.fieldstaff(id), {
+        name,
+        alamat,
+        phone_number: phoneNumber,
+        username,
+        password
+      })
+      .then(res => {
+        resolve(res.data);
+      })
+      .catch(reject);
+  });
+};
+
+export default {
+  saveFieldstaff,
+  getAllFieldstaff,
+  getFieldstaff,
+  getFieldstaffKantah,
+  updateFieldstaff
+};

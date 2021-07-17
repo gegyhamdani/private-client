@@ -40,7 +40,7 @@ const Login = () => {
 
   const setLoginAdmin = (username, password) => {
     if (arrUser[selectedUser] === users.Kanwil) {
-      return kanwilAPI.getKanwil().then(res => {
+      return kanwilAPI.getAllKanwil().then(res => {
         const findUser = findValueOnArray(res, "username", username);
         const findPassword = findValueOnArray(res, "password", password);
         if (findUser && findPassword)
@@ -49,7 +49,7 @@ const Login = () => {
       });
     }
     if (arrUser[selectedUser] === users.Kantah) {
-      return kantahAPI.getKantah().then(res => {
+      return kantahAPI.getAllKantah().then(res => {
         const findUser = findValueOnArray(res, "username", username);
         const findPassword = findValueOnArray(res, "password", password);
         if (findUser && findPassword)
@@ -58,7 +58,7 @@ const Login = () => {
       });
     }
     if (arrUser[selectedUser] === users.Fieldstaff) {
-      return fieldstaffAPI.getFieldstaff().then(res => {
+      return fieldstaffAPI.getAllFieldstaff().then(res => {
         const findUser = findValueOnArray(res, "username", username);
         const findPassword = findValueOnArray(res, "password", password);
         if (findUser && findPassword)

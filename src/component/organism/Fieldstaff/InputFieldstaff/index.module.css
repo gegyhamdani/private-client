@@ -2,6 +2,10 @@
     margin-top: 3em;
 }
 
-.login__form {
+.container__form {
     max-width: 360px;
+}
+
+.form__phone > div > div > div > div {
+    width: 100% !important;
 }

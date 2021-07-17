@@ -1,6 +1,13 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from "react";
-import { Button, DatePicker, Form, Input, notification } from "antd";
+import {
+  Button,
+  DatePicker,
+  Form,
+  Input,
+  notification,
+  InputNumber
+} from "antd";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/router";
 
@@ -85,7 +92,7 @@ const InputFieldStaff = () => {
       <Form
         form={form}
         name="input-fieldstaff"
-        className={styles.login__form}
+        className={styles.container__form}
         layout="vertical"
         onFinish={onFinish}
       >
@@ -132,11 +139,13 @@ const InputFieldStaff = () => {
           rules={[
             {
               required: true,
-              message: "Tolong masukan no.telepon"
+              message: "Tolong masukan no.telepon",
+              type: "number"
             }
           ]}
+          className={styles.form__phone}
         >
-          <Input />
+          <InputNumber />
         </Form.Item>
 
         <Form.Item

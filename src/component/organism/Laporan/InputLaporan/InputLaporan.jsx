@@ -152,7 +152,7 @@ const InputLaporan = () => {
       <Form
         form={form}
         name="input-fieldstaff"
-        className={styles.login__form}
+        className={styles.container__form}
         layout="vertical"
         initialValues={{
           remember: true,

@@ -46,7 +46,7 @@ const InputLokasi = () => {
       <Form
         form={form}
         name="input-location"
-        className={styles.login__form}
+        className={styles.container__form}
         layout="vertical"
         initialValues={{
           remember: true

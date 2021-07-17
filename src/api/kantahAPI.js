@@ -18,7 +18,19 @@ const saveKantah = (name, username, password, level, idKanwil) => {
   });
 };
 
-const getKantah = () => {
+const getKantah = id => {
+  const { getInstance, routes } = axiosInstance;
+  return new Promise((resolve, reject) => {
+    getInstance()
+      .get(routes.kantah(id))
+      .then(res => {
+        resolve(res.data);
+      })
+      .catch(reject);
+  });
+};
+
+const getAllKantah = () => {
   const { getInstance, routes } = axiosInstance;
   return new Promise((resolve, reject) => {
     getInstance()
@@ -30,4 +42,20 @@ const getKantah = () => {
   });
 };
 
-export default { saveKantah, getKantah };
+const updateKantah = (id, name, username, password) => {
+  const { getInstance, routes } = axiosInstance;
+  return new Promise((resolve, reject) => {
+    getInstance()
+      .put(routes.kantah(id), {
+        name,
+        username,
+        password
+      })
+      .then(res => {
+        resolve(res.data);
+      })
+      .catch(reject);
+  });
+};
+
+export default { saveKantah, getKantah, getAllKantah, updateKantah };

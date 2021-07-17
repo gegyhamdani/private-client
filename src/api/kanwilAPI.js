@@ -19,7 +19,19 @@ const saveKanwil = (name, date, location, username, password, level) => {
   });
 };
 
-const getKanwil = () => {
+const getKanwil = id => {
+  const { getInstance, routes } = axiosInstance;
+  return new Promise((resolve, reject) => {
+    getInstance()
+      .get(routes.kanwil(id))
+      .then(res => {
+        resolve(res.data);
+      })
+      .catch(reject);
+  });
+};
+
+const getAllKanwil = () => {
   const { getInstance, routes } = axiosInstance;
   return new Promise((resolve, reject) => {
     getInstance()
@@ -31,4 +43,20 @@ const getKanwil = () => {
   });
 };
 
-export default { saveKanwil, getKanwil };
+const updateKanwil = (id, name, username, password) => {
+  const { getInstance, routes } = axiosInstance;
+  return new Promise((resolve, reject) => {
+    getInstance()
+      .put(routes.kanwil(id), {
+        name,
+        username,
+        password
+      })
+      .then(res => {
+        resolve(res.data);
+      })
+      .catch(reject);
+  });
+};
+
+export default { saveKanwil, getKanwil, getAllKanwil, updateKanwil };

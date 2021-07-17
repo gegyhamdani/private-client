@@ -85,7 +85,6 @@ const DashboardTemplate = ({ children }) => {
             <button
               type="button"
               className={`${styles.unstyle__button} ${styles.user__button}`}
-              onClick={setLogout}
             >
               <EditOutlined className={styles["menu__button--icon"]} />
               Edit Akun
