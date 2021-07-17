@@ -1,6 +1,6 @@
 import React from "react";
 import { Layout, Menu, Avatar, Dropdown } from "antd";
-import { UserOutlined } from "@ant-design/icons";
+import { UserOutlined, LogoutOutlined, EditOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import Image from "next/image";
 import PropTypes from "prop-types";
@@ -77,15 +77,28 @@ const DashboardTemplate = ({ children }) => {
     });
   };
 
-  const logoutItem = () => {
+  const userItem = () => {
     return (
       <Menu>
-        <Menu.Item key="0">
+        <Menu.Item key="0" className={styles.menu__user}>
+          <Link href="/editaccount" key="0">
+            <button
+              type="button"
+              className={`${styles.unstyle__button} ${styles.user__button}`}
+              onClick={setLogout}
+            >
+              <EditOutlined className={styles["menu__button--icon"]} />
+              Edit Akun
+            </button>
+          </Link>
+        </Menu.Item>
+        <Menu.Item key="1">
           <button
             type="button"
-            className={styles.unstyle__button}
+            className={`${styles.unstyle__button} ${styles.user__button}`}
             onClick={setLogout}
           >
+            <LogoutOutlined className={styles["menu__button--icon"]} />
             Logout
           </button>
         </Menu.Item>
@@ -131,7 +144,7 @@ const DashboardTemplate = ({ children }) => {
             <span className={styles.uppercase}>{` ${name}`}</span>
           </h4>
           <Dropdown
-            overlay={logoutItem}
+            overlay={userItem}
             trigger={["click"]}
             placement="bottomCenter"
             arrow

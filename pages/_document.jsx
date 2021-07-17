@@ -14,7 +14,6 @@ class MyDocument extends Document {
         <Head>
           <link rel="shortcut icon" href="/icon.ico" />
           <link rel="apple-touch-icon" href="/icon.ico" />
-          <title>Kantor Wilayah Provinsi Kalimantan Barat.</title>
         </Head>
         <body>
           <Main />

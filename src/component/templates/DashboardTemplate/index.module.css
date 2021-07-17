@@ -19,6 +19,15 @@
   align-items: center;
 }
 
+.menu__user {
+  border-bottom: 1px solid #B2B2B2;
+}
+
+.user__button {
+  width: 100px;
+  text-align: left;
+}
+
 .unstyle__button {
   background: none;
   color: inherit;
@@ -27,6 +36,10 @@
   font: inherit;
   cursor: pointer;
   outline: inherit;
+}
+
+.menu__button--icon {
+  padding-right: 10px;
 }
 
 .username {

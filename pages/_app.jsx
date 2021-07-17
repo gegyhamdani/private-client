@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from "react";
 import PropTypes from "prop-types";
+import Head from "next/head";
 
 import withRedux from "../src/component/hoc/withRedux";
 
@@ -11,9 +12,14 @@ function MyApp({ Component, pageProps }) {
   const Layout = Component.layout || React.Fragment;
 
   return (
-    <Layout>
-      <Component {...pageProps} />
-    </Layout>
+    <>
+      <Head>
+        <title>Kantor Wilayah Provinsi Kalimantan Barat.</title>
+      </Head>
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+    </>
   );
 }
 
