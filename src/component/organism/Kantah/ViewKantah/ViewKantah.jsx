@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Table, Input, Spin, Space, Button, Modal } from "antd";
-import { LoadingOutlined } from "@ant-design/icons";
+import { Table, Input, Spin, Space, Button, Modal, notification } from "antd";
+import {
+  LoadingOutlined,
+  EyeInvisibleOutlined,
+  EyeTwoTone
+} from "@ant-design/icons";
 
 import styles from "./index.module.css";
 import kantahAPI from "../../../../api/kantahAPI";
@@ -15,24 +19,71 @@ const ViewKantah = () => {
   const [initData, setInitData] = useState([]);
   const [data, setData] = useState([]);
   const [isLoading, setLoading] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const [dataKantah, setDataKantah] = useState({});
-  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [isModalDeleteVisible, setIsModalDeleteVisible] = useState(false);
+  const [isModalUpdateVisible, setIsModalUpdateVisible] = useState(false);
+  const [confirmLoadingDelete, setConfirmLoadingDelete] = useState(false);
+  const [confirmLoadingUpdate, setConfirmLoadingUpdate] = useState(false);
   const [isUpdate, setUpdate] = useState(false);
 
-  const handleOkModal = () => {
-    setConfirmLoading(true);
+  const openNotificationSuccess = message => {
+    notification.success({
+      message,
+      duration: 2
+    });
+  };
+
+  const openNotificationError = message => {
+    notification.error({
+      message,
+      duration: 2
+    });
+  };
+
+  const handleOkModalDelete = () => {
+    setConfirmLoadingDelete(true);
     kantahAPI
       .deleteKantah(dataKantah.id)
       .then(() => {
+        openNotificationSuccess("Data berhasil di hapus");
         setUpdate(true);
-        setConfirmLoading(false);
+        setConfirmLoadingDelete(false);
       })
-      .finally(() => setIsModalVisible(false));
+      .finally(() => setIsModalDeleteVisible(false));
   };
 
-  const handleCancelModal = () => {
-    setIsModalVisible(false);
+  const handleOkModalUpdate = () => {
+    if (
+      dataKantah.name.length === 0 ||
+      dataKantah.username.length === 0 ||
+      dataKantah.password.length === 0
+    ) {
+      openNotificationError("Field tidak boleh kosong");
+    } else {
+      setConfirmLoadingUpdate(true);
+      kantahAPI
+        .updateKantah(
+          dataKantah.id,
+          dataKantah.name,
+          dataKantah.username,
+          dataKantah.password
+        )
+        .then(() => {
+          openNotificationSuccess("Data berhasil diubah");
+          setUpdate(true);
+          setConfirmLoadingUpdate(false);
+        })
+        .finally(() => setIsModalUpdateVisible(false));
+    }
+  };
+
+  const handleCancelModalDelete = () => {
+    setIsModalDeleteVisible(false);
+    setDataKantah({});
+  };
+
+  const handleCancelModalUpdate = () => {
+    setIsModalUpdateVisible(false);
     setDataKantah({});
   };
 
@@ -46,8 +97,44 @@ const ViewKantah = () => {
   };
 
   const handleDelete = val => {
-    setIsModalVisible(true);
+    setIsModalDeleteVisible(true);
     setDataKantah(val);
+  };
+
+  const handleUpdate = val => {
+    setIsModalUpdateVisible(true);
+    setDataKantah(val);
+  };
+
+  const handleChange = e => {
+    const {
+      target: { name, value }
+    } = e;
+
+    if (name === "name") {
+      let clone = { ...dataKantah };
+      clone = {
+        ...clone,
+        name: value
+      };
+      setDataKantah(clone);
+    }
+    if (name === "username") {
+      let clone = { ...dataKantah };
+      clone = {
+        ...clone,
+        username: value
+      };
+      setDataKantah(clone);
+    }
+    if (name === "password") {
+      let clone = { ...dataKantah };
+      clone = {
+        ...clone,
+        password: value
+      };
+      setDataKantah(clone);
+    }
   };
 
   const getKantah = () => {
@@ -120,7 +207,7 @@ const ViewKantah = () => {
               render={datas => {
                 return (
                   <Space>
-                    <Button>Lihat</Button>
+                    <Button onClick={() => handleUpdate(datas)}>Lihat</Button>
                     <Button danger onClick={() => handleDelete(datas)}>
                       Delete
                     </Button>
@@ -131,15 +218,68 @@ const ViewKantah = () => {
           </Table>
           <Modal
             title={`Delete ${dataKantah.name}`}
-            visible={isModalVisible}
-            onOk={handleOkModal}
-            onCancel={handleCancelModal}
-            confirmLoading={confirmLoading}
+            visible={isModalDeleteVisible}
+            onOk={handleOkModalDelete}
+            onCancel={handleCancelModalDelete}
+            confirmLoading={confirmLoadingDelete}
           >
             <p>
               Apakah anda yakin akan menghapus data
               {` ${dataKantah.name} ?`}
             </p>
+          </Modal>
+          <Modal
+            title={`Data ${dataKantah.name}`}
+            visible={isModalUpdateVisible}
+            onOk={handleOkModalUpdate}
+            onCancel={handleCancelModalUpdate}
+            confirmLoading={confirmLoadingUpdate}
+            footer={[
+              <Button key="back" onClick={handleCancelModalUpdate}>
+                Cancel
+              </Button>,
+              <Button
+                key="submit"
+                type="primary"
+                loading={confirmLoadingUpdate}
+                onClick={handleOkModalUpdate}
+              >
+                Update
+              </Button>
+            ]}
+          >
+            <div className={styles.form__item}>
+              <p>NAMA</p>
+              <Input
+                placeholder="Nama Kantah"
+                defaultValue={dataKantah.name}
+                onChange={handleChange}
+                name="name"
+              />
+            </div>
+            <div className={styles.form__item}>
+              <p>USERNAME</p>
+              <Input
+                placeholder="Username Kantah"
+                defaultValue={dataKantah.username}
+                onChange={handleChange}
+                name="username"
+              />
+            </div>
+            <div className={styles.form__item}>
+              <p>PASSWORD</p>
+              <Input.Password
+                iconRender={
+                  visible =>
+                    visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                  // eslint-disable-next-line react/jsx-curly-newline
+                }
+                placeholder="Password Kantah"
+                defaultValue={dataKantah.password}
+                onChange={handleChange}
+                name="password"
+              />
+            </div>
           </Modal>
         </>
       )}

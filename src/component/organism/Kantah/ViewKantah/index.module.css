@@ -3,3 +3,12 @@
     display: flex;
     flex-direction: column;
 }
+
+.form__item {
+    margin-bottom: 1.2em;
+}
+
+.form__item > p {
+    margin: 0;
+    padding-bottom: 4px;
+}
