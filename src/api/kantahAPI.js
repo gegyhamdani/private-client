@@ -58,4 +58,22 @@ const updateKantah = (id, name, username, password) => {
   });
 };
 
-export default { saveKantah, getKantah, getAllKantah, updateKantah };
+const deleteKantah = id => {
+  const { getInstance, routes } = axiosInstance;
+  return new Promise((resolve, reject) => {
+    getInstance()
+      .delete(routes.kantah(id))
+      .then(res => {
+        resolve(res.data);
+      })
+      .catch(reject);
+  });
+};
+
+export default {
+  saveKantah,
+  getKantah,
+  getAllKantah,
+  updateKantah,
+  deleteKantah
+};
