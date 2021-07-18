@@ -173,10 +173,7 @@ const ViewLaporan = () => {
               render={(text, record) => {
                 return (
                   <Space size="middle">
-                    <Button
-                      type="link"
-                      onClick={() => handleOpenModal(record.id)}
-                    >
+                    <Button onClick={() => handleOpenModal(record.id)}>
                       Lihat
                     </Button>
                   </Space>
