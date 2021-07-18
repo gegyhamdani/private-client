@@ -142,6 +142,11 @@ const ViewKantah = () => {
     kantahAPI
       .getKantah()
       .then(res => {
+        if (res.length === 0) {
+          setLoading(false);
+          setUpdate(false);
+          setData();
+        }
         const sort = res.sort((a, b) => b.id - a.id);
         const datas = [];
         const promises = [];

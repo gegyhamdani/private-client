@@ -163,6 +163,11 @@ const ViewFieldstaff = () => {
     fieldstaffAPI
       .getFieldstaffKantah(userId)
       .then(res => {
+        if (res.length === 0) {
+          setLoading(false);
+          setUpdate(false);
+          setData();
+        }
         const value = res.map(val => {
           const date = new Date(val.date_born);
           const dateDay =
