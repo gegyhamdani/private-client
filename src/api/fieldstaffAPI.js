@@ -91,10 +91,23 @@ const updateFieldstaff = (
   });
 };
 
+const deleteFieldstaff = id => {
+  const { getInstance, routes } = axiosInstance;
+  return new Promise((resolve, reject) => {
+    getInstance()
+      .delete(routes.fieldstaff(id))
+      .then(res => {
+        resolve(res.data);
+      })
+      .catch(reject);
+  });
+};
+
 export default {
   saveFieldstaff,
   getAllFieldstaff,
   getFieldstaff,
   getFieldstaffKantah,
-  updateFieldstaff
+  updateFieldstaff,
+  deleteFieldstaff
 };

@@ -193,7 +193,12 @@ const ViewKantah = () => {
       ) : (
         <>
           <Table dataSource={data} rowKey="id">
-            <Column title="Nama" dataIndex="name" key="name" />
+            <Column
+              title="Nama"
+              dataIndex="name"
+              key="name"
+              sorter={(a, b) => a.name.localeCompare(b.name)}
+            />
             <Column
               title="Total Fieldstaff"
               dataIndex="t_fs"
@@ -252,7 +257,7 @@ const ViewKantah = () => {
               <p>NAMA</p>
               <Input
                 placeholder="Nama Kantah"
-                defaultValue={dataKantah.name}
+                value={dataKantah.name}
                 onChange={handleChange}
                 name="name"
               />
@@ -261,7 +266,7 @@ const ViewKantah = () => {
               <p>USERNAME</p>
               <Input
                 placeholder="Username Kantah"
-                defaultValue={dataKantah.username}
+                value={dataKantah.username}
                 onChange={handleChange}
                 name="username"
               />
@@ -275,7 +280,7 @@ const ViewKantah = () => {
                   // eslint-disable-next-line react/jsx-curly-newline
                 }
                 placeholder="Password Kantah"
-                defaultValue={dataKantah.password}
+                value={dataKantah.password}
                 onChange={handleChange}
                 name="password"
               />
