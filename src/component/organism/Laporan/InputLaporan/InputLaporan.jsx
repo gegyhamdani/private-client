@@ -60,10 +60,20 @@ const InputLaporan = () => {
   };
 
   const saveLaporan = values => {
-    const { name, date, kegiatan, tahapan, keterangan, foto, keluhan } = values;
+    const {
+      name,
+      date,
+      inputDate,
+      kegiatan,
+      tahapan,
+      keterangan,
+      foto,
+      keluhan
+    } = values;
     return laporanAPI.saveLaporan(
       name,
       date,
+      inputDate,
       kegiatan,
       tahapan,
       keterangan,
@@ -123,6 +133,7 @@ const InputLaporan = () => {
       keluhan: fields.keluhan !== undefined ? fields.keluhan[0].keluhan : "",
       name: fields.name,
       date: fields.date.format("YYYY-MM-DD"),
+      inputDate: moment().format("YYYY-MM-DD"),
       kegiatan: convertedKegiatan,
       tahapan: convertedTahapan,
       keterangan: fields.keterangan,
@@ -147,6 +158,8 @@ const InputLaporan = () => {
       });
   };
 
+  const dateFormat = "DD - MM - yyyy";
+
   return (
     <div className={styles.container}>
       <Form
@@ -166,7 +179,7 @@ const InputLaporan = () => {
         </Form.Item>
 
         <Form.Item name="date" label="TANGGAL" labelAlign="left" {...config}>
-          <DatePicker disabled />
+          <DatePicker style={{ width: "50%" }} format={dateFormat} />
         </Form.Item>
 
         <div className={styles["form__checkbox--group"]}>

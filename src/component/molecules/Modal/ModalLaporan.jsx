@@ -11,6 +11,7 @@ import laporanAPI from "../../../api/laporanAPI";
 import users from "../../../constant/user";
 
 import styles from "./index.module.css";
+import dateHelper from "../../../helpers/dateHelper";
 
 const ModalLaporan = ({ id, isModalVisible, onCloseModal }) => {
   const [dataLaporan, setDataLaporan] = useState({});
@@ -138,15 +139,14 @@ const ModalLaporan = ({ id, isModalVisible, onCloseModal }) => {
 
   const getDate = () => {
     if (!isEmpty(dataLaporan)) {
-      const date = new Date(dataLaporan.tanggal_laporan);
-      const dateDay =
-        date.getDate().toString().length < 2
-          ? `0${date.getDate()}`
-          : date.getDate();
-      const dateMonth = date.getMonth().toString().length
-        ? `0${date.getMonth() + 1}`
-        : date.getMonth() + 1;
-      return `${dateDay} - ${dateMonth} - ${date.getFullYear()}`;
+      return dateHelper.convertDate(dataLaporan.tanggal_laporan);
+    }
+    return 0;
+  };
+
+  const getDateInput = () => {
+    if (!isEmpty(dataLaporan)) {
+      return dateHelper.convertDate(dataLaporan.tanggal_input);
     }
     return 0;
   };
@@ -275,6 +275,7 @@ const ModalLaporan = ({ id, isModalVisible, onCloseModal }) => {
             initialValues={{
               name: dataLaporan.fieldstaff_name,
               date: getDate(),
+              inputDate: getDateInput(),
               keterangan: dataLaporan.keterangan,
               keluhan: dataLaporan.keluhan,
               koordinasi: getKoordinasi(),
@@ -294,7 +295,11 @@ const ModalLaporan = ({ id, isModalVisible, onCloseModal }) => {
               <Input disabled />
             </Form.Item>
 
-            <Form.Item name="date" label="TANGGAL" labelAlign="left">
+            <Form.Item name="date" label="TANGGAL LAPORAN" labelAlign="left">
+              <Input disabled />
+            </Form.Item>
+
+            <Form.Item name="inputDate" label="TANGGAL INPUT" labelAlign="left">
               <Input disabled />
             </Form.Item>
 

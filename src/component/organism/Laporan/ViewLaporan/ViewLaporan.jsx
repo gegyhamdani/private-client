@@ -15,6 +15,7 @@ import laporanAPI from "../../../../api/laporanAPI";
 import fieldstaffAPI from "../../../../api/fieldstaffAPI";
 import users from "../../../../constant/user";
 import ModalLaporan from "../../../molecules/Modal";
+import dateHelper from "../../../../helpers/dateHelper";
 
 const { Search } = Input;
 const { Column } = Table;
@@ -69,17 +70,11 @@ const ViewLaporan = () => {
                 return getKeyByValue(item, true);
               })
               .filter(item => item);
-            const date = new Date(val.tanggal_laporan);
-            const dateDay =
-              date.getDate().toString().length < 2
-                ? `0${date.getDate()}`
-                : date.getDate();
-            const dateMonth = date.getMonth().toString().length
-              ? `0${date.getMonth() + 1}`
-              : date.getMonth() + 1;
+
             return {
               ...val,
-              tanggal_laporan: `${dateDay} - ${dateMonth} - ${date.getFullYear()}`,
+              tanggal_laporan: dateHelper.convertDate(val.tanggal_laporan),
+              tanggal_input: dateHelper.convertDate(val.tanggal_input),
               kegiatan: kegiatan.join(", ")
             };
           });
@@ -171,6 +166,11 @@ const ViewLaporan = () => {
               title="Tanggal Laporan"
               dataIndex="tanggal_laporan"
               key="tanggal_laporan"
+            />
+            <Column
+              title="Tanggal Input"
+              dataIndex="tanggal_input"
+              key="tanggal_input"
             />
             <Column title="Kegiatan" dataIndex="kegiatan" key="kegiatan" />
             <Column

@@ -3,6 +3,7 @@ import axiosInstance from "./axiosInstance";
 const saveLaporan = (
   name,
   date,
+  inputDate,
   kegiatan,
   tahapan,
   keterangan,
@@ -17,6 +18,7 @@ const saveLaporan = (
       .post(routes.laporan(), {
         fieldstaff_name: name,
         tanggal_laporan: date,
+        tanggal_input: inputDate,
         kegiatan,
         tahapan,
         keterangan,
