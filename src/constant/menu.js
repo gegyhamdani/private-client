@@ -1,7 +1,7 @@
 const menu = [
   {
     key: 1,
-    title: "Beranda",
+    title: "Dashboard",
     page: "dashboard",
     level: ["all"],
     subMenu: []
