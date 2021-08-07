@@ -1,13 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from "react";
-import {
-  Button,
-  DatePicker,
-  Form,
-  Input,
-  notification,
-  InputNumber
-} from "antd";
+import { Button, DatePicker, Form, Input, notification } from "antd";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/router";
 
@@ -139,13 +132,20 @@ const InputFieldStaff = () => {
           rules={[
             {
               required: true,
-              message: "Tolong masukan no.telepon",
-              type: "number"
+              message: "Tolong masukan no.telepon"
+            },
+            {
+              pattern: /^(?:\d*)$/,
+              message: "Hanya boleh diisi angka"
+            },
+            {
+              pattern: /^[\d]{0,13}$/,
+              message: "Maksimum 13 angka"
             }
           ]}
           className={styles.form__phone}
         >
-          <InputNumber />
+          <Input addonBefore="0" />
         </Form.Item>
 
         <Form.Item

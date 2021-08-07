@@ -69,6 +69,8 @@ const ViewFieldstaff = () => {
       dataFieldstaff.password.length === 0
     ) {
       openNotificationError("Field tidak boleh kosong");
+    } else if (!/^\d+$/.test(dataFieldstaff.phone_number)) {
+      openNotificationError("No. Telepon hanya boleh diisi angka");
     } else {
       setConfirmLoadingUpdate(true);
       fieldstaffAPI
@@ -163,6 +165,21 @@ const ViewFieldstaff = () => {
       };
       setDataFieldstaff(clone);
     }
+  };
+
+  const handleChangeNumber = e => {
+    const {
+      target: { value }
+    } = e;
+
+    if (value.length > 13) return;
+
+    let clone = { ...dataFieldstaff };
+    clone = {
+      ...clone,
+      phone_number: value
+    };
+    setDataFieldstaff(clone);
   };
 
   const getFieldstaff = () => {
@@ -335,8 +352,9 @@ const ViewFieldstaff = () => {
               <Input
                 placeholder="No. Telepon Fieldstaff"
                 value={dataFieldstaff.phone_number}
-                onChange={handleChange}
+                onChange={handleChangeNumber}
                 name="phone_number"
+                addonBefore="0"
               />
             </div>
             <div className={styles.form__item}>
