@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from "react";
-import { Card, Dropdown, Menu, Form, Input, Button } from "antd";
+import { Card, Form, Input, Button, Select } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { useRouter } from "next/router";
 
@@ -17,6 +17,8 @@ import {
 } from "../../../helpers/arrayHelper";
 
 const title = "Silahkan Masuk";
+
+const { Option } = Select;
 
 const Login = () => {
   const arrUser = convertObjectToArray(users);
@@ -39,7 +41,7 @@ const Login = () => {
   };
 
   const setLoginAdmin = (username, password) => {
-    if (arrUser[selectedUser] === users.Kanwil) {
+    if (selectedUser === users.Kanwil) {
       return kanwilAPI.getAllKanwil().then(res => {
         const findUser = findValueOnArray(res, "username", username);
         const findPassword = findValueOnArray(res, "password", password);
@@ -48,7 +50,7 @@ const Login = () => {
         return incorrectLoginAndFinishLoading();
       });
     }
-    if (arrUser[selectedUser] === users.Kantah) {
+    if (selectedUser === users.Kantah) {
       return kantahAPI.getAllKantah().then(res => {
         const findUser = findValueOnArray(res, "username", username);
         const findPassword = findValueOnArray(res, "password", password);
@@ -57,7 +59,7 @@ const Login = () => {
         return incorrectLoginAndFinishLoading();
       });
     }
-    if (arrUser[selectedUser] === users.Fieldstaff) {
+    if (selectedUser === users.Fieldstaff) {
       return fieldstaffAPI.getAllFieldstaff().then(res => {
         const findUser = findValueOnArray(res, "username", username);
         const findPassword = findValueOnArray(res, "password", password);
@@ -66,7 +68,7 @@ const Login = () => {
         return incorrectLoginAndFinishLoading();
       });
     }
-    if (arrUser[selectedUser] === users.SuperAdmin) {
+    if (selectedUser === users.SuperAdmin) {
       if (username === "superadmin" && password === "admin")
         return login(username, password, users.SuperAdmin, "superadmin");
       return incorrectLoginAndFinishLoading();
@@ -86,20 +88,8 @@ const Login = () => {
   };
 
   const handleMenuClick = e => {
-    setSelectedUser(e.key);
+    setSelectedUser(e);
   };
-
-  const menu = (
-    <Menu onClick={handleMenuClick}>
-      {arrUser.map((val, i) => {
-        return (
-          <Menu.Item key={i.toString()} icon={<UserOutlined />}>
-            {val}
-          </Menu.Item>
-        );
-      })}
-    </Menu>
-  );
 
   return (
     <Card
@@ -111,9 +101,19 @@ const Login = () => {
       <div className={styles.header}>
         <h1>{title}</h1>
 
-        <Dropdown overlay={menu} placement="bottomCenter">
-          <Button> Pilih Level User</Button>
-        </Dropdown>
+        <Select
+          defaultValue={arrUser[0]}
+          style={{ width: 140 }}
+          onChange={handleMenuClick}
+        >
+          {arrUser.map((val, i) => {
+            return (
+              <Option key={i.toString()} value={val} disabled={i === 0}>
+                {val}
+              </Option>
+            );
+          })}
+        </Select>
       </div>
 
       {isIncorrectLogin && (
@@ -121,10 +121,6 @@ const Login = () => {
       )}
       {selectedUser && (
         <div className={styles.main}>
-          <p className={styles["form-header"]}>
-            User Login:
-            <span className={styles.user}>{` ${arrUser[selectedUser]}`}</span>
-          </p>
           <Form
             name="login"
             initialValues={{

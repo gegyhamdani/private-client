@@ -5,6 +5,7 @@ import {
   EyeInvisibleOutlined,
   EyeTwoTone
 } from "@ant-design/icons";
+import { useRouter } from "next/router";
 
 import styles from "./index.module.css";
 import kantahAPI from "../../../../api/kantahAPI";
@@ -25,6 +26,7 @@ const ViewKantah = () => {
   const [confirmLoadingDelete, setConfirmLoadingDelete] = useState(false);
   const [confirmLoadingUpdate, setConfirmLoadingUpdate] = useState(false);
   const [isUpdate, setUpdate] = useState(false);
+  const router = useRouter();
 
   const openNotificationSuccess = message => {
     notification.success({
@@ -187,12 +189,24 @@ const ViewKantah = () => {
 
   return (
     <div className={styles.container}>
-      <Search
-        placeholder="Cari nama kantah"
-        allowClear
-        onSearch={handleSearch}
-        style={{ width: 350, marginTop: "1em", marginBottom: "1em" }}
-      />
+      <div className={styles.field}>
+        <Search
+          placeholder="Cari nama kantah"
+          allowClear
+          onSearch={handleSearch}
+          style={{ width: 350, marginTop: "1em", marginBottom: "1em" }}
+        />
+        <Button
+          type="primary"
+          style={{ width: 200 }}
+          onClick={() => {
+            router.push("/inputkantah");
+          }}
+        >
+          Tambah Data Kantah
+        </Button>
+      </div>
+
       {isLoading ? (
         <Spin indicator={antIcon} style={{ marginTop: "5em" }} />
       ) : (

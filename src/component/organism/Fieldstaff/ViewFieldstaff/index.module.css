@@ -4,6 +4,15 @@
     flex-direction: column;
 }
 
+.field {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 1em 0;
+    align-items: center;
+}
+
 .form__item {
     margin-bottom: 1.2em;
 }

@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Table, Input, Spin, Space, Tag, Button } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
+import { useRouter } from "next/router";
 
 import styles from "./index.module.css";
 import laporanAPI from "../../../../api/laporanAPI";
@@ -21,6 +22,7 @@ const ViewLaporan = () => {
   const [userFieldstaff, setUserFieldstaff] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [laporanId, setLaporanId] = useState(0);
+  const router = useRouter();
 
   const userId = useSelector(state => state.auth.userId);
   const userLevel = useSelector(state => state.auth.level);
@@ -130,12 +132,25 @@ const ViewLaporan = () => {
         id={laporanId}
       />
       <div className={styles.container}>
-        <Search
-          placeholder="Cari nama fieldstaff"
-          allowClear
-          onSearch={handleSearch}
-          style={{ width: 350, marginTop: "1em", marginBottom: "1em" }}
-        />
+        <div className={styles.field}>
+          <Search
+            placeholder="Cari nama fieldstaff"
+            allowClear
+            onSearch={handleSearch}
+            style={{ width: 350 }}
+          />
+          {userLevel === users.Fieldstaff && (
+            <Button
+              type="primary"
+              style={{ width: 200 }}
+              onClick={() => {
+                router.push("/inputlaporan");
+              }}
+            >
+              Tambah Data Laporan
+            </Button>
+          )}
+        </div>
         {isLoading ? (
           <Spin indicator={antIcon} style={{ marginTop: "5em" }} />
         ) : (
@@ -182,6 +197,19 @@ const ViewLaporan = () => {
             />
           </Table>
         )}
+        <div className={styles.footer}>
+          {userLevel === users.Fieldstaff && (
+            <Button
+              type="primary"
+              style={{ width: 200 }}
+              onClick={() => {
+                router.push("/cetaklaporan");
+              }}
+            >
+              Cetak Laporan
+            </Button>
+          )}
+        </div>
       </div>
     </>
   );

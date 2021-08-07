@@ -12,6 +12,7 @@ import authRL from "../../../redux/logic/authRL";
 import users from "../../../constant/user";
 
 import styles from "./index.module.css";
+import { urlHttpNormalizer } from "../../../helpers/stringHelper";
 
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
@@ -42,9 +43,15 @@ const DashboardTemplate = ({ children }) => {
     if (validateLevel(item)) {
       return (
         <Menu.Item key={item.key}>
-          <Link key={item.key} href={`/${item.page}`}>
-            {item.title}
-          </Link>
+          {urlHttpNormalizer(item.page) ? (
+            <a target="_blank" href={item.page} rel="noopener noreferrer">
+              {item.title}
+            </a>
+          ) : (
+            <Link key={item.key} href={`/${item.page}`} passHref>
+              {item.title}
+            </Link>
+          )}
         </Menu.Item>
       );
     }
@@ -59,7 +66,7 @@ const DashboardTemplate = ({ children }) => {
             // eslint-disable-next-line prettier/prettier
             return validateLevel(subItem) ? (
               <Menu.Item key={subItem.key}>
-                <Link href={`/${subItem.page}`} key={subItem.key}>
+                <Link href={`/${subItem.page}`} key={subItem.key} passHref>
                   {subItem.title}
                 </Link>
               </Menu.Item>

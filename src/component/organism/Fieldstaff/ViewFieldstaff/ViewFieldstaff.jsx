@@ -7,9 +7,11 @@ import {
   EyeInvisibleOutlined,
   EyeTwoTone
 } from "@ant-design/icons";
+import { useRouter } from "next/router";
 
 import styles from "./index.module.css";
 import fieldstaffAPI from "../../../../api/fieldstaffAPI";
+import users from "../../../../constant/user";
 
 const { Search, TextArea } = Input;
 const { Column } = Table;
@@ -26,8 +28,10 @@ const ViewFieldstaff = () => {
   const [confirmLoadingDelete, setConfirmLoadingDelete] = useState(false);
   const [confirmLoadingUpdate, setConfirmLoadingUpdate] = useState(false);
   const [isUpdate, setUpdate] = useState(false);
+  const router = useRouter();
 
   const userId = useSelector(state => state.auth.userId);
+  const userLevel = useSelector(state => state.auth.level);
 
   const openNotificationSuccess = message => {
     notification.success({
@@ -210,12 +214,25 @@ const ViewFieldstaff = () => {
 
   return (
     <div className={styles.container}>
-      <Search
-        placeholder="Cari nama fieldstaff"
-        allowClear
-        onSearch={handleSearch}
-        style={{ width: 350, marginTop: "1em", marginBottom: "1em" }}
-      />
+      <div className={styles.field}>
+        <Search
+          placeholder="Cari nama fieldstaff"
+          allowClear
+          onSearch={handleSearch}
+          style={{ width: 350, marginTop: "1em", marginBottom: "1em" }}
+        />
+        {userLevel === users.Kantah && (
+          <Button
+            type="primary"
+            style={{ width: 200 }}
+            onClick={() => {
+              router.push("/inputfieldstaff");
+            }}
+          >
+            Tambah Data Fieldstaff
+          </Button>
+        )}
+      </div>
       {isLoading ? (
         <Spin indicator={antIcon} style={{ marginTop: "5em" }} />
       ) : (
@@ -329,6 +346,7 @@ const ViewFieldstaff = () => {
                 value={dataFieldstaff.password}
                 onChange={handleChange}
                 name="password"
+                disabled
               />
             </div>
           </Modal>
