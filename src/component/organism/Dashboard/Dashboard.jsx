@@ -62,9 +62,7 @@ const Dashboard = () => {
 
   return (
     <>
-      <h1 className={styles.title}>
-        SELAMAT DATANG DI KANTOR PERTANAHAN KOTA PONTIANAK
-      </h1>
+      <h1 className={styles.title}>Dashboard</h1>
       {level === users.Kantah && (
         <div className={styles.container}>
           <Card style={{ width: 200 }} className={styles.card}>
