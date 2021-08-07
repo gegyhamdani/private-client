@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import isEmpty from "lodash/isEmpty";
 import find from "lodash/find";
-import { Modal, Button, Form, Input, notification } from "antd";
+import { Modal, Button, Form, Input, notification, Select } from "antd";
 import Checkbox from "antd/lib/checkbox/Checkbox";
 import { useRouter } from "next/router";
 
@@ -65,17 +65,6 @@ const ModalLaporan = ({ id, isModalVisible, onCloseModal }) => {
     const pendampingan = { pendampingan: fields.pendampingan || false };
     const lainnya = { lainnya: fields.lainnya || false };
 
-    const prosesPemetaan = { prosesPemetaan: fields.prosespemetaan || false };
-    const selesaiPemetaan = {
-      selesaiPemetaan: fields.selesaipemetaan || false
-    };
-    const prosesPenyuluhan = {
-      prosesPenyuluhan: fields.prosespenyuluhan || false
-    };
-    const selesaiPenyuluhan = {
-      selesaiPenyuluhan: fields.selesaipenyuluhan || false
-    };
-
     if (
       !fields.koordinasi &&
       !fields.kunjungan &&
@@ -85,23 +74,10 @@ const ModalLaporan = ({ id, isModalVisible, onCloseModal }) => {
     )
       return openNotificationFormCheckboxError("kegiatan");
 
-    if (
-      !fields.prosespemetaan &&
-      !fields.selesaipemetaan &&
-      !fields.prosespenyuluhan &&
-      !fields.selesaipenyuluhan
-    )
-      return openNotificationFormCheckboxError("tahapan");
-
     const kegiatan = [koordinasi, kunjungan, meeting, pendampingan, lainnya];
-    const tahapan = [
-      prosesPemetaan,
-      selesaiPemetaan,
-      prosesPenyuluhan,
-      selesaiPenyuluhan
-    ];
     const convertedKegiatan = JSON.stringify(kegiatan);
-    const convertedTahapan = JSON.stringify(tahapan);
+
+    const convertedTahapan = JSON.stringify(fields.tahapan);
 
     const values = {
       keluhan: fields.keluhan,
@@ -211,50 +187,10 @@ const ModalLaporan = ({ id, isModalVisible, onCloseModal }) => {
     return 0;
   };
 
-  const getProsesPemetaan = () => {
+  const getTahapan = () => {
     if (!isEmpty(dataLaporan)) {
       const tahapan = JSON.parse(dataLaporan.tahapan);
-      const tahapanProsesPemetaan = find(tahapan, o => o.prosesPemetaan);
-      if (tahapanProsesPemetaan) {
-        return tahapanProsesPemetaan.prosesPemetaan;
-      }
-      return false;
-    }
-    return 0;
-  };
-
-  const getSelesaiPemetaan = () => {
-    if (!isEmpty(dataLaporan)) {
-      const tahapan = JSON.parse(dataLaporan.tahapan);
-      const tahapanSelesaiPemetaan = find(tahapan, o => o.selesaiPemetaan);
-      if (tahapanSelesaiPemetaan) {
-        return tahapanSelesaiPemetaan.selesaiPemetaan;
-      }
-      return false;
-    }
-    return 0;
-  };
-
-  const getProsesPenyuluhan = () => {
-    if (!isEmpty(dataLaporan)) {
-      const tahapan = JSON.parse(dataLaporan.tahapan);
-      const tahapanProsesPenyuluhan = find(tahapan, o => o.prosesPenyuluhan);
-      if (tahapanProsesPenyuluhan) {
-        return tahapanProsesPenyuluhan.prosesPenyuluhan;
-      }
-      return false;
-    }
-    return 0;
-  };
-
-  const getSelesaiPenyuluhan = () => {
-    if (!isEmpty(dataLaporan)) {
-      const tahapan = JSON.parse(dataLaporan.tahapan);
-      const tahapanSelesaiPenyuluhan = find(tahapan, o => o.selesaiPenyuluhan);
-      if (tahapanSelesaiPenyuluhan) {
-        return tahapanSelesaiPenyuluhan.selesaiPenyuluhan;
-      }
-      return false;
+      return tahapan;
     }
     return 0;
   };
@@ -283,10 +219,7 @@ const ModalLaporan = ({ id, isModalVisible, onCloseModal }) => {
               meeting: getMeeting(),
               kunjungan: getKunjungan(),
               lainnya: getLainnya(),
-              prosespemetaan: getProsesPemetaan(),
-              selesaipemetaan: getSelesaiPemetaan(),
-              prosespenyuluhan: getProsesPenyuluhan(),
-              selesaipenyuluhan: getSelesaiPenyuluhan(),
+              tahapan: getTahapan(),
               saran: dataLaporan.saran
             }}
             onFinish={handleFinish}
@@ -331,30 +264,28 @@ const ModalLaporan = ({ id, isModalVisible, onCloseModal }) => {
                   </Checkbox>
                 </Form.Item>
               </Form.Item>
-
-              <Form.Item label="TAHAPAN AKSES REFORMA">
-                <Form.Item name="prosespemetaan" valuePropName="checked">
-                  <Checkbox disabled={userLevel === users.Kantah}>
-                    Proses Pemetaan
-                  </Checkbox>
-                </Form.Item>
-                <Form.Item name="selesaipemetaan" valuePropName="checked">
-                  <Checkbox disabled={userLevel === users.Kantah}>
-                    Selesai Pemetaan
-                  </Checkbox>
-                </Form.Item>
-                <Form.Item name="prosespenyuluhan" valuePropName="checked">
-                  <Checkbox disabled={userLevel === users.Kantah}>
-                    Proses Penyuluhan
-                  </Checkbox>
-                </Form.Item>
-                <Form.Item name="selesaipenyuluhan" valuePropName="checked">
-                  <Checkbox disabled={userLevel === users.Kantah}>
-                    Selesai Penyuluhan
-                  </Checkbox>
-                </Form.Item>
-              </Form.Item>
             </div>
+
+            <Form.Item name="tahapan" label="TAHAPAN AKSES REFORMA">
+              <Select
+                mode="multiple"
+                allowClear
+                placeholder="Pilih tahapan akses reforma"
+              >
+                <Select.Option value="prosespemetaan">
+                  Proses Pemetaan
+                </Select.Option>
+                <Select.Option value="selesaipemetaan">
+                  Selesai Pemetaan
+                </Select.Option>
+                <Select.Option value="prosespenyuluhan">
+                  Proses Penyuluhan
+                </Select.Option>
+                <Select.Option value="selesaipenyuluhan">
+                  Selesai Penyuluhan
+                </Select.Option>
+              </Select>
+            </Form.Item>
 
             <Form.Item
               name="keterangan"

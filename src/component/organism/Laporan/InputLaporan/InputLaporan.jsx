@@ -2,7 +2,15 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/router";
-import { Button, DatePicker, Form, Input, Upload, notification } from "antd";
+import {
+  Button,
+  DatePicker,
+  Form,
+  Input,
+  Upload,
+  notification,
+  Select
+} from "antd";
 import {
   UploadOutlined,
   MinusCircleOutlined,
@@ -90,18 +98,6 @@ const InputLaporan = () => {
     const meeting = { meeting: fields.meeting || false };
     const pendampingan = { pendampingan: fields.pendampingan || false };
     const lainnya = { lainnya: fields.lainnya || false };
-
-    const prosesPemetaan = { prosesPemetaan: fields.prosespemetaan || false };
-    const selesaiPemetaan = {
-      selesaiPemetaan: fields.selesaipemetaan || false
-    };
-    const prosesPenyuluhan = {
-      prosesPenyuluhan: fields.prosespenyuluhan || false
-    };
-    const selesaiPenyuluhan = {
-      selesaiPenyuluhan: fields.selesaipenyuluhan || false
-    };
-
     if (
       !fields.koordinasi &&
       !fields.kunjungan &&
@@ -111,23 +107,10 @@ const InputLaporan = () => {
     )
       return openNotificationFormCheckboxError("kegiatan");
 
-    if (
-      !fields.prosespemetaan &&
-      !fields.selesaipemetaan &&
-      !fields.prosespenyuluhan &&
-      !fields.selesaipenyuluhan
-    )
-      return openNotificationFormCheckboxError("tahapan");
-
     const kegiatan = [koordinasi, kunjungan, meeting, pendampingan, lainnya];
-    const tahapan = [
-      prosesPemetaan,
-      selesaiPemetaan,
-      prosesPenyuluhan,
-      selesaiPenyuluhan
-    ];
     const convertedKegiatan = JSON.stringify(kegiatan);
-    const convertedTahapan = JSON.stringify(tahapan);
+
+    const convertedTahapan = JSON.stringify(fields.tahapan);
 
     const values = {
       keluhan: fields.keluhan !== undefined ? fields.keluhan[0].keluhan : "",
@@ -200,22 +183,28 @@ const InputLaporan = () => {
               <Checkbox>Lainnya</Checkbox>
             </Form.Item>
           </Form.Item>
-
-          <Form.Item label="TAHAPAN AKSES REFORMA">
-            <Form.Item name="prosespemetaan" valuePropName="checked">
-              <Checkbox>Proses Pemetaan</Checkbox>
-            </Form.Item>
-            <Form.Item name="selesaipemetaan" valuePropName="checked">
-              <Checkbox>Selesai Pemetaan</Checkbox>
-            </Form.Item>
-            <Form.Item name="prosespenyuluhan" valuePropName="checked">
-              <Checkbox>Proses Penyuluhan</Checkbox>
-            </Form.Item>
-            <Form.Item name="selesaipenyuluhan" valuePropName="checked">
-              <Checkbox>Selesai Penyuluhan</Checkbox>
-            </Form.Item>
-          </Form.Item>
         </div>
+
+        <Form.Item name="tahapan" label="TAHAPAN AKSES REFORMA">
+          <Select
+            mode="multiple"
+            allowClear
+            placeholder="Pilih tahapan akses reforma"
+          >
+            <Select.Option value="prosespemetaan">
+              Proses Pemetaan
+            </Select.Option>
+            <Select.Option value="selesaipemetaan">
+              Selesai Pemetaan
+            </Select.Option>
+            <Select.Option value="prosespenyuluhan">
+              Proses Penyuluhan
+            </Select.Option>
+            <Select.Option value="selesaipenyuluhan">
+              Selesai Penyuluhan
+            </Select.Option>
+          </Select>
+        </Form.Item>
 
         <Form.Item
           name="keterangan"
