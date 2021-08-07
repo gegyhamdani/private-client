@@ -1,0 +1,60 @@
+.container {
+    margin-top: 2em;
+}
+
+.loading {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10em;
+}
+
+.card {
+    border: 1px solid rgba(205, 205, 205, 0.3);
+    border-radius: 4px;
+    box-shadow: 0px 2px 6px #0000000a;
+}
+
+.card-container {
+    padding: 12px;
+}
+
+.data {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 1em;
+}
+
+.card--data:first-child {
+    margin-left: 0;
+}
+
+.card--data:last-child {
+    margin-right: 0;
+}
+
+.card--data {
+    flex: 1 1 23%;
+    margin: 0 10px;
+}
+
+.lastinput p {
+    margin: 0;
+    text-align: center;
+}
+
+.lastDate {
+    font-weight: bold;
+}
+
+.total {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.total p {
+    text-align: center;
+    margin: 0;
+    padding-top: 1.3em;
+}
