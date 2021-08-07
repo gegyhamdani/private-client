@@ -14,6 +14,7 @@ const DashboardFieldstaff = () => {
   const [totalInput, setTotalInput] = useState(0);
   const [keluhan, setKeluhan] = useState(0);
   const [saran, setSaran] = useState(0);
+  const [tahapan, setTahapan] = useState(0);
   const [isLoading, setLoading] = useState(false);
   const userId = useSelector(state => state.auth.userId);
 
@@ -23,6 +24,8 @@ const DashboardFieldstaff = () => {
       .getUserLaporan(userId)
       .then(res => {
         if (res.length > 0) {
+          const totalData = res.length;
+
           const inputDateData = res[res.length - 1].tanggal_input;
           const convertedDateData = dateHelper.convertDate(inputDateData);
           setLastInputDate(convertedDateData);
@@ -31,7 +34,6 @@ const DashboardFieldstaff = () => {
           setTotalInput(totalInputData);
 
           const dataKeluhan = res
-            .flat()
             .map(val => {
               return val.keluhan ? val.keluhan : "";
             })
@@ -41,7 +43,6 @@ const DashboardFieldstaff = () => {
           setKeluhan(dataKeluhan.length);
 
           const dataSaran = res
-            .flat()
             .map(val => {
               return val.saran ? val.saran : "";
             })
@@ -49,6 +50,14 @@ const DashboardFieldstaff = () => {
               return e;
             });
           setSaran(dataSaran.length);
+
+          const dataTahapan = res.map(val => JSON.parse(val.tahapan));
+          const filterDataTahapan = dataTahapan.filter(val => {
+            return val != null;
+          });
+          const percentDataTahapan =
+            (filterDataTahapan.length / totalData) * 100;
+          setTahapan(percentDataTahapan);
         }
       })
       .finally(() => setLoading(false));
@@ -134,10 +143,8 @@ const DashboardFieldstaff = () => {
           title="Realisasi"
           style={{ width: 250 }}
         >
-          <div className={styles["card-container"]}>
-            <p>Card content</p>
-            <p>Card content</p>
-            <p>Card content</p>
+          <div className={`${styles["card-container"]} ${styles.total}`}>
+            <p>{`${tahapan}%`}</p>
           </div>
         </Card>
       </div>
