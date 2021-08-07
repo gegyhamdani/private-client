@@ -19,3 +19,13 @@
     display: flex;
     justify-content: center;
 }
+
+.button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.button span svg {
+    margin-top: 3px;
+}

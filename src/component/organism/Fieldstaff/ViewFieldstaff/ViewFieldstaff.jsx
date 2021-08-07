@@ -5,7 +5,10 @@ import { Table, Input, Spin, Modal, Button, Space, notification } from "antd";
 import {
   LoadingOutlined,
   EyeInvisibleOutlined,
-  EyeTwoTone
+  EyeTwoTone,
+  PlusCircleOutlined,
+  SearchOutlined,
+  DeleteOutlined
 } from "@ant-design/icons";
 import { useRouter } from "next/router";
 
@@ -225,6 +228,8 @@ const ViewFieldstaff = () => {
           <Button
             type="primary"
             style={{ width: 200 }}
+            icon={<PlusCircleOutlined style={{ fontSize: "18px" }} />}
+            className={styles.button}
             onClick={() => {
               router.push("/inputfieldstaff");
             }}
@@ -257,8 +262,17 @@ const ViewFieldstaff = () => {
               render={datas => {
                 return (
                   <Space>
-                    <Button onClick={() => handleUpdate(datas)}>Lihat</Button>
-                    <Button danger onClick={() => handleDelete(datas)}>
+                    <Button
+                      onClick={() => handleUpdate(datas)}
+                      icon={<SearchOutlined />}
+                    >
+                      Lihat
+                    </Button>
+                    <Button
+                      danger
+                      onClick={() => handleDelete(datas)}
+                      icon={<DeleteOutlined />}
+                    >
                       Delete
                     </Button>
                   </Space>

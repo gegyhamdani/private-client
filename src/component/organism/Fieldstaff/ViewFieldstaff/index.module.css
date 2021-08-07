@@ -21,3 +21,13 @@
     margin: 0;
     padding-bottom: 4px;
 }
+
+.button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.button span svg {
+    margin-top: 3px;
+}

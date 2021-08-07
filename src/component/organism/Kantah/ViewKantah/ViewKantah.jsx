@@ -3,7 +3,9 @@ import { Table, Input, Spin, Space, Button, Modal, notification } from "antd";
 import {
   LoadingOutlined,
   EyeInvisibleOutlined,
-  EyeTwoTone
+  EyeTwoTone,
+  PlusCircleOutlined,
+  DeleteOutlined
 } from "@ant-design/icons";
 import { useRouter } from "next/router";
 
@@ -199,6 +201,8 @@ const ViewKantah = () => {
         <Button
           type="primary"
           style={{ width: 200 }}
+          icon={<PlusCircleOutlined style={{ fontSize: "18px" }} />}
+          className={styles.button}
           onClick={() => {
             router.push("/inputkantah");
           }}
@@ -231,8 +235,17 @@ const ViewKantah = () => {
               render={datas => {
                 return (
                   <Space>
-                    <Button onClick={() => handleUpdate(datas)}>Lihat</Button>
-                    <Button danger onClick={() => handleDelete(datas)}>
+                    <Button
+                      onClick={() => handleUpdate(datas)}
+                      icon={<SearchOutlined />}
+                    >
+                      Lihat
+                    </Button>
+                    <Button
+                      danger
+                      onClick={() => handleDelete(datas)}
+                      icon={<DeleteOutlined />}
+                    >
                       Delete
                     </Button>
                   </Space>

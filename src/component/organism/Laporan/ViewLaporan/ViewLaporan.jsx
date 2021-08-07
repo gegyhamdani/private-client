@@ -2,7 +2,12 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Table, Input, Spin, Space, Tag, Button } from "antd";
-import { LoadingOutlined } from "@ant-design/icons";
+import {
+  LoadingOutlined,
+  PlusCircleOutlined,
+  DownloadOutlined,
+  SearchOutlined
+} from "@ant-design/icons";
 import { useRouter } from "next/router";
 
 import styles from "./index.module.css";
@@ -143,6 +148,8 @@ const ViewLaporan = () => {
             <Button
               type="primary"
               style={{ width: 200 }}
+              icon={<PlusCircleOutlined style={{ fontSize: "18px" }} />}
+              className={styles.button}
               onClick={() => {
                 router.push("/inputlaporan");
               }}
@@ -188,7 +195,10 @@ const ViewLaporan = () => {
               render={(text, record) => {
                 return (
                   <Space size="middle">
-                    <Button onClick={() => handleOpenModal(record.id)}>
+                    <Button
+                      onClick={() => handleOpenModal(record.id)}
+                      icon={<SearchOutlined />}
+                    >
                       Lihat
                     </Button>
                   </Space>
@@ -202,9 +212,11 @@ const ViewLaporan = () => {
             <Button
               type="primary"
               style={{ width: 200 }}
+              icon={<DownloadOutlined style={{ fontSize: "18px" }} />}
               onClick={() => {
                 router.push("/cetaklaporan");
               }}
+              className={styles.button}
             >
               Cetak Laporan
             </Button>
