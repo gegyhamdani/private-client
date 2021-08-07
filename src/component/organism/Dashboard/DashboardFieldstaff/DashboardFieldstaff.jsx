@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Card, Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
+import { PieChart } from "react-minimal-pie-chart";
 
 import { useSelector } from "react-redux";
 import styles from "./index.module.css";
@@ -144,7 +145,20 @@ const DashboardFieldstaff = () => {
           style={{ width: 250 }}
         >
           <div className={`${styles["card-container"]} ${styles.total}`}>
-            <p>{`${tahapan}%`}</p>
+            <PieChart
+              data={[{ value: `${tahapan}`, color: "#1890FF" }]}
+              totalValue={100}
+              lineWidth={20}
+              label={({ dataEntry }) => `${dataEntry.value}%`}
+              labelStyle={{
+                fontSize: "25px",
+                fill: "#1890FF"
+              }}
+              labelPosition={0}
+              startAngle={90}
+              animate
+              background="#bfbfbf"
+            />
           </div>
         </Card>
       </div>
