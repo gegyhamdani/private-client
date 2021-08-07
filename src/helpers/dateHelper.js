@@ -8,7 +8,7 @@ const convertDate = value => {
       : date.getDate();
   const dateMonth = monthNames[date.getMonth()];
 
-  return `${dateDay} - ${dateMonth} - ${date.getFullYear()}`;
+  return `${dateDay} ${dateMonth} ${date.getFullYear()}`;
 };
 
 export default { convertDate };
