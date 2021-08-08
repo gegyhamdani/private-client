@@ -31,8 +31,7 @@ const DashboardFieldstaff = () => {
           const convertedDateData = dateHelper.convertDate(inputDateData);
           setLastInputDate(convertedDateData);
 
-          const totalInputData = res.length;
-          setTotalInput(totalInputData);
+          setTotalInput(totalData);
 
           const dataKeluhan = res
             .map(val => {
@@ -58,7 +57,14 @@ const DashboardFieldstaff = () => {
           });
           const percentDataTahapan =
             (filterDataTahapan.length / totalData) * 100;
-          setTahapan(percentDataTahapan);
+          const numFormatter = new Intl.NumberFormat("en-US", {
+            style: "decimal",
+            maximumFractionDigits: 1
+          });
+          const parseFormatter = parseFloat(
+            numFormatter.format(percentDataTahapan).replace(/,/g, "")
+          );
+          setTahapan(parseFormatter);
         }
       })
       .finally(() => setLoading(false));
