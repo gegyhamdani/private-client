@@ -165,7 +165,7 @@ const DashboardKantah = () => {
             fontSize: "14px",
             display: "flex"
           }}
-          title="Ranking Kinerja"
+          title="Ranking Kinerja Fieldstaff"
         >
           <div className={`${styles["card-container"]} ${styles.kinerja}`}>
             <table className={styles.table}>
