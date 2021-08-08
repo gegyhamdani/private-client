@@ -272,17 +272,19 @@ const ModalLaporan = ({ id, isModalVisible, onCloseModal }) => {
                   placeholder="Pilih tahapan akses reforma"
                   style={{ width: "220px" }}
                 >
-                  <Select.Option value="pemetaan">
+                  <Select.Option value="pemetaan" disabled>
                     Pemetaan Sosial
                   </Select.Option>
-                  <Select.Option value="penyuluhan">Penyuluhan</Select.Option>
+                  <Select.Option value="penyuluhan" disabled>
+                    Penyuluhan
+                  </Select.Option>
                   <Select.Option value="penyusunan">
                     Penyusunan Model
                   </Select.Option>
-                  <Select.Option value="pendampingan">
+                  <Select.Option value="pendampingan" disabled>
                     Pendampingan
                   </Select.Option>
-                  <Select.Option value="evauasi">
+                  <Select.Option value="evauasi" disabled>
                     Evaluasi dan Pelaporan
                   </Select.Option>
                 </Select>
