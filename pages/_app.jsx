@@ -7,6 +7,7 @@ import withRedux from "../src/component/hoc/withRedux";
 
 import "../styles/globals.css";
 import "antd/dist/antd.css";
+import "jspdf-autotable";
 
 function MyApp({ Component, pageProps }) {
   const Layout = Component.layout || React.Fragment;

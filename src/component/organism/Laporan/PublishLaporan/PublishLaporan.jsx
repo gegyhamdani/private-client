@@ -1,6 +1,8 @@
+/* eslint-disable new-cap */
 import React, { useState, useEffect } from "react";
 import { Button, DatePicker, Table, Spin, notification } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
+import jsPDF from "jspdf";
 
 import { useSelector } from "react-redux";
 import styles from "./index.module.css";
@@ -65,6 +67,42 @@ const PublishLaporan = () => {
     return setFilterData(sortData);
   };
 
+  const handleExport = () => {
+    const unit = "pt";
+    const size = "A4"; // Use A1, A2, A3 or A4
+    const orientation = "portrait"; // portrait or landscape
+
+    const doc = new jsPDF(orientation, unit, size);
+
+    const title = "Timesheet Field Staff";
+    const nameFieldstaff = `Nama: ${data[0].fieldstaff_name}`;
+    const periode = `Periode: ${startDate} -- ${endDate}`;
+    const headers = [["Tanggal Laporan", "Tanggal Input", "Kegiatan"]];
+
+    const bodyData = filterData.map(val => [
+      val.tanggal_laporan,
+      val.tanggal_input,
+      val.kegiatan
+    ]);
+
+    const content = {
+      startY: 110,
+      head: headers,
+      body: bodyData
+    };
+
+    doc.setFontSize(15);
+    doc.text(title, 230, 35);
+    doc.setFontSize(10);
+    doc.setFont(undefined, "bold");
+    doc.text(nameFieldstaff, 40, 80);
+    doc.setFontSize(10);
+    doc.setFont(undefined, "bold");
+    doc.text(periode, 40, 95);
+    doc.autoTable(content);
+    doc.save(`${data[0].fieldstaff_name} - report.pdf`);
+  };
+
   useEffect(() => {
     if (userId) {
       setIsLoading(true);
@@ -94,7 +132,13 @@ const PublishLaporan = () => {
         <Button type="primary" onClick={handleShowData}>
           Tampilkan Data
         </Button>
-        <Button type="primary">Cetak Laporan</Button>
+        <Button
+          type="primary"
+          onClick={handleExport}
+          disabled={filterData.length === 0}
+        >
+          Cetak Laporan
+        </Button>
       </div>
       <div className={styles.table}>
         <Table dataSource={filterData} rowKey="id">
