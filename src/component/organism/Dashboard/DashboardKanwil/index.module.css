@@ -41,19 +41,32 @@
     font-weight: bold;
   }
   
-  .card--data:first-child {
-    margin-left: 0;
-  }
-  
-  .card--data:last-child {
-    margin-right: 0;
-  }
-  
-  .card--data {
-    flex: 1 1 23%;
-    margin: 0 10px;
-  }
-  
+ 
+.card--data:first-child {
+  margin-left: 0;
+}
+
+.card--data:last-child {
+  margin-right: 0;
+}
+
+.card--data--tahapan {
+  flex: 1 1 15%;
+  margin: 0 10px;
+}
+
+.card--data--tahapan:first-child {
+  margin-left: 0;
+}
+
+.card--data--tahapan:last-child {
+  margin-right: 0;
+}
+
+.card--data {
+  flex: 1 1 23%;
+  margin: 0 10px;
+}
   .kinerja {
     height: 250px;
     display: flex;
@@ -68,7 +81,7 @@
   .total {
     font-size: 24px;
     font-weight: bold;
-    min-height: 150px;
+    height: 150px;
     display: flex;
     justify-content: center;
     align-items: center;
