@@ -1,0 +1,93 @@
+.container {
+    margin-top: 2em;
+  }
+  
+  .loading {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10em;
+  }
+  
+  .card {
+    border: 1px solid rgba(205, 205, 205, 0.6);
+    border-radius: 4px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+  }
+  
+  .card-container {
+    padding: 12px;
+  }
+  
+  .bigData {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 1.3em;
+  }
+  
+  .data {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 1.3em;
+  }
+  
+  .lastinput p {
+    margin: 0;
+    text-align: center;
+  }
+  
+  .lastDate {
+    font-weight: bold;
+  }
+  
+  .card--data:first-child {
+    margin-left: 0;
+  }
+  
+  .card--data:last-child {
+    margin-right: 0;
+  }
+  
+  .card--data {
+    flex: 1 1 23%;
+    margin: 0 10px;
+  }
+  
+  .kinerja {
+    height: 250px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .kinerja-wrapper {
+    height: 180px;
+  }
+  
+  .total {
+    font-size: 24px;
+    font-weight: bold;
+    min-height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .total p {
+    text-align: center;
+    margin: 0;
+  }
+  
+  .table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  .td {
+    text-align: left;
+    padding: 8px;
+  }
+  
+  .tr:nth-child(even) {background-color: #f2f2f2;}
+  
