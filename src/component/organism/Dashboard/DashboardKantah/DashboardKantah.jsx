@@ -16,8 +16,8 @@ const antIcon = <LoadingOutlined style={{ fontSize: 72 }} spin />;
 const DashboardKantah = () => {
   const [dataFieldstaff, setDataFieldstaff] = useState([]);
   const [dataLaporan, setDataLaporan] = useState([]);
-  const [keluhan, setKeluhan] = useState([]);
-  const [saran, setSaran] = useState([]);
+  const [keluhan, setKeluhan] = useState(0);
+  const [saran, setSaran] = useState(0);
   const [lastInputDate, setLastInputDate] = useState("");
   const [totalLaporan, setTotalLaporan] = useState(0);
   const [tahapan, setTahapan] = useState(0);
@@ -165,7 +165,7 @@ const DashboardKantah = () => {
             fontSize: "14px",
             display: "flex"
           }}
-          title="Ranking Kinerja Fieldstaff"
+          title="Ranking kinerja fieldstaff"
         >
           <div className={`${styles["card-container"]} ${styles.kinerja}`}>
             <table className={styles.table}>
@@ -264,7 +264,7 @@ const DashboardKantah = () => {
             display: "flex"
           }}
           bodyStyle={{ height: "100%" }}
-          title="Laporan dengan Keluhan"
+          title="Laporan dengan keluhan"
           style={{ width: 250 }}
         >
           <div className={`${styles["card-container"]} ${styles.total}`}>
@@ -281,7 +281,7 @@ const DashboardKantah = () => {
             display: "flex"
           }}
           bodyStyle={{ height: "100%" }}
-          title="Laporan diberikan Saran"
+          title="Laporan diberikan saran"
           style={{ width: 250 }}
         >
           <div className={`${styles["card-container"]} ${styles.total}`}>

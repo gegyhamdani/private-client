@@ -113,7 +113,7 @@ const DashboardFieldstaff = () => {
             display: "flex"
           }}
           bodyStyle={{ height: "100%" }}
-          title="Laporan dengan Keluhan"
+          title="Laporan dengan keluhan"
           style={{ width: 250 }}
         >
           <div className={`${styles["card-container"]} ${styles.total}`}>
@@ -130,7 +130,7 @@ const DashboardFieldstaff = () => {
             display: "flex"
           }}
           bodyStyle={{ height: "100%" }}
-          title="Laporan diberikan Saran"
+          title="Laporan diberikan saran"
           style={{ width: 250 }}
         >
           <div className={`${styles["card-container"]} ${styles.total}`}>
