@@ -72,7 +72,12 @@ const updateFieldstaff = (
   alamat,
   phoneNumber,
   username,
-  password
+  password,
+  pemetaan,
+  penyuluhan,
+  penyusunan,
+  pendampingan,
+  evaluasi
 ) => {
   const { getInstance, routes } = axiosInstance;
   return new Promise((resolve, reject) => {
@@ -82,28 +87,7 @@ const updateFieldstaff = (
         alamat,
         phone_number: phoneNumber,
         username,
-        password
-      })
-      .then(res => {
-        resolve(res.data);
-      })
-      .catch(reject);
-  });
-};
-
-const updateFieldstaffTahapan = (
-  id,
-  pemetaan,
-  penyuluhan,
-  penyusunan,
-  pendampingan,
-  evaluasi
-) => {
-  console.log({ id, pemetaan, penyuluhan, penyusunan, pendampingan, evaluasi });
-  const { getInstance, routes } = axiosInstance;
-  return new Promise((resolve, reject) => {
-    getInstance()
-      .put(routes.fieldstaff(id), {
+        password,
         pemetaan,
         penyuluhan,
         penyusunan,
@@ -135,6 +119,5 @@ export default {
   getFieldstaff,
   getFieldstaffKantah,
   updateFieldstaff,
-  updateFieldstaffTahapan,
   deleteFieldstaff
 };

@@ -20,12 +20,30 @@ const DashboardKantah = () => {
   const [saran, setSaran] = useState(0);
   const [lastInputDate, setLastInputDate] = useState("");
   const [totalLaporan, setTotalLaporan] = useState(0);
-  const [tahapan, setTahapan] = useState(0);
+  const [pemetaan, setPemetaan] = useState(0);
+  const [penyuluhan, setPenyuluhan] = useState(0);
+  const [penyusunan, setPenyusunan] = useState(0);
+  const [pendampingan, setPendampingan] = useState(0);
+  const [evaluasi, setEvaluasi] = useState(0);
   const [ranking, setRanking] = useState([]);
   const [isLoading, setLoading] = useState(false);
 
   const level = useSelector(state => state.auth.level);
   const userId = useSelector(state => state.auth.userId);
+
+  const filterData = data => data.filter(val => val);
+
+  const changeFormatNumber = data => {
+    const numFormatter = new Intl.NumberFormat("en-US", {
+      style: "decimal",
+      maximumFractionDigits: 1
+    });
+    const parseFormatter = parseFloat(
+      numFormatter.format(data).replace(/,/g, "")
+    );
+
+    return parseFormatter;
+  };
 
   useEffect(() => {
     if (level === users.Kantah) {
@@ -78,56 +96,61 @@ const DashboardKantah = () => {
           return e;
         });
 
-      const dataTahapan = dataLaporan.map(val => JSON.parse(val.tahapan));
-      const filterDataTahapan = dataTahapan.filter(val => {
-        return val != null;
-      });
-      const percentDataTahapan =
-        (filterDataTahapan.length / totalDataLaporan) * 100;
-      const numFormatter = new Intl.NumberFormat("en-US", {
-        style: "decimal",
-        maximumFractionDigits: 1
-      });
-      const parseFormatter = parseFloat(
-        numFormatter.format(percentDataTahapan).replace(/,/g, "")
+      const totalDataFieldstaff = dataFieldstaff.length;
+      const fieldstaffPemetaan = dataFieldstaff.map(val => val.pemetaan);
+      const fieldstaffPenyuluhan = dataFieldstaff.map(val => val.penyuluhan);
+      const fieldstaffpenyusunan = dataFieldstaff.map(val => val.penyusunan);
+      const fieldstaffPendampingan = dataFieldstaff.map(
+        val => val.pendampingan
       );
-      setTahapan(parseFormatter);
+      const fieldstaffEvaluasi = dataFieldstaff.map(val => val.evaluasi);
+
+      const filterFieldstaffPemetaan = filterData(fieldstaffPemetaan);
+      const filterFieldstaffPenyuluhan = filterData(fieldstaffPenyuluhan);
+      const filterFieldstaffPenyusunan = filterData(fieldstaffpenyusunan);
+      const filterFieldstaffPendampingan = filterData(fieldstaffPendampingan);
+      const filterFieldstaffEvaluasi = filterData(fieldstaffEvaluasi);
+
+      const percentPemetaan =
+        (filterFieldstaffPemetaan.length / totalDataFieldstaff) * 100;
+      const percentPenyuluhan =
+        (filterFieldstaffPenyuluhan.length / totalDataFieldstaff) * 100;
+      const percentPenyusunan =
+        (filterFieldstaffPenyusunan.length / totalDataFieldstaff) * 100;
+      const percentPendampingan =
+        (filterFieldstaffPendampingan.length / totalDataFieldstaff) * 100;
+      const percentEvalusi =
+        (filterFieldstaffEvaluasi.length / totalDataFieldstaff) * 100;
+
+      setPemetaan(changeFormatNumber(percentPemetaan));
+      setPenyuluhan(changeFormatNumber(percentPenyuluhan));
+      setPenyusunan(changeFormatNumber(percentPenyusunan));
+      setPendampingan(changeFormatNumber(percentPendampingan));
+      setEvaluasi(changeFormatNumber(percentEvalusi));
 
       setKeluhan(dataKeluhan.length);
       setSaran(dataSaran.length);
       setTotalLaporan(totalDataLaporan);
 
-      const merged = dataFieldstaff.map(fieldstaff => {
+      const getKinerjaFieldstaff = dataFieldstaff.map(fieldstaff => {
         return {
           ...fieldstaff,
-          laporan: dataLaporan
-            .map(item => {
-              if (item.id_fieldstaff === fieldstaff.id) {
-                return { ...item };
-              }
-              return [];
-            })
-            .flat()
+          kinerja: changeFormatNumber(
+            (filterData([
+              fieldstaff.pemetaan,
+              fieldstaff.pendampingan,
+              fieldstaff.penyuluhan,
+              fieldstaff.penyusunan,
+              fieldstaff.evaluasi
+            ]).length /
+              5) *
+              100
+          )
         };
       });
 
-      const getTahapanPercent = merged.map(item1 => {
-        const { length } = item1.laporan;
-        const data = item1.laporan.map(val => JSON.parse(val.tahapan));
-        const filter = data.filter(val => {
-          return val != null;
-        });
-        const percent = (filter.length / length) * 100;
-        const num = new Intl.NumberFormat("en-US", {
-          style: "decimal",
-          maximumFractionDigits: 1
-        });
-        const parse = parseFloat(num.format(percent).replace(/,/g, ""));
-        return { ...item1, percentTahapan: Number.isNaN(parse) ? 0 : parse };
-      });
-
-      const sortRanking = getTahapanPercent.sort(
-        (a, b) => parseFloat(b.percentTahapan) - parseFloat(a.percentTahapan)
+      const sortRanking = getKinerjaFieldstaff.sort(
+        (a, b) => parseFloat(b.kinerja) - parseFloat(a.kinerja)
       );
 
       setRanking(sortRanking.slice(0, 5));
@@ -175,7 +198,7 @@ const DashboardKantah = () => {
                     <tr className={styles.tr} key={i.toString()}>
                       <th className={styles.td}>{i + 1}</th>
                       <td className={styles.td}>{val.name}</td>
-                      <td className={styles.td}>{`${val.percentTahapan}%`}</td>
+                      <td className={styles.td}>{`${val.kinerja}%`}</td>
                     </tr>
                   );
                 })}
@@ -193,43 +216,12 @@ const DashboardKantah = () => {
             display: "flex"
           }}
           bodyStyle={{ height: "100%" }}
-          title="Realisasi"
-        >
-          <div className={`${styles["card-container"]} ${styles.kinerja}`}>
-            <div className={styles["kinerja-wrapper"]}>
-              <PieChart
-                data={[{ value: `${tahapan}`, color: "#1890FF" }]}
-                totalValue={100}
-                lineWidth={20}
-                label={({ dataEntry }) => `${dataEntry.value}%`}
-                labelStyle={{
-                  fontSize: "25px",
-                  fill: "#1890FF"
-                }}
-                labelPosition={0}
-                startAngle={90}
-                animate
-                background="#bfbfbf"
-              />
-            </div>
-          </div>
-        </Card>
-      </div>
-      <div className={styles.data}>
-        <Card
-          className={`${styles.card} ${styles["card--data"]}`}
-          headStyle={{
-            backgroundColor: "#001529",
-            color: "#fff",
-            padding: "8px 12px",
-            fontSize: "14px",
-            display: "flex"
-          }}
-          bodyStyle={{ height: "100%" }}
           title="Total fieldstaff"
           style={{ width: 250 }}
         >
-          <div className={`${styles["card-container"]} ${styles.total}`}>
+          <div
+            className={`${styles["card-container"]} ${styles["total--fieldstaff"]}`}
+          >
             <p>
               {`Total: ${
                 dataFieldstaff.length > 0 ? dataFieldstaff.length : 0
@@ -237,6 +229,8 @@ const DashboardKantah = () => {
             </p>
           </div>
         </Card>
+      </div>
+      <div className={styles.data}>
         <Card
           className={`${styles.card} ${styles["card--data"]}`}
           headStyle={{
@@ -286,6 +280,163 @@ const DashboardKantah = () => {
         >
           <div className={`${styles["card-container"]} ${styles.total}`}>
             <p>{`Total: ${saran}`}</p>
+          </div>
+        </Card>
+      </div>
+      <div className={styles.data}>
+        <Card
+          className={`${styles.card} ${styles["card--data--tahapan"]}`}
+          headStyle={{
+            backgroundColor: "#001529",
+            color: "#fff",
+            padding: "8px 12px",
+            fontSize: "14px",
+            display: "flex"
+          }}
+          bodyStyle={{ height: "100%" }}
+          title="Realisasi pemetaan"
+          style={{ width: 250 }}
+        >
+          <div className={`${styles["card-container"]} ${styles.total}`}>
+            <PieChart
+              data={[{ value: `${pemetaan}`, color: "#1890FF" }]}
+              totalValue={100}
+              lineWidth={20}
+              label={({ dataEntry }) => `${dataEntry.value}%`}
+              labelStyle={{
+                fontSize: "25px",
+                fill: "#1890FF"
+              }}
+              labelPosition={0}
+              startAngle={90}
+              animate
+              background="#bfbfbf"
+            />
+          </div>
+        </Card>
+        <Card
+          className={`${styles.card} ${styles["card--data--tahapan"]}`}
+          headStyle={{
+            backgroundColor: "#001529",
+            color: "#fff",
+            padding: "8px 12px",
+            fontSize: "14px",
+            display: "flex"
+          }}
+          bodyStyle={{ height: "100%" }}
+          title="Realisasi penyuluhan"
+          style={{ width: 250 }}
+        >
+          <div className={`${styles["card-container"]} ${styles.total}`}>
+            <PieChart
+              data={[{ value: `${penyuluhan}`, color: "#1890FF" }]}
+              totalValue={100}
+              lineWidth={20}
+              label={({ dataEntry }) => `${dataEntry.value}%`}
+              labelStyle={{
+                fontSize: "25px",
+                fill: "#1890FF"
+              }}
+              labelPosition={0}
+              startAngle={90}
+              animate
+              background="#bfbfbf"
+            />
+          </div>
+        </Card>
+        <Card
+          className={`${styles.card} ${styles["card--data--tahapan"]}`}
+          headStyle={{
+            backgroundColor: "#001529",
+            color: "#fff",
+            padding: "8px 12px",
+            fontSize: "14px",
+            display: "flex"
+          }}
+          bodyStyle={{ height: "100%" }}
+          title="Realisasi penyusunan"
+          style={{ width: 250 }}
+        >
+          <div className={`${styles["card-container"]} ${styles.total}`}>
+            <PieChart
+              data={[{ value: `${penyusunan}`, color: "#1890FF" }]}
+              totalValue={100}
+              lineWidth={20}
+              label={({ dataEntry }) => `${dataEntry.value}%`}
+              labelStyle={{
+                fontSize: "25px",
+                fill: "#1890FF"
+              }}
+              labelPosition={0}
+              startAngle={90}
+              animate
+              background="#bfbfbf"
+            />
+          </div>
+        </Card>
+        <Card
+          className={`${styles.card} ${styles["card--data--tahapan"]}`}
+          headStyle={{
+            backgroundColor: "#001529",
+            color: "#fff",
+            padding: "8px 12px",
+            fontSize: "14px",
+            display: "flex"
+          }}
+          bodyStyle={{ height: "100%" }}
+          title="Realisasi pendampingan"
+          style={{ width: 250 }}
+        >
+          <div className={`${styles["card-container"]} ${styles.total}`}>
+            <PieChart
+              data={[
+                {
+                  value: pendampingan,
+                  color: "#1890FF"
+                }
+              ]}
+              totalValue={100}
+              lineWidth={20}
+              label={({ dataEntry }) => `${dataEntry.value}%`}
+              labelStyle={{
+                fontSize: "25px",
+                fill: "#1890FF"
+              }}
+              labelPosition={0}
+              startAngle={90}
+              animate
+              background="#bfbfbf"
+            />
+          </div>
+        </Card>
+        <Card
+          className={`${styles.card} ${styles["card--data--tahapan"]}`}
+          headStyle={{
+            backgroundColor: "#001529",
+            color: "#fff",
+            padding: "8px 12px",
+            fontSize: "14px",
+            display: "flex"
+          }}
+          bodyStyle={{ height: "100%" }}
+          title="Realisasi evaluasi"
+          style={{ width: 250 }}
+        >
+          <div className={`${styles["card-container"]} ${styles.total}`}>
+            <PieChart
+              data={[{ value: `${evaluasi}`, color: "#1890FF" }]}
+              totalValue={100}
+              lineWidth={20}
+              label={({ dataEntry }) => `${dataEntry.value}%`}
+              labelStyle={{
+                fontSize: "25px",
+                fill: "#1890FF"
+              }}
+              labelPosition={0}
+              startAngle={90}
+              animate
+              background="#bfbfbf"
+            />
           </div>
         </Card>
       </div>

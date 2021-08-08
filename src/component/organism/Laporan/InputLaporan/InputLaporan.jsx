@@ -95,7 +95,7 @@ const InputLaporan = () => {
   };
 
   const checkTahapan = (data, field) => {
-    if (userData[data] === false) {
+    if (userData[data] === null || userData[data] === false) {
       if (field !== undefined) {
         return field.includes(data);
       }
@@ -144,8 +144,13 @@ const InputLaporan = () => {
     return saveLaporan(values)
       .then(() => {
         fieldstaffAPI
-          .updateFieldstaffTahapan(
+          .updateFieldstaff(
             userId,
+            userData.name,
+            userData.alamat,
+            userData.phone_number,
+            userData.username,
+            userData.password,
             pemetaan,
             penyuluhan,
             penyusunan,
