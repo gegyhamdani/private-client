@@ -264,28 +264,30 @@ const ModalLaporan = ({ id, isModalVisible, onCloseModal }) => {
                   </Checkbox>
                 </Form.Item>
               </Form.Item>
-            </div>
 
-            <Form.Item name="tahapan" label="TAHAPAN AKSES REFORMA">
-              <Select
-                mode="multiple"
-                allowClear
-                placeholder="Pilih tahapan akses reforma"
-              >
-                <Select.Option value="prosespemetaan">
-                  Proses Pemetaan
-                </Select.Option>
-                <Select.Option value="selesaipemetaan">
-                  Selesai Pemetaan
-                </Select.Option>
-                <Select.Option value="prosespenyuluhan">
-                  Proses Penyuluhan
-                </Select.Option>
-                <Select.Option value="selesaipenyuluhan">
-                  Selesai Penyuluhan
-                </Select.Option>
-              </Select>
-            </Form.Item>
+              <Form.Item name="tahapan" label="TAHAPAN AKSES REFORMA">
+                <Select
+                  mode="multiple"
+                  allowClear
+                  placeholder="Pilih tahapan akses reforma"
+                  style={{ width: "220px" }}
+                >
+                  <Select.Option value="pemetaan">
+                    Pemetaan Sosial
+                  </Select.Option>
+                  <Select.Option value="penyuluhan">Penyuluhan</Select.Option>
+                  <Select.Option value="penyusunan">
+                    Penyusunan Model
+                  </Select.Option>
+                  <Select.Option value="pendampingan">
+                    Pendampingan
+                  </Select.Option>
+                  <Select.Option value="evauasi">
+                    Evaluasi dan Pelaporan
+                  </Select.Option>
+                </Select>
+              </Form.Item>
+            </div>
 
             <Form.Item
               name="keterangan"

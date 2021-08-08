@@ -192,7 +192,7 @@ const InputLaporan = () => {
               style={{ width: "220px" }}
             >
               <Select.Option value="pemetaan">Pemetaan Sosial</Select.Option>
-              <Select.Option value="Penyuluhan">Penyuluhan</Select.Option>
+              <Select.Option value="penyuluhan">Penyuluhan</Select.Option>
               <Select.Option value="penyusunan">Penyusunan Model</Select.Option>
               <Select.Option value="pendampingan">Pendampingan</Select.Option>
               <Select.Option value="evauasi">
