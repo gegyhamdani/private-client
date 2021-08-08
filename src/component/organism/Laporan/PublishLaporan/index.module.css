@@ -8,6 +8,14 @@
     margin-top: 2em;
 }
 
+.loading {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10em;
+}
+
 .row {
     display: flex;
     flex-direction: row;
@@ -16,7 +24,7 @@
 
 .row > p {
     margin-bottom: 0;
-    margin-right: 4em;
+    margin-right: 1em;
 }
 
 .row__margin {
