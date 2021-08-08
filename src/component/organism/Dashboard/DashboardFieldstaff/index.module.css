@@ -34,6 +34,19 @@
     margin-right: 0;
 }
 
+.card--data--tahapan {
+    flex: 1 1 18%;
+    margin: 0 10px;
+}
+
+.card--data--tahapan:first-child {
+    margin-left: 0;
+}
+
+.card--data--tahapan:last-child {
+    margin-right: 0;
+}
+
 .card--data {
     flex: 1 1 23%;
     margin: 0 10px;

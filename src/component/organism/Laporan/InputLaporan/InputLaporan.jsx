@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import {
@@ -21,6 +21,7 @@ import moment from "moment";
 import Checkbox from "antd/lib/checkbox/Checkbox";
 import styles from "./index.module.css";
 import laporanAPI from "../../../../api/laporanAPI";
+import fieldstaffAPI from "../../../../api/fieldstaffAPI";
 
 const config = {
   rules: [
@@ -32,6 +33,7 @@ const config = {
 };
 
 const InputLaporan = () => {
+  const [userData, setUserData] = useState({});
   const [form] = Form.useForm();
   const router = useRouter();
   const nameUser = useSelector(state => state.auth.name);
@@ -92,6 +94,16 @@ const InputLaporan = () => {
     );
   };
 
+  const checkTahapan = (data, field) => {
+    if (userData[data] === false) {
+      if (field !== undefined) {
+        return field.includes(data);
+      }
+      return false;
+    }
+    return userData[data];
+  };
+
   const onFinish = fields => {
     const koordinasi = { koordinasi: fields.koordinasi || false };
     const kunjungan = { kunjungan: fields.kunjungan || false };
@@ -112,6 +124,12 @@ const InputLaporan = () => {
 
     const convertedTahapan = JSON.stringify(fields.tahapan);
 
+    const pemetaan = checkTahapan("pemetaan", fields.tahapan);
+    const penyuluhan = checkTahapan("penyuluhan", fields.tahapan);
+    const penyusunan = checkTahapan("penyusunan", fields.tahapan);
+    const pendampinganTahapan = checkTahapan("pendampingan", fields.tahapan);
+    const evaluasi = checkTahapan("evaluasi", fields.tahapan);
+
     const values = {
       keluhan: fields.keluhan !== undefined ? fields.keluhan[0].keluhan : "",
       name: fields.name,
@@ -125,10 +143,30 @@ const InputLaporan = () => {
 
     return saveLaporan(values)
       .then(() => {
-        openNotificationSuccess(() => {
-          form.resetFields();
-          router.push("/datalaporan");
-        });
+        fieldstaffAPI
+          .updateFieldstaffTahapan(
+            userId,
+            pemetaan,
+            penyuluhan,
+            penyusunan,
+            pendampinganTahapan,
+            evaluasi
+          )
+          .then(() => {
+            openNotificationSuccess(() => {
+              form.resetFields();
+              router.push("/datalaporan");
+            });
+          })
+          .catch(err => {
+            if (err.response) {
+              if (err.response.status === 401) {
+                openNotificationError("Laporan error");
+              } else {
+                openNotificationError();
+              }
+            }
+          });
       })
       .catch(err => {
         if (err.response) {
@@ -140,6 +178,14 @@ const InputLaporan = () => {
         }
       });
   };
+
+  useEffect(() => {
+    if (userId) {
+      fieldstaffAPI.getFieldstaff(userId).then(res => {
+        setUserData(res);
+      });
+    }
+  }, [userId]);
 
   const dateFormat = "DD - MM - yyyy";
 
@@ -191,11 +237,22 @@ const InputLaporan = () => {
               placeholder="Pilih tahapan akses reforma"
               style={{ width: "220px" }}
             >
-              <Select.Option value="pemetaan">Pemetaan Sosial</Select.Option>
-              <Select.Option value="penyuluhan">Penyuluhan</Select.Option>
-              <Select.Option value="penyusunan">Penyusunan Model</Select.Option>
-              <Select.Option value="pendampingan">Pendampingan</Select.Option>
-              <Select.Option value="evauasi">
+              <Select.Option value="pemetaan" disabled={userData.pemetaan}>
+                Pemetaan Sosial
+              </Select.Option>
+              <Select.Option value="penyuluhan" disabled={userData.penyuluhan}>
+                Penyuluhan
+              </Select.Option>
+              <Select.Option value="penyusunan" disabled={userData.penyusunan}>
+                Penyusunan Model
+              </Select.Option>
+              <Select.Option
+                value="pendampingan"
+                disabled={userData.pendampingan}
+              >
+                Pendampingan
+              </Select.Option>
+              <Select.Option value="evauasi" disabled={userData.evaluasi}>
                 Evaluasi dan Pelaporan
               </Select.Option>
             </Select>

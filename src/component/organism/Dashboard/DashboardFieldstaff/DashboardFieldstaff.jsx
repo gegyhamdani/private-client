@@ -7,66 +7,55 @@ import { useSelector } from "react-redux";
 import styles from "./index.module.css";
 import laporanAPI from "../../../../api/laporanAPI";
 import dateHelper from "../../../../helpers/dateHelper";
+import fieldstaffAPI from "../../../../api/fieldstaffAPI";
 
 const antIcon = <LoadingOutlined style={{ fontSize: 72 }} spin />;
 
 const DashboardFieldstaff = () => {
+  const [dataUser, setDataUser] = useState({});
   const [lastInputDate, setLastInputDate] = useState("");
   const [totalInput, setTotalInput] = useState(0);
   const [keluhan, setKeluhan] = useState(0);
   const [saran, setSaran] = useState(0);
-  const [tahapan, setTahapan] = useState(0);
   const [isLoading, setLoading] = useState(false);
   const userId = useSelector(state => state.auth.userId);
 
   useEffect(() => {
     setLoading(true);
-    laporanAPI
-      .getUserLaporan(userId)
-      .then(res => {
-        if (res.length > 0) {
-          const totalData = res.length;
+    fieldstaffAPI
+      .getFieldstaff(userId)
+      .then(res => setDataUser(res))
+      .then(() =>
+        laporanAPI.getUserLaporan(userId).then(res => {
+          if (res.length > 0) {
+            const totalData = res.length;
 
-          const inputDateData = res[res.length - 1].tanggal_input;
-          const convertedDateData = dateHelper.convertDate(inputDateData);
-          setLastInputDate(convertedDateData);
+            const inputDateData = res[res.length - 1].tanggal_input;
+            const convertedDateData = dateHelper.convertDate(inputDateData);
+            setLastInputDate(convertedDateData);
 
-          setTotalInput(totalData);
+            setTotalInput(totalData);
 
-          const dataKeluhan = res
-            .map(val => {
-              return val.keluhan ? val.keluhan : "";
-            })
-            .filter(e => {
-              return e;
-            });
-          setKeluhan(dataKeluhan.length);
+            const dataKeluhan = res
+              .map(val => {
+                return val.keluhan ? val.keluhan : "";
+              })
+              .filter(e => {
+                return e;
+              });
+            setKeluhan(dataKeluhan.length);
 
-          const dataSaran = res
-            .map(val => {
-              return val.saran ? val.saran : "";
-            })
-            .filter(e => {
-              return e;
-            });
-          setSaran(dataSaran.length);
-
-          const dataTahapan = res.map(val => JSON.parse(val.tahapan));
-          const filterDataTahapan = dataTahapan.filter(val => {
-            return val != null;
-          });
-          const percentDataTahapan =
-            (filterDataTahapan.length / totalData) * 100;
-          const numFormatter = new Intl.NumberFormat("en-US", {
-            style: "decimal",
-            maximumFractionDigits: 1
-          });
-          const parseFormatter = parseFloat(
-            numFormatter.format(percentDataTahapan).replace(/,/g, "")
-          );
-          setTahapan(parseFormatter);
-        }
-      })
+            const dataSaran = res
+              .map(val => {
+                return val.saran ? val.saran : "";
+              })
+              .filter(e => {
+                return e;
+              });
+            setSaran(dataSaran.length);
+          }
+        })
+      )
       .finally(() => setLoading(false));
   }, [userId]);
 
@@ -137,8 +126,10 @@ const DashboardFieldstaff = () => {
             <p>{`Total: ${saran}`}</p>
           </div>
         </Card>
+      </div>
+      <div className={styles.data}>
         <Card
-          className={`${styles.card} ${styles["card--data"]}`}
+          className={`${styles.card} ${styles["card--data--tahapan"]}`}
           headStyle={{
             backgroundColor: "#001529",
             color: "#fff",
@@ -147,12 +138,145 @@ const DashboardFieldstaff = () => {
             display: "flex"
           }}
           bodyStyle={{ height: "100%" }}
-          title="Realisasi"
+          title="Realisasi pemetaan"
           style={{ width: 250 }}
         >
           <div className={`${styles["card-container"]} ${styles.total}`}>
             <PieChart
-              data={[{ value: `${tahapan}`, color: "#1890FF" }]}
+              data={[
+                { value: `${dataUser.pemetaan ? 100 : 0}`, color: "#1890FF" }
+              ]}
+              totalValue={100}
+              lineWidth={20}
+              label={({ dataEntry }) => `${dataEntry.value}%`}
+              labelStyle={{
+                fontSize: "25px",
+                fill: "#1890FF"
+              }}
+              labelPosition={0}
+              startAngle={90}
+              animate
+              background="#bfbfbf"
+            />
+          </div>
+        </Card>
+        <Card
+          className={`${styles.card} ${styles["card--data--tahapan"]}`}
+          headStyle={{
+            backgroundColor: "#001529",
+            color: "#fff",
+            padding: "8px 12px",
+            fontSize: "14px",
+            display: "flex"
+          }}
+          bodyStyle={{ height: "100%" }}
+          title="Realisasi penyuluhan"
+          style={{ width: 250 }}
+        >
+          <div className={`${styles["card-container"]} ${styles.total}`}>
+            <PieChart
+              data={[
+                { value: `${dataUser.penyuluhan ? 100 : 0}`, color: "#1890FF" }
+              ]}
+              totalValue={100}
+              lineWidth={20}
+              label={({ dataEntry }) => `${dataEntry.value}%`}
+              labelStyle={{
+                fontSize: "25px",
+                fill: "#1890FF"
+              }}
+              labelPosition={0}
+              startAngle={90}
+              animate
+              background="#bfbfbf"
+            />
+          </div>
+        </Card>
+        <Card
+          className={`${styles.card} ${styles["card--data--tahapan"]}`}
+          headStyle={{
+            backgroundColor: "#001529",
+            color: "#fff",
+            padding: "8px 12px",
+            fontSize: "14px",
+            display: "flex"
+          }}
+          bodyStyle={{ height: "100%" }}
+          title="Realisasi penyusunan"
+          style={{ width: 250 }}
+        >
+          <div className={`${styles["card-container"]} ${styles.total}`}>
+            <PieChart
+              data={[
+                { value: `${dataUser.penyusunan ? 100 : 0}`, color: "#1890FF" }
+              ]}
+              totalValue={100}
+              lineWidth={20}
+              label={({ dataEntry }) => `${dataEntry.value}%`}
+              labelStyle={{
+                fontSize: "25px",
+                fill: "#1890FF"
+              }}
+              labelPosition={0}
+              startAngle={90}
+              animate
+              background="#bfbfbf"
+            />
+          </div>
+        </Card>
+        <Card
+          className={`${styles.card} ${styles["card--data--tahapan"]}`}
+          headStyle={{
+            backgroundColor: "#001529",
+            color: "#fff",
+            padding: "8px 12px",
+            fontSize: "14px",
+            display: "flex"
+          }}
+          bodyStyle={{ height: "100%" }}
+          title="Realisasi pendampingan"
+          style={{ width: 250 }}
+        >
+          <div className={`${styles["card-container"]} ${styles.total}`}>
+            <PieChart
+              data={[
+                {
+                  value: `${dataUser.pendampingan ? 100 : 0}`,
+                  color: "#1890FF"
+                }
+              ]}
+              totalValue={100}
+              lineWidth={20}
+              label={({ dataEntry }) => `${dataEntry.value}%`}
+              labelStyle={{
+                fontSize: "25px",
+                fill: "#1890FF"
+              }}
+              labelPosition={0}
+              startAngle={90}
+              animate
+              background="#bfbfbf"
+            />
+          </div>
+        </Card>
+        <Card
+          className={`${styles.card} ${styles["card--data--tahapan"]}`}
+          headStyle={{
+            backgroundColor: "#001529",
+            color: "#fff",
+            padding: "8px 12px",
+            fontSize: "14px",
+            display: "flex"
+          }}
+          bodyStyle={{ height: "100%" }}
+          title="Realisasi evaluasi"
+          style={{ width: 250 }}
+        >
+          <div className={`${styles["card-container"]} ${styles.total}`}>
+            <PieChart
+              data={[
+                { value: `${dataUser.evaluasi ? 100 : 0}`, color: "#1890FF" }
+              ]}
               totalValue={100}
               lineWidth={20}
               label={({ dataEntry }) => `${dataEntry.value}%`}

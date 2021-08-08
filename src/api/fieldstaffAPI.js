@@ -91,6 +91,32 @@ const updateFieldstaff = (
   });
 };
 
+const updateFieldstaffTahapan = (
+  id,
+  pemetaan,
+  penyuluhan,
+  penyusunan,
+  pendampingan,
+  evaluasi
+) => {
+  console.log({ id, pemetaan, penyuluhan, penyusunan, pendampingan, evaluasi });
+  const { getInstance, routes } = axiosInstance;
+  return new Promise((resolve, reject) => {
+    getInstance()
+      .put(routes.fieldstaff(id), {
+        pemetaan,
+        penyuluhan,
+        penyusunan,
+        pendampingan,
+        evaluasi
+      })
+      .then(res => {
+        resolve(res.data);
+      })
+      .catch(reject);
+  });
+};
+
 const deleteFieldstaff = id => {
   const { getInstance, routes } = axiosInstance;
   return new Promise((resolve, reject) => {
@@ -109,5 +135,6 @@ export default {
   getFieldstaff,
   getFieldstaffKantah,
   updateFieldstaff,
+  updateFieldstaffTahapan,
   deleteFieldstaff
 };
