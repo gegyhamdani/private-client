@@ -103,7 +103,7 @@ const Login = () => {
 
         <Select
           defaultValue={arrUser[0]}
-          style={{ width: 140 }}
+          style={{ width: 150 }}
           onChange={handleMenuClick}
         >
           {arrUser.map((val, i) => {
