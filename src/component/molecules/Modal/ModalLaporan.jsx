@@ -271,6 +271,7 @@ const ModalLaporan = ({ id, isModalVisible, onCloseModal }) => {
                   allowClear
                   placeholder="Pilih tahapan akses reforma"
                   style={{ width: "220px" }}
+                  disabled
                 >
                   <Select.Option value="pemetaan" disabled>
                     Pemetaan Sosial
@@ -278,7 +279,7 @@ const ModalLaporan = ({ id, isModalVisible, onCloseModal }) => {
                   <Select.Option value="penyuluhan" disabled>
                     Penyuluhan
                   </Select.Option>
-                  <Select.Option value="penyusunan">
+                  <Select.Option value="penyusunan" disabled>
                     Penyusunan Model
                   </Select.Option>
                   <Select.Option value="pendampingan" disabled>
