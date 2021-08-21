@@ -10,7 +10,7 @@
     flex-direction: row;
     justify-content: space-between;
     margin: 1em 0;
-    align-items: center;
+    align-items: flex-end;
 }
 
 .form__item {
@@ -30,4 +30,13 @@
 
 .button span svg {
     margin-top: 3px;
+}
+
+.filter {
+    display: flex;
+    flex-direction: column;
+}
+
+.table-container {
+    margin-top: 1em;
 }

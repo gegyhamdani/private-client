@@ -15,6 +15,7 @@ import { useRouter } from "next/router";
 import styles from "./index.module.css";
 import fieldstaffAPI from "../../../../api/fieldstaffAPI";
 import users from "../../../../constant/user";
+import kantahAPI from "../../../../api/kantahAPI";
 
 const { Search, TextArea } = Input;
 const { Column } = Table;
@@ -101,11 +102,20 @@ const ViewFieldstaff = () => {
     setDataFieldstaff({});
   };
 
-  const handleSearch = val => {
+  const handleSearchFieldstaff = val => {
     if (initData.length === 0) return undefined;
     if (!val) return setData(initData);
     const test = data.filter(obj => {
       return obj.name.toLowerCase().includes(val.toLowerCase());
+    });
+    return setData(test);
+  };
+
+  const handleSearchKantah = val => {
+    if (initData.length === 0) return undefined;
+    if (!val) return setData(initData);
+    const test = data.filter(obj => {
+      return obj.kantahName.toLowerCase().includes(val.toLowerCase());
     });
     return setData(test);
   };
@@ -182,17 +192,16 @@ const ViewFieldstaff = () => {
     setDataFieldstaff(clone);
   };
 
-  const getFieldstaff = () => {
+  const getFieldstaff = async () => {
     setLoading(true);
-    fieldstaffAPI
-      .getFieldstaffKantah(userId)
-      .then(res => {
-        if (res.length === 0) {
-          setLoading(false);
-          setUpdate(false);
-          setData();
-        }
-        const value = res.map(val => {
+    if (userLevel === users.Kantah) {
+      const fieldstaffKantah = await fieldstaffAPI.getFieldstaffKantah(userId);
+      if (fieldstaffKantah.length === 0) {
+        setLoading(false);
+        setUpdate(false);
+        setData();
+      } else {
+        const value = fieldstaffKantah.map(val => {
           const date = new Date(val.date_born);
           const dateDay =
             date.getDate().toString().length < 2
@@ -208,10 +217,48 @@ const ViewFieldstaff = () => {
         });
         const sort = value.sort((a, b) => b.id - a.id);
         setInitData(sort);
-      })
-      .catch(() => {
         setLoading(false);
+      }
+    } else if (userLevel === users.Kanwil) {
+      const kantahData = await kantahAPI.getKantah();
+
+      const dataPromises = kantahData.map(async item => {
+        const fieldstaffKantah = await fieldstaffAPI.getFieldstaffKantah(
+          item.id
+        );
+        return {
+          ...item,
+          fieldstaffKantah
+        };
       });
+
+      const datas = await Promise.all(dataPromises);
+
+      const value = datas.map(fs => {
+        const fsData = fs.fieldstaffKantah.map(val => {
+          const date = new Date(val.date_born);
+          const dateDay =
+            date.getDate().toString().length < 2
+              ? `0${date.getDate()}`
+              : date.getDate();
+          const dateMonth = date.getMonth().toString().length
+            ? `0${date.getMonth() + 1}`
+            : date.getMonth() + 1;
+          return {
+            ...val,
+            kantahName: fs.name,
+            date_born: `${dateDay} - ${dateMonth} - ${date.getFullYear()}`
+          };
+        });
+        return fsData;
+      });
+
+      const mergeValue = value.flat(1);
+      const sort = mergeValue.sort((a, b) => b.id - a.id);
+
+      setInitData(sort);
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -235,68 +282,87 @@ const ViewFieldstaff = () => {
   return (
     <div className={styles.container}>
       <div className={styles.field}>
-        <Search
-          placeholder="Cari nama fieldstaff"
-          allowClear
-          onSearch={handleSearch}
-          style={{ width: 350, marginTop: "1em", marginBottom: "1em" }}
-        />
-        {userLevel === users.Kantah && (
-          <Button
-            type="primary"
-            style={{ width: 200 }}
-            icon={<PlusCircleOutlined style={{ fontSize: "18px" }} />}
-            className={styles.button}
-            onClick={() => {
-              router.push("/inputfieldstaff");
-            }}
-          >
-            Tambah Data Fieldstaff
-          </Button>
-        )}
+        <div className={styles.filter}>
+          {userLevel === users.Kanwil && (
+            <Search
+              placeholder="Cari nama kantah"
+              allowClear
+              onSearch={handleSearchKantah}
+              style={{ width: 350, marginBottom: "1em" }}
+            />
+          )}
+          <Search
+            placeholder="Cari nama fieldstaff"
+            allowClear
+            onSearch={handleSearchFieldstaff}
+            style={{ width: 350 }}
+          />
+        </div>
+
+        <Button
+          type="primary"
+          style={{ width: 200 }}
+          icon={<PlusCircleOutlined style={{ fontSize: "18px" }} />}
+          className={styles.button}
+          onClick={() => {
+            router.push("/inputfieldstaff");
+          }}
+        >
+          Tambah Data Fieldstaff
+        </Button>
       </div>
       {isLoading ? (
         <Spin indicator={antIcon} style={{ marginTop: "5em" }} />
       ) : (
         <>
-          <Table dataSource={data} rowKey="id">
-            <Column
-              title="Nama"
-              dataIndex="name"
-              key="name"
-              sorter={(a, b) => a.name.localeCompare(b.name)}
-            />
-            <Column
-              title="Tanggal Lahir"
-              dataIndex="date_born"
-              key="date_born"
-            />
-            <Column title="Alamat" dataIndex="alamat" key="alamat" />
-            <Column
-              title="Action"
-              key="action"
-              width="200px"
-              render={datas => {
-                return (
-                  <Space>
-                    <Button
-                      onClick={() => handleUpdate(datas)}
-                      icon={<SearchOutlined />}
-                    >
-                      Lihat
-                    </Button>
-                    <Button
-                      danger
-                      onClick={() => handleDelete(datas)}
-                      icon={<DeleteOutlined />}
-                    >
-                      Delete
-                    </Button>
-                  </Space>
-                );
-              }}
-            />
-          </Table>
+          <div className={styles["table-container"]}>
+            <Table dataSource={data} rowKey="id">
+              <Column
+                title="Nama"
+                dataIndex="name"
+                key="name"
+                sorter={(a, b) => a.name.localeCompare(b.name)}
+              />
+              <Column
+                title="Tanggal Lahir"
+                dataIndex="date_born"
+                key="date_born"
+                width="150px"
+              />
+              <Column title="Alamat" dataIndex="alamat" key="alamat" />
+              {userLevel === users.Kanwil && (
+                <Column
+                  title="Nama Kantah"
+                  dataIndex="kantahName"
+                  key="kantahName"
+                />
+              )}
+              <Column
+                title="Action"
+                key="action"
+                width="200px"
+                render={datas => {
+                  return (
+                    <Space>
+                      <Button
+                        onClick={() => handleUpdate(datas)}
+                        icon={<SearchOutlined />}
+                      >
+                        Lihat
+                      </Button>
+                      <Button
+                        danger
+                        onClick={() => handleDelete(datas)}
+                        icon={<DeleteOutlined />}
+                      >
+                        Delete
+                      </Button>
+                    </Space>
+                  );
+                }}
+              />
+            </Table>
+          </div>
           <Modal
             title={`Delete ${dataFieldstaff.name}`}
             visible={isModalDeleteVisible}
@@ -378,7 +444,6 @@ const ViewFieldstaff = () => {
                 value={dataFieldstaff.password}
                 onChange={handleChange}
                 name="password"
-                disabled
               />
             </div>
           </Modal>
