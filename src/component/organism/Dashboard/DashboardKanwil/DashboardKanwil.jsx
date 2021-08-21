@@ -90,6 +90,18 @@ const DashboardKanwil = () => {
     }
   }, [dataFieldstaff]);
 
+  const getTotal = data => {
+    const maxScore = data.length * 100;
+
+    let total = 0;
+    for (let i = 0; i < data.length; i += 1) {
+      total += data[i].kinerja;
+    }
+
+    const totalScore = (total / maxScore) * 100;
+    return changeFormatNumber(totalScore) || 0;
+  };
+
   useEffect(() => {
     if (dataLaporan.length > 0) {
       const totalDataLaporan = dataLaporan.length;
@@ -131,26 +143,43 @@ const DashboardKanwil = () => {
       setPendampingan(changeFormatNumber(percentPendampingan));
       setEvaluasi(changeFormatNumber(percentEvalusi));
 
-      const getKinerjaFieldstaff = dataFieldstaff.map(fieldstaff => {
+      const mergeKantahFS = dataKantah.map(val => {
         return {
-          ...fieldstaff,
-          kinerja: changeFormatNumber(
-            (filterData([
-              fieldstaff.pemetaan,
-              fieldstaff.pendampingan,
-              fieldstaff.penyuluhan,
-              fieldstaff.penyusunan,
-              fieldstaff.evaluasi
-            ]).length /
-              5) *
-              100
-          )
+          ...val,
+          dataFieldstaff: dataFieldstaff.filter(key => key.id_kantah === val.id)
         };
       });
 
-      const sortRanking = getKinerjaFieldstaff.sort(
-        (a, b) => parseFloat(b.kinerja) - parseFloat(a.kinerja)
-      );
+      const manipulateKantahFS = mergeKantahFS.map(val => {
+        return {
+          kantahName: val.name,
+          kinerja: val.dataFieldstaff.map(fieldstaff => {
+            return {
+              fsName: fieldstaff.name,
+              kinerja: changeFormatNumber(
+                (filterData([
+                  fieldstaff.pemetaan,
+                  fieldstaff.pendampingan,
+                  fieldstaff.penyuluhan,
+                  fieldstaff.penyusunan,
+                  fieldstaff.evaluasi
+                ]).length /
+                  5) *
+                  100
+              )
+            };
+          })
+        };
+      });
+
+      const kinerjaData = manipulateKantahFS.map(val => {
+        return {
+          kantahName: val.kantahName,
+          kinerja: getTotal(val.kinerja)
+        };
+      });
+
+      const sortRanking = kinerjaData.sort((a, b) => b.kinerja - a.kinerja);
 
       setRanking(sortRanking.slice(0, 5));
     }
@@ -187,7 +216,7 @@ const DashboardKanwil = () => {
             fontSize: "14px",
             display: "flex"
           }}
-          title="Ranking kinerja fieldstaff"
+          title="Ranking kinerja kantah"
         >
           <div className={`${styles["card-container"]} ${styles.kinerja}`}>
             <table className={styles.table}>
@@ -196,7 +225,7 @@ const DashboardKanwil = () => {
                   return (
                     <tr className={styles.tr} key={i.toString()}>
                       <th className={styles.td}>{i + 1}</th>
-                      <td className={styles.td}>{val.name}</td>
+                      <td className={styles.td}>{val.kantahName}</td>
                       <td className={styles.td}>{`${val.kinerja}%`}</td>
                     </tr>
                   );
