@@ -29,6 +29,7 @@ const DashboardKanwil = () => {
   const [isLoading, setLoading] = useState(false);
 
   const level = useSelector(state => state.auth.level);
+  const userId = useSelector(state => state.auth.userId);
 
   const filterData = data => data.filter(val => val);
 
@@ -44,6 +45,18 @@ const DashboardKanwil = () => {
     return parseFormatter;
   };
 
+  const getTotal = data => {
+    const maxScore = data.length * 100;
+
+    let total = 0;
+    for (let i = 0; i < data.length; i += 1) {
+      total += data[i].kinerja;
+    }
+
+    const totalScore = (total / maxScore) * 100;
+    return changeFormatNumber(totalScore) || 0;
+  };
+
   useEffect(() => {
     if (level === users.Kanwil) {
       setLoading(true);
@@ -56,19 +69,27 @@ const DashboardKanwil = () => {
 
   useEffect(() => {
     if (dataKantah.length > 0) {
-      const promiseArray = [];
+      const getData = async () => {
+        const fieldstaffKanwil = await fieldstaffAPI.getFieldstaffKanwil(
+          userId
+        );
+        const kantahData = await kantahAPI.getKantah();
 
-      dataKantah.map(val => {
-        const apiCall = fieldstaffAPI.getFieldstaffKantah(val.id).then(res => {
-          return res;
+        const dataPromises = kantahData.map(async item => {
+          const fieldstaffKantah = await fieldstaffAPI.getFieldstaffKantah(
+            item.id
+          );
+          return fieldstaffKantah;
         });
-        return promiseArray.push(apiCall);
-      });
 
-      Promise.all(promiseArray).then(data => {
-        setDataFieldstaff(data.flat());
-        if (data.flat().length === 0) setLoading(false);
-      });
+        const datas = await Promise.all(dataPromises);
+        const flattenValue = datas.flat(1);
+        const mergeData = [...flattenValue, ...fieldstaffKanwil];
+        setDataFieldstaff(mergeData);
+        if (mergeData.length === 0) setLoading(false);
+      };
+
+      getData();
     }
   }, [dataKantah]);
 
@@ -89,18 +110,6 @@ const DashboardKanwil = () => {
       });
     }
   }, [dataFieldstaff]);
-
-  const getTotal = data => {
-    const maxScore = data.length * 100;
-
-    let total = 0;
-    for (let i = 0; i < data.length; i += 1) {
-      total += data[i].kinerja;
-    }
-
-    const totalScore = (total / maxScore) * 100;
-    return changeFormatNumber(totalScore) || 0;
-  };
 
   useEffect(() => {
     if (dataLaporan.length > 0) {
