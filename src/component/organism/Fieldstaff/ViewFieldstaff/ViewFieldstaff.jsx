@@ -36,6 +36,7 @@ const ViewFieldstaff = () => {
 
   const userId = useSelector(state => state.auth.userId);
   const userLevel = useSelector(state => state.auth.level);
+  const userName = useSelector(state => state.auth.name);
 
   const openNotificationSuccess = message => {
     notification.success({
@@ -220,6 +221,7 @@ const ViewFieldstaff = () => {
         setLoading(false);
       }
     } else if (userLevel === users.Kanwil) {
+      const fieldstaffKanwil = await fieldstaffAPI.getFieldstaffKanwil(userId);
       const kantahData = await kantahAPI.getKantah();
 
       const dataPromises = kantahData.map(async item => {
@@ -234,7 +236,7 @@ const ViewFieldstaff = () => {
 
       const datas = await Promise.all(dataPromises);
 
-      const value = datas.map(fs => {
+      const updateValue = datas.map(fs => {
         const fsData = fs.fieldstaffKantah.map(val => {
           const date = new Date(val.date_born);
           const dateDay =
@@ -253,8 +255,27 @@ const ViewFieldstaff = () => {
         return fsData;
       });
 
-      const mergeValue = value.flat(1);
-      const sort = mergeValue.sort((a, b) => b.id - a.id);
+      const flattenValue = updateValue.flat(1);
+
+      const updateValueKanwil = fieldstaffKanwil.map(val => {
+        const date = new Date(val.date_born);
+        const dateDay =
+          date.getDate().toString().length < 2
+            ? `0${date.getDate()}`
+            : date.getDate();
+        const dateMonth = date.getMonth().toString().length
+          ? `0${date.getMonth() + 1}`
+          : date.getMonth() + 1;
+        return {
+          ...val,
+          kantahName: userName,
+          date_born: `${dateDay} - ${dateMonth} - ${date.getFullYear()}`
+        };
+      });
+
+      const mergeData = [...flattenValue, ...updateValueKanwil];
+
+      const sort = mergeData.sort((a, b) => b.id - a.id);
 
       setInitData(sort);
       setLoading(false);

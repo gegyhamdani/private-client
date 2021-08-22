@@ -46,12 +46,21 @@ const ModalLaporan = ({ id, isModalVisible, onCloseModal }) => {
   };
 
   const updateLaporan = values => {
-    const { kegiatan, tahapan, keterangan, foto, keluhan, saran } = values;
+    const {
+      kegiatan,
+      tahapan,
+      keterangan,
+      peserta,
+      foto,
+      keluhan,
+      saran
+    } = values;
     return laporanAPI.updateLaporan(
       dataLaporan.id,
       kegiatan,
       tahapan,
       keterangan,
+      peserta,
       foto,
       keluhan,
       saran
@@ -86,6 +95,7 @@ const ModalLaporan = ({ id, isModalVisible, onCloseModal }) => {
       kegiatan: convertedKegiatan,
       tahapan: convertedTahapan,
       keterangan: fields.keterangan,
+      peserta: fields.peserta,
       foto: fields.upload,
       saran: fields.saran
     };
@@ -240,27 +250,47 @@ const ModalLaporan = ({ id, isModalVisible, onCloseModal }) => {
             <div className={styles["form__checkbox--group"]}>
               <Form.Item label="KEGIATAN">
                 <Form.Item name="koordinasi" valuePropName="checked">
-                  <Checkbox disabled={userLevel === users.Kantah}>
+                  <Checkbox
+                    disabled={
+                      userLevel === users.Kantah || userLevel === users.Kanwil
+                    }
+                  >
                     Koordinasi dengan kantah
                   </Checkbox>
                 </Form.Item>
                 <Form.Item name="pendampingan" valuePropName="checked">
-                  <Checkbox disabled={userLevel === users.Kantah}>
+                  <Checkbox
+                    disabled={
+                      userLevel === users.Kantah || userLevel === users.Kanwil
+                    }
+                  >
                     Melakukan Pendampingan
                   </Checkbox>
                 </Form.Item>
                 <Form.Item name="meeting" valuePropName="checked">
-                  <Checkbox disabled={userLevel === users.Kantah}>
+                  <Checkbox
+                    disabled={
+                      userLevel === users.Kantah || userLevel === users.Kanwil
+                    }
+                  >
                     Rapat/Meeting
                   </Checkbox>
                 </Form.Item>
                 <Form.Item name="kunjungan" valuePropName="checked">
-                  <Checkbox disabled={userLevel === users.Kantah}>
+                  <Checkbox
+                    disabled={
+                      userLevel === users.Kantah || userLevel === users.Kanwil
+                    }
+                  >
                     Melakukan Kunjungan
                   </Checkbox>
                 </Form.Item>
                 <Form.Item name="lainnya" valuePropName="checked">
-                  <Checkbox disabled={userLevel === users.Kantah}>
+                  <Checkbox
+                    disabled={
+                      userLevel === users.Kantah || userLevel === users.Kanwil
+                    }
+                  >
                     Lainnya
                   </Checkbox>
                 </Form.Item>
@@ -304,11 +334,19 @@ const ModalLaporan = ({ id, isModalVisible, onCloseModal }) => {
                 }
               ]}
             >
-              <Input.TextArea disabled={userLevel === users.Kantah} />
+              <Input.TextArea
+                disabled={
+                  userLevel === users.Kantah || userLevel === users.Kanwil
+                }
+              />
             </Form.Item>
 
             <Form.Item name="peserta" label="PESERTA" labelAlign="left">
-              <Input.TextArea disabled={userLevel === users.Kantah} />
+              <Input.TextArea
+                disabled={
+                  userLevel === users.Kantah || userLevel === users.Kanwil
+                }
+              />
             </Form.Item>
 
             <Form.Item
@@ -317,7 +355,11 @@ const ModalLaporan = ({ id, isModalVisible, onCloseModal }) => {
               label="KELUHAN"
               labelAlign="left"
             >
-              <Input.TextArea disabled={userLevel === users.Kantah} />
+              <Input.TextArea
+                disabled={
+                  userLevel === users.Kantah || userLevel === users.Kanwil
+                }
+              />
             </Form.Item>
 
             <Form.Item
@@ -326,7 +368,7 @@ const ModalLaporan = ({ id, isModalVisible, onCloseModal }) => {
               label="SARAN"
               labelAlign="left"
             >
-              <Input.TextArea disabled={userLevel !== users.Kantah} />
+              <Input.TextArea disabled={userLevel === users.Fieldstaff} />
             </Form.Item>
 
             <Form.Item>

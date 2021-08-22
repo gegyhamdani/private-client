@@ -86,6 +86,7 @@ const ViewLaporan = () => {
   };
 
   const getKanwilKantahFieldstaffLaporan = async () => {
+    const fieldstaffKanwil = await fieldstaffAPI.getFieldstaffKanwil(userId);
     const kantahData = await kantahAPI.getKantah();
 
     const kantahFieldstaffPromise = kantahData.map(async item => {
@@ -94,8 +95,9 @@ const ViewLaporan = () => {
     });
     const kantahFieldstaffData = await Promise.all(kantahFieldstaffPromise);
     const fieldstaffData = kantahFieldstaffData.flat(1);
+    const mergeData = [...fieldstaffData, ...fieldstaffKanwil];
 
-    const dataPromises = fieldstaffData.map(async item => {
+    const dataPromises = mergeData.map(async item => {
       const fieldstaffKantah = await laporanAPI.getUserLaporan(item.id);
       return fieldstaffKantah;
     });

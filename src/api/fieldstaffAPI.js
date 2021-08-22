@@ -8,7 +8,8 @@ const saveFieldstaff = (
   username,
   password,
   level,
-  idKantah
+  idKantah,
+  idKanwil
 ) => {
   const { getInstance, routes } = axiosInstance;
   return new Promise((resolve, reject) => {
@@ -21,7 +22,8 @@ const saveFieldstaff = (
         username,
         password,
         level,
-        id_kantah: idKantah
+        id_kantah: idKantah,
+        id_kanwil: idKanwil
       })
       .then(() => {
         resolve();
@@ -59,6 +61,18 @@ const getFieldstaffKantah = id => {
   return new Promise((resolve, reject) => {
     getInstance()
       .get(routes.fieldstaffKantah(id))
+      .then(res => {
+        resolve(res.data);
+      })
+      .catch(reject);
+  });
+};
+
+const getFieldstaffKanwil = id => {
+  const { getInstance, routes } = axiosInstance;
+  return new Promise((resolve, reject) => {
+    getInstance()
+      .get(routes.fieldstaffKanwil(id))
       .then(res => {
         resolve(res.data);
       })
@@ -118,6 +132,7 @@ export default {
   getAllFieldstaff,
   getFieldstaff,
   getFieldstaffKantah,
+  getFieldstaffKanwil,
   updateFieldstaff,
   deleteFieldstaff
 };

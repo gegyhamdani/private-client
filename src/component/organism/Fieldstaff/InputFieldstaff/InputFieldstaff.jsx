@@ -24,6 +24,7 @@ const InputFieldStaff = () => {
   const [form] = Form.useForm();
   const router = useRouter();
   const userId = useSelector(state => state.auth.userId);
+  const userLevel = useSelector(state => state.auth.level);
 
   const openNotificationSuccess = onSuccess => {
     notification.success({
@@ -44,16 +45,33 @@ const InputFieldStaff = () => {
 
   const saveFieldstaff = values => {
     const { name, date, alamat, phone, username, password } = values;
-    return fieldstaffAPI.saveFieldstaff(
-      name,
-      date,
-      alamat,
-      phone,
-      username,
-      password,
-      users.Fieldstaff,
-      userId
-    );
+    if (userLevel === users.Kantah) {
+      return fieldstaffAPI.saveFieldstaff(
+        name,
+        date,
+        alamat,
+        phone,
+        username,
+        password,
+        users.Fieldstaff,
+        userId,
+        0
+      );
+    }
+    if (userLevel === users.Kanwil) {
+      return fieldstaffAPI.saveFieldstaff(
+        name,
+        date,
+        alamat,
+        phone,
+        username,
+        password,
+        users.Fieldstaff,
+        0,
+        userId
+      );
+    }
+    return null;
   };
 
   const onFinish = field => {

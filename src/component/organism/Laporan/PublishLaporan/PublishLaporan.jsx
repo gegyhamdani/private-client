@@ -70,19 +70,29 @@ const PublishLaporan = () => {
   const handleExport = () => {
     const unit = "pt";
     const size = "A4"; // Use A1, A2, A3 or A4
-    const orientation = "portrait"; // portrait or landscape
+    const orientation = "landscape"; // portrait or landscape
 
     const doc = new jsPDF(orientation, unit, size);
 
     const title = "Timesheet Field Staff";
     const nameFieldstaff = `Nama: ${data[0].fieldstaff_name}`;
     const periode = `Periode: ${startDate} -- ${endDate}`;
-    const headers = [["Tanggal Laporan", "Tanggal Input", "Kegiatan"]];
+    const headers = [
+      [
+        "Tanggal Laporan",
+        "Tanggal Input",
+        "Kegiatan",
+        "Deskripsi Kegiatan",
+        "Peserta"
+      ]
+    ];
 
     const bodyData = filterData.map(val => [
       val.tanggal_laporan,
       val.tanggal_input,
-      val.kegiatan
+      val.kegiatan,
+      val.keterangan,
+      val.peserta
     ]);
 
     const content = {
@@ -92,7 +102,7 @@ const PublishLaporan = () => {
     };
 
     doc.setFontSize(15);
-    doc.text(title, 230, 35);
+    doc.text(title, 350, 35);
     doc.setFontSize(10);
     doc.setFont(undefined, "bold");
     doc.text(nameFieldstaff, 40, 80);

@@ -41,6 +41,7 @@ const updateLaporan = (
   kegiatan,
   tahapan,
   keterangan,
+  peserta,
   foto,
   keluhan,
   saran = ""
@@ -52,6 +53,7 @@ const updateLaporan = (
         kegiatan,
         tahapan,
         keterangan,
+        peserta,
         foto,
         keluhan,
         saran
