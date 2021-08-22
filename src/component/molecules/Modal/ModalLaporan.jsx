@@ -213,6 +213,7 @@ const ModalLaporan = ({ id, isModalVisible, onCloseModal }) => {
               date: getDate(),
               inputDate: getDateInput(),
               keterangan: dataLaporan.keterangan,
+              peserta: dataLaporan.peserta,
               keluhan: dataLaporan.keluhan,
               koordinasi: getKoordinasi(),
               pendampingan: getPendampingan(),
@@ -303,6 +304,10 @@ const ModalLaporan = ({ id, isModalVisible, onCloseModal }) => {
                 }
               ]}
             >
+              <Input.TextArea disabled={userLevel === users.Kantah} />
+            </Form.Item>
+
+            <Form.Item name="peserta" label="PESERTA" labelAlign="left">
               <Input.TextArea disabled={userLevel === users.Kantah} />
             </Form.Item>
 

@@ -77,6 +77,7 @@ const InputLaporan = () => {
       kegiatan,
       tahapan,
       keterangan,
+      peserta,
       foto,
       keluhan
     } = values;
@@ -87,6 +88,7 @@ const InputLaporan = () => {
       kegiatan,
       tahapan,
       keterangan,
+      peserta,
       foto,
       keluhan,
       "",
@@ -138,6 +140,7 @@ const InputLaporan = () => {
       kegiatan: convertedKegiatan,
       tahapan: convertedTahapan,
       keterangan: fields.keterangan,
+      peserta: fields.peserta,
       foto: fields.upload
     };
 
@@ -276,6 +279,10 @@ const InputLaporan = () => {
           ]}
         >
           <Input.TextArea />
+        </Form.Item>
+
+        <Form.Item name="peserta" label="PESERTA" labelAlign="left">
+          <Input />
         </Form.Item>
 
         <Form.Item

@@ -16,6 +16,7 @@ import fieldstaffAPI from "../../../../api/fieldstaffAPI";
 import users from "../../../../constant/user";
 import ModalLaporan from "../../../molecules/Modal";
 import dateHelper from "../../../../helpers/dateHelper";
+import kantahAPI from "../../../../api/kantahAPI";
 
 const { Search } = Input;
 const { Column } = Table;
@@ -24,8 +25,6 @@ const ViewLaporan = () => {
   const [initData, setInitData] = useState([]);
   const [data, setData] = useState([]);
   const [isLoading, setLoading] = useState(false);
-  const [uId, setUId] = useState("");
-  const [userFieldstaff, setUserFieldstaff] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [laporanId, setLaporanId] = useState(0);
   const router = useRouter();
@@ -86,34 +85,98 @@ const ViewLaporan = () => {
     });
   };
 
-  useEffect(() => {
-    if (uId) {
-      getLaporanData(uId).then(res => {
-        if (res.length === 0) setLoading(false);
-        setInitData(res);
-      });
-    }
-  }, [uId]);
+  const getKanwilKantahFieldstaffLaporan = async () => {
+    const kantahData = await kantahAPI.getKantah();
 
-  useEffect(() => {
-    if (userFieldstaff.length > 0) {
-      userFieldstaff.map(val => {
-        return getLaporanData(val.id).then(res => {
-          if (res.length === 0) setLoading(false);
-          setInitData(state => [...state, res]);
-        });
+    const kantahFieldstaffPromise = kantahData.map(async item => {
+      const fieldstaff = await fieldstaffAPI.getFieldstaffKantah(item.id);
+      return fieldstaff;
+    });
+    const kantahFieldstaffData = await Promise.all(kantahFieldstaffPromise);
+    const fieldstaffData = kantahFieldstaffData.flat(1);
+
+    const dataPromises = fieldstaffData.map(async item => {
+      const fieldstaffKantah = await laporanAPI.getUserLaporan(item.id);
+      return fieldstaffKantah;
+    });
+    const datas = await Promise.all(dataPromises);
+    const flattenData = datas.flat(1);
+
+    if (flattenData.length === 0) {
+      setLoading(false);
+    } else {
+      const convertData = flattenData.map(val => {
+        const arrKegiatan = JSON.parse(val.kegiatan);
+        const kegiatan = arrKegiatan
+          .map(item => {
+            return getKeyByValue(item, true);
+          })
+          .filter(item => item);
+
+        return {
+          ...val,
+          tanggal_laporan: dateHelper.convertDate(val.tanggal_laporan),
+          tanggal_input: dateHelper.convertDate(val.tanggal_input),
+          kegiatan: kegiatan.join(", ")
+        };
       });
+
+      const sortData = convertData.sort((a, b) => b.id - a.id);
+
+      setInitData(sortData);
     }
-  }, [userFieldstaff]);
+  };
+
+  const getKantahFieldstaffLaporan = async () => {
+    const fieldstaff = await fieldstaffAPI.getFieldstaffKantah(userId);
+    if (fieldstaff.length === 0) {
+      setLoading(false);
+    } else {
+      const dataPromises = fieldstaff.map(async item => {
+        const fieldstaffKantah = await laporanAPI.getUserLaporan(item.id);
+        return fieldstaffKantah;
+      });
+      const datas = await Promise.all(dataPromises);
+      const flattenData = datas.flat(1);
+
+      if (flattenData.length === 0) {
+        setLoading(false);
+      } else {
+        const convertData = flattenData.map(val => {
+          const arrKegiatan = JSON.parse(val.kegiatan);
+          const kegiatan = arrKegiatan
+            .map(item => {
+              return getKeyByValue(item, true);
+            })
+            .filter(item => item);
+
+          return {
+            ...val,
+            tanggal_laporan: dateHelper.convertDate(val.tanggal_laporan),
+            tanggal_input: dateHelper.convertDate(val.tanggal_input),
+            kegiatan: kegiatan.join(", ")
+          };
+        });
+
+        const sortData = convertData.sort((a, b) => b.id - a.id);
+
+        setInitData(sortData);
+      }
+    }
+  };
+
+  const getFieldstaffLaporan = () => {
+    getLaporanData(userId).then(res => {
+      if (res.length === 0) setLoading(false);
+      setInitData(res);
+    });
+  };
 
   useEffect(() => {
     setLoading(true);
-    if (userLevel === users.Kantah) {
-      return fieldstaffAPI.getFieldstaffKantah(userId).then(res => {
-        return setUserFieldstaff(res);
-      });
-    }
-    return setUId(userId);
+    if (userLevel === users.Kantah) return getKantahFieldstaffLaporan();
+    if (userLevel === users.Kanwil) return getKanwilKantahFieldstaffLaporan();
+    return getFieldstaffLaporan();
   }, [userLevel, userId]);
 
   useEffect(() => {
