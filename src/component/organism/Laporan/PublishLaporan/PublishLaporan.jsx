@@ -163,6 +163,12 @@ const PublishLaporan = () => {
             key="tanggal_input"
           />
           <Column title="Kegiatan" dataIndex="kegiatan" key="kegiatan" />
+          <Column
+            title="Deskripsi Kegiatan"
+            dataIndex="keterangan"
+            key="keterangan"
+          />
+          <Column title="Peserta" dataIndex="peserta" key="peserta" />
         </Table>
       </div>
     </div>
