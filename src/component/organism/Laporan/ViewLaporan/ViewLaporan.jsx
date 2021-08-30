@@ -1,15 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { Table, Input, Spin, Space, Tag, Button } from "antd";
+import { Table, Input, Spin, Space, Tag, Button, notification } from "antd";
 import {
   LoadingOutlined,
   PlusCircleOutlined,
   DownloadOutlined,
-  SearchOutlined
+  SearchOutlined,
+  DeleteOutlined
 } from "@ant-design/icons";
 import { useRouter } from "next/router";
 
+import Modal from "antd/lib/modal/Modal";
 import styles from "./index.module.css";
 import laporanAPI from "../../../../api/laporanAPI";
 import fieldstaffAPI from "../../../../api/fieldstaffAPI";
@@ -21,18 +23,29 @@ import kantahAPI from "../../../../api/kantahAPI";
 const { Search } = Input;
 const { Column } = Table;
 
+const antIcon = <LoadingOutlined style={{ fontSize: 72 }} spin />;
+
 const ViewLaporan = () => {
   const [initData, setInitData] = useState([]);
   const [data, setData] = useState([]);
   const [isLoading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isModalDeleteVisible, setIsModalDeleteVisible] = useState(false);
+  const [confirmLoadingDelete, setConfirmLoadingDelete] = useState(false);
   const [laporanId, setLaporanId] = useState(0);
+  const [isUpdate, setUpdate] = useState(false);
+  const [emptyData, setEmptyData] = useState(false);
   const router = useRouter();
 
   const userId = useSelector(state => state.auth.userId);
   const userLevel = useSelector(state => state.auth.level);
 
-  const antIcon = <LoadingOutlined style={{ fontSize: 72 }} spin />;
+  const openNotificationSuccess = message => {
+    notification.success({
+      message,
+      duration: 2
+    });
+  };
 
   const handleOpenModal = id => {
     setIsModalVisible(true);
@@ -51,6 +64,28 @@ const ViewLaporan = () => {
       return obj.fieldstaff_name.toLowerCase().includes(val.toLowerCase());
     });
     return setData(getSearch);
+  };
+
+  const handleDelete = val => {
+    setIsModalDeleteVisible(true);
+    setLaporanId(val);
+  };
+
+  const handleOkModalDelete = () => {
+    setConfirmLoadingDelete(true);
+    laporanAPI
+      .deleteLaporan(laporanId)
+      .then(() => {
+        openNotificationSuccess("Data berhasil di hapus");
+        setUpdate(true);
+        setConfirmLoadingDelete(false);
+      })
+      .finally(() => setIsModalDeleteVisible(false));
+  };
+
+  const handleCancelModalDelete = () => {
+    setIsModalDeleteVisible(false);
+    setLaporanId(0);
   };
 
   const getKeyByValue = (object, value) => {
@@ -126,6 +161,7 @@ const ViewLaporan = () => {
       const sortData = convertData.sort((a, b) => b.id - a.id);
 
       setInitData(sortData);
+      setEmptyData(sortData.length === 0);
     }
   };
 
@@ -163,6 +199,7 @@ const ViewLaporan = () => {
         const sortData = convertData.sort((a, b) => b.id - a.id);
 
         setInitData(sortData);
+        setEmptyData(sortData.length === 0);
       }
     }
   };
@@ -171,23 +208,41 @@ const ViewLaporan = () => {
     getLaporanData(userId).then(res => {
       if (res.length === 0) setLoading(false);
       setInitData(res);
+      setEmptyData(res.length === 0);
     });
   };
 
-  useEffect(() => {
+  const getLaporan = () => {
     setLoading(true);
     if (userLevel === users.Kantah) return getKantahFieldstaffLaporan();
     if (userLevel === users.Kanwil) return getKanwilKantahFieldstaffLaporan();
     return getFieldstaffLaporan();
+  };
+
+  useEffect(() => {
+    getLaporan();
   }, [userLevel, userId]);
+
+  useEffect(() => {
+    if (isUpdate) {
+      getLaporan();
+    }
+  }, [isUpdate]);
 
   useEffect(() => {
     if (initData.length > 0) {
       const flattenData = initData.flat();
       setData(flattenData);
       setLoading(false);
+      setUpdate(false);
     }
-  }, [initData]);
+    if (emptyData) {
+      setData([]);
+      setLoading(false);
+      setUpdate(false);
+      setEmptyData(false);
+    }
+  }, [initData, emptyData]);
 
   return (
     <>
@@ -196,6 +251,15 @@ const ViewLaporan = () => {
         onCloseModal={handleCloseModal}
         id={laporanId}
       />
+      <Modal
+        title="Delete laporan"
+        visible={isModalDeleteVisible}
+        onOk={handleOkModalDelete}
+        onCancel={handleCancelModalDelete}
+        confirmLoading={confirmLoadingDelete}
+      >
+        <p>Apakah anda yakin akan menghapus data laporan?</p>
+      </Modal>
       <div className={styles.container}>
         <div className={styles.field}>
           <Search
@@ -257,6 +321,7 @@ const ViewLaporan = () => {
             <Column
               title="Action"
               key="action"
+              width="150px"
               render={(text, record) => {
                 return (
                   <Space size="middle">
@@ -265,6 +330,13 @@ const ViewLaporan = () => {
                       icon={<SearchOutlined />}
                     >
                       Lihat
+                    </Button>
+                    <Button
+                      danger
+                      onClick={() => handleDelete(record.id)}
+                      icon={<DeleteOutlined />}
+                    >
+                      Delete
                     </Button>
                   </Space>
                 );

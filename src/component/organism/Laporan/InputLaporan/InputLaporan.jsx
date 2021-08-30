@@ -22,6 +22,7 @@ import Checkbox from "antd/lib/checkbox/Checkbox";
 import styles from "./index.module.css";
 import laporanAPI from "../../../../api/laporanAPI";
 import fieldstaffAPI from "../../../../api/fieldstaffAPI";
+import axiosInstance from "../../../../api/axiosInstance";
 
 const config = {
   rules: [
@@ -32,8 +33,12 @@ const config = {
   ]
 };
 
+const dateFormat = "DD - MM - yyyy";
+
 const InputLaporan = () => {
   const [userData, setUserData] = useState({});
+  const [isLoading, setLoading] = useState(false);
+  const [imageId, setImageId] = useState([]);
   const [form] = Form.useForm();
   const router = useRouter();
   const nameUser = useSelector(state => state.auth.name);
@@ -67,6 +72,37 @@ const InputLaporan = () => {
       message: `Pilih minimal 1 ${errMsg}`,
       duration: 2
     });
+    setLoading(false);
+  };
+
+  const openNotifUploadError = () => {
+    notification.error({
+      message: `Gagal upload foto`,
+      duration: 2
+    });
+  };
+
+  const uploadProps = {
+    name: "image",
+    action: `${axiosInstance.apiUrl}/${axiosInstance.routes.image()}`,
+    listType: "picture",
+    accept: "image/png, image/jpeg, image/jpg",
+    onChange(info) {
+      if (info.file.status === "uploading") {
+        setLoading(true);
+      }
+      if (info.file.status === "done") {
+        const { id } = info.file.response;
+        setLoading(false);
+        setImageId(prevArray => [...prevArray, id]);
+      } else if (info.file.status === "error") {
+        setLoading(false);
+        openNotifUploadError();
+      } else if (info.file.status === "removed") {
+        const { id } = info.file.response;
+        setImageId(prevArray => prevArray.filter(item => item !== id));
+      }
+    }
   };
 
   const saveLaporan = values => {
@@ -107,6 +143,7 @@ const InputLaporan = () => {
   };
 
   const onFinish = fields => {
+    setLoading(true);
     const koordinasi = { koordinasi: fields.koordinasi || false };
     const kunjungan = { kunjungan: fields.kunjungan || false };
     const meeting = { meeting: fields.meeting || false };
@@ -141,7 +178,7 @@ const InputLaporan = () => {
       tahapan: convertedTahapan,
       keterangan: fields.keterangan,
       peserta: fields.peserta,
-      foto: fields.upload
+      foto: JSON.stringify(imageId)
     };
 
     return saveLaporan(values)
@@ -174,7 +211,8 @@ const InputLaporan = () => {
                 openNotificationError();
               }
             }
-          });
+          })
+          .finally(() => setLoading(false));
       })
       .catch(err => {
         if (err.response) {
@@ -194,8 +232,6 @@ const InputLaporan = () => {
       });
     }
   }, [userId]);
-
-  const dateFormat = "DD - MM - yyyy";
 
   return (
     <div className={styles.container}>
@@ -291,7 +327,7 @@ const InputLaporan = () => {
           valuePropName="fileList"
           getValueFromEvent={normFile}
         >
-          <Upload name="logo" action="/upload.do" listType="picture">
+          <Upload {...uploadProps}>
             <Button icon={<UploadOutlined />}>Click to upload</Button>
           </Upload>
         </Form.Item>
@@ -333,7 +369,7 @@ const InputLaporan = () => {
         </Form.List>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit" loading={isLoading}>
             SIMPAN
           </Button>
         </Form.Item>

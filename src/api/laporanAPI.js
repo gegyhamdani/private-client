@@ -89,4 +89,22 @@ const getUserLaporan = userId => {
   });
 };
 
-export default { saveLaporan, updateLaporan, getLaporan, getUserLaporan };
+const deleteLaporan = id => {
+  const { getInstance, routes } = axiosInstance;
+  return new Promise((resolve, reject) => {
+    getInstance()
+      .delete(routes.laporan(id))
+      .then(res => {
+        resolve(res.data);
+      })
+      .catch(reject);
+  });
+};
+
+export default {
+  saveLaporan,
+  updateLaporan,
+  getLaporan,
+  getUserLaporan,
+  deleteLaporan
+};

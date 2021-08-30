@@ -3,23 +3,30 @@ import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import isEmpty from "lodash/isEmpty";
 import find from "lodash/find";
-import { Modal, Button, Form, Input, notification, Select } from "antd";
+import { Modal, Button, Form, Input, notification, Select, Spin } from "antd";
 import Checkbox from "antd/lib/checkbox/Checkbox";
 import { useRouter } from "next/router";
+import { LoadingOutlined } from "@ant-design/icons";
 
 import laporanAPI from "../../../api/laporanAPI";
 import users from "../../../constant/user";
 
 import styles from "./index.module.css";
 import dateHelper from "../../../helpers/dateHelper";
+import imageAPI from "../../../api/imageAPI";
+
+const antIcon = <LoadingOutlined style={{ fontSize: 72 }} spin />;
 
 const ModalLaporan = ({ id, isModalVisible, onCloseModal }) => {
   const [dataLaporan, setDataLaporan] = useState({});
+  const [image, setImage] = useState([]);
+  const [loadingImage, setLoadingImage] = useState(false);
   const userLevel = useSelector(state => state.auth.level);
   const router = useRouter();
 
   const handleCancel = () => {
     setDataLaporan({});
+    setImage([]);
     onCloseModal();
   };
 
@@ -117,11 +124,34 @@ const ModalLaporan = ({ id, isModalVisible, onCloseModal }) => {
       });
   };
 
+  const getPhoto = async photo => {
+    const dataPhoto = photo.map(async item => {
+      const apiResult = await imageAPI.getImage(item);
+      // eslint-disable-next-line new-cap
+      return new Buffer.from(apiResult.img.data).toString("base64");
+    });
+    const photoResult = await Promise.all(dataPhoto);
+    setImage(photoResult);
+    setLoadingImage(false);
+  };
+
   useEffect(() => {
     if (id) {
       laporanAPI.getLaporan(id).then(res => setDataLaporan(res));
     }
   }, [id]);
+
+  useEffect(() => {
+    if (!isEmpty(dataLaporan)) {
+      setLoadingImage(true);
+      if (dataLaporan.foto !== undefined) {
+        const parse = JSON.parse(dataLaporan.foto);
+        getPhoto(parse);
+      } else if (dataLaporan.foto !== undefined) {
+        setLoadingImage(false);
+      }
+    }
+  }, [dataLaporan]);
 
   const getDate = () => {
     if (!isEmpty(dataLaporan)) {
@@ -205,6 +235,26 @@ const ModalLaporan = ({ id, isModalVisible, onCloseModal }) => {
     return 0;
   };
 
+  const getImage = () => {
+    if (loadingImage) {
+      return <Spin indicator={antIcon} />;
+    }
+    if (!loadingImage) {
+      if (image.length > 0) {
+        return image.map((val, i) => (
+          <img
+            src={`data:image/png;base64,${val}`}
+            alt=""
+            key={i.toString()}
+            className={styles.img}
+          />
+        ));
+      }
+      return <p className={styles.info}>Tidak ada foto yang di upload</p>;
+    }
+    return <></>;
+  };
+
   return (
     <>
       <Modal
@@ -215,168 +265,183 @@ const ModalLaporan = ({ id, isModalVisible, onCloseModal }) => {
         footer={null}
       >
         {!isEmpty(dataLaporan) && (
-          <Form
-            name="edit-laporan"
-            layout="vertical"
-            initialValues={{
-              name: dataLaporan.fieldstaff_name,
-              date: getDate(),
-              inputDate: getDateInput(),
-              keterangan: dataLaporan.keterangan,
-              peserta: dataLaporan.peserta,
-              keluhan: dataLaporan.keluhan,
-              koordinasi: getKoordinasi(),
-              pendampingan: getPendampingan(),
-              meeting: getMeeting(),
-              kunjungan: getKunjungan(),
-              lainnya: getLainnya(),
-              tahapan: getTahapan(),
-              saran: dataLaporan.saran
-            }}
-            onFinish={handleFinish}
-          >
-            <Form.Item name="name" label="NAMA FS" labelAlign="left">
-              <Input disabled />
-            </Form.Item>
-
-            <Form.Item name="date" label="TANGGAL LAPORAN" labelAlign="left">
-              <Input disabled />
-            </Form.Item>
-
-            <Form.Item name="inputDate" label="TANGGAL INPUT" labelAlign="left">
-              <Input disabled />
-            </Form.Item>
-
-            <div className={styles["form__checkbox--group"]}>
-              <Form.Item label="KEGIATAN">
-                <Form.Item name="koordinasi" valuePropName="checked">
-                  <Checkbox
-                    disabled={
-                      userLevel === users.Kantah || userLevel === users.Kanwil
-                    }
-                  >
-                    Koordinasi dengan kantah
-                  </Checkbox>
-                </Form.Item>
-                <Form.Item name="pendampingan" valuePropName="checked">
-                  <Checkbox
-                    disabled={
-                      userLevel === users.Kantah || userLevel === users.Kanwil
-                    }
-                  >
-                    Melakukan Pendampingan
-                  </Checkbox>
-                </Form.Item>
-                <Form.Item name="meeting" valuePropName="checked">
-                  <Checkbox
-                    disabled={
-                      userLevel === users.Kantah || userLevel === users.Kanwil
-                    }
-                  >
-                    Rapat/Meeting
-                  </Checkbox>
-                </Form.Item>
-                <Form.Item name="kunjungan" valuePropName="checked">
-                  <Checkbox
-                    disabled={
-                      userLevel === users.Kantah || userLevel === users.Kanwil
-                    }
-                  >
-                    Melakukan Kunjungan
-                  </Checkbox>
-                </Form.Item>
-                <Form.Item name="lainnya" valuePropName="checked">
-                  <Checkbox
-                    disabled={
-                      userLevel === users.Kantah || userLevel === users.Kanwil
-                    }
-                  >
-                    Lainnya
-                  </Checkbox>
-                </Form.Item>
+          <>
+            <Form
+              name="edit-laporan"
+              layout="vertical"
+              initialValues={{
+                name: dataLaporan.fieldstaff_name,
+                date: getDate(),
+                inputDate: getDateInput(),
+                keterangan: dataLaporan.keterangan,
+                peserta: dataLaporan.peserta,
+                keluhan: dataLaporan.keluhan,
+                koordinasi: getKoordinasi(),
+                pendampingan: getPendampingan(),
+                meeting: getMeeting(),
+                kunjungan: getKunjungan(),
+                lainnya: getLainnya(),
+                tahapan: getTahapan(),
+                saran: dataLaporan.saran
+              }}
+              onFinish={handleFinish}
+            >
+              <Form.Item name="name" label="NAMA FS" labelAlign="left">
+                <Input disabled />
               </Form.Item>
 
-              <Form.Item name="tahapan" label="TAHAPAN AKSES REFORMA">
-                <Select
-                  mode="multiple"
-                  allowClear
-                  placeholder="Pilih tahapan akses reforma"
-                  style={{ width: "220px" }}
-                  disabled
-                >
-                  <Select.Option value="pemetaan" disabled>
-                    Pemetaan Sosial
-                  </Select.Option>
-                  <Select.Option value="penyuluhan" disabled>
-                    Penyuluhan
-                  </Select.Option>
-                  <Select.Option value="penyusunan" disabled>
-                    Penyusunan Model
-                  </Select.Option>
-                  <Select.Option value="pendampingan" disabled>
-                    Pendampingan
-                  </Select.Option>
-                  <Select.Option value="evauasi" disabled>
-                    Evaluasi dan Pelaporan
-                  </Select.Option>
-                </Select>
+              <Form.Item name="date" label="TANGGAL LAPORAN" labelAlign="left">
+                <Input disabled />
               </Form.Item>
-            </div>
 
-            <Form.Item
-              name="keterangan"
-              label="KETERANGAN"
-              labelAlign="left"
-              rules={[
-                {
-                  message: "Tolong masukan keterangan",
-                  required: true
-                }
-              ]}
-            >
-              <Input.TextArea
-                disabled={
-                  userLevel === users.Kantah || userLevel === users.Kanwil
-                }
-              />
-            </Form.Item>
+              <Form.Item
+                name="inputDate"
+                label="TANGGAL INPUT"
+                labelAlign="left"
+              >
+                <Input disabled />
+              </Form.Item>
 
-            <Form.Item name="peserta" label="PESERTA" labelAlign="left">
-              <Input.TextArea
-                disabled={
-                  userLevel === users.Kantah || userLevel === users.Kanwil
-                }
-              />
-            </Form.Item>
+              <div className={styles["form__checkbox--group"]}>
+                <Form.Item label="KEGIATAN">
+                  <Form.Item name="koordinasi" valuePropName="checked">
+                    <Checkbox
+                      disabled={
+                        userLevel === users.Kantah || userLevel === users.Kanwil
+                      }
+                    >
+                      Koordinasi dengan kantah
+                    </Checkbox>
+                  </Form.Item>
+                  <Form.Item name="pendampingan" valuePropName="checked">
+                    <Checkbox
+                      disabled={
+                        userLevel === users.Kantah || userLevel === users.Kanwil
+                      }
+                    >
+                      Melakukan Pendampingan
+                    </Checkbox>
+                  </Form.Item>
+                  <Form.Item name="meeting" valuePropName="checked">
+                    <Checkbox
+                      disabled={
+                        userLevel === users.Kantah || userLevel === users.Kanwil
+                      }
+                    >
+                      Rapat/Meeting
+                    </Checkbox>
+                  </Form.Item>
+                  <Form.Item name="kunjungan" valuePropName="checked">
+                    <Checkbox
+                      disabled={
+                        userLevel === users.Kantah || userLevel === users.Kanwil
+                      }
+                    >
+                      Melakukan Kunjungan
+                    </Checkbox>
+                  </Form.Item>
+                  <Form.Item name="lainnya" valuePropName="checked">
+                    <Checkbox
+                      disabled={
+                        userLevel === users.Kantah || userLevel === users.Kanwil
+                      }
+                    >
+                      Lainnya
+                    </Checkbox>
+                  </Form.Item>
+                </Form.Item>
 
-            <Form.Item
-              name="keluhan"
-              fieldKey="keluhan"
-              label="KELUHAN"
-              labelAlign="left"
-            >
-              <Input.TextArea
-                disabled={
-                  userLevel === users.Kantah || userLevel === users.Kanwil
-                }
-              />
-            </Form.Item>
+                <Form.Item name="tahapan" label="TAHAPAN AKSES REFORMA">
+                  <Select
+                    mode="multiple"
+                    allowClear
+                    placeholder="Pilih tahapan akses reforma"
+                    style={{ width: "220px" }}
+                    disabled
+                  >
+                    <Select.Option value="pemetaan" disabled>
+                      Pemetaan Sosial
+                    </Select.Option>
+                    <Select.Option value="penyuluhan" disabled>
+                      Penyuluhan
+                    </Select.Option>
+                    <Select.Option value="penyusunan" disabled>
+                      Penyusunan Model
+                    </Select.Option>
+                    <Select.Option value="pendampingan" disabled>
+                      Pendampingan
+                    </Select.Option>
+                    <Select.Option value="evauasi" disabled>
+                      Evaluasi dan Pelaporan
+                    </Select.Option>
+                  </Select>
+                </Form.Item>
+              </div>
 
-            <Form.Item
-              name="saran"
-              fieldKey="saran"
-              label="SARAN"
-              labelAlign="left"
-            >
-              <Input.TextArea disabled={userLevel === users.Fieldstaff} />
-            </Form.Item>
+              <Form.Item
+                name="keterangan"
+                label="KETERANGAN"
+                labelAlign="left"
+                rules={[
+                  {
+                    message: "Tolong masukan keterangan",
+                    required: true
+                  }
+                ]}
+              >
+                <Input.TextArea
+                  disabled={
+                    userLevel === users.Kantah || userLevel === users.Kanwil
+                  }
+                />
+              </Form.Item>
 
-            <Form.Item>
-              <Button type="primary" htmlType="submit">
-                UPDATE
-              </Button>
-            </Form.Item>
-          </Form>
+              <Form.Item name="peserta" label="PESERTA" labelAlign="left">
+                <Input.TextArea
+                  disabled={
+                    userLevel === users.Kantah || userLevel === users.Kanwil
+                  }
+                />
+              </Form.Item>
+
+              <Form.Item
+                name="keluhan"
+                fieldKey="keluhan"
+                label="KELUHAN"
+                labelAlign="left"
+              >
+                <Input.TextArea
+                  disabled={
+                    userLevel === users.Kantah || userLevel === users.Kanwil
+                  }
+                />
+              </Form.Item>
+
+              <Form.Item
+                name="saran"
+                fieldKey="saran"
+                label="SARAN"
+                labelAlign="left"
+              >
+                <Input.TextArea disabled={userLevel === users.Fieldstaff} />
+              </Form.Item>
+
+              <Form.Item
+                name="foto"
+                fieldKey="saran"
+                label="Foto"
+                labelAlign="left"
+              >
+                <div className={styles["img--container"]}>{getImage()}</div>
+              </Form.Item>
+
+              <Form.Item>
+                <Button type="primary" htmlType="submit">
+                  UPDATE
+                </Button>
+              </Form.Item>
+            </Form>
+          </>
         )}
       </Modal>
     </>

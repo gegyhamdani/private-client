@@ -6,3 +6,21 @@
     display: flex;
     justify-content: space-between;
 }
+
+.img--container {
+    display: flex;
+    flex-direction: column;
+}
+
+.img {
+    width: 150px;
+    height: auto;
+    margin-bottom: 2em;
+}
+
+.info {
+    font-style: italic; 
+    font-size: 13px;
+    margin-top: -24px;
+    margin-bottom: 0;
+}
