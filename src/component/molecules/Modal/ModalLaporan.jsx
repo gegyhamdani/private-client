@@ -351,31 +351,33 @@ const ModalLaporan = ({ id, isModalVisible, onCloseModal }) => {
                   </Form.Item>
                 </Form.Item>
 
-                <Form.Item name="tahapan" label="TAHAPAN AKSES REFORMA">
-                  <Select
-                    mode="multiple"
-                    allowClear
-                    placeholder="Pilih tahapan akses reforma"
-                    style={{ width: "220px" }}
-                    disabled
-                  >
-                    <Select.Option value="pemetaan" disabled>
-                      Pemetaan Sosial
-                    </Select.Option>
-                    <Select.Option value="penyuluhan" disabled>
-                      Penyuluhan
-                    </Select.Option>
-                    <Select.Option value="penyusunan" disabled>
-                      Penyusunan Model
-                    </Select.Option>
-                    <Select.Option value="pendampingan" disabled>
-                      Pendampingan
-                    </Select.Option>
-                    <Select.Option value="evauasi" disabled>
-                      Evaluasi dan Pelaporan
-                    </Select.Option>
-                  </Select>
-                </Form.Item>
+                <div style={{ display: "none" }}>
+                  <Form.Item name="tahapan" label="TAHAPAN AKSES REFORMA">
+                    <Select
+                      mode="multiple"
+                      allowClear
+                      placeholder="Pilih tahapan akses reforma"
+                      style={{ width: "220px" }}
+                      disabled
+                    >
+                      <Select.Option value="pemetaan" disabled>
+                        Pemetaan Sosial
+                      </Select.Option>
+                      <Select.Option value="penyuluhan" disabled>
+                        Penyuluhan
+                      </Select.Option>
+                      <Select.Option value="penyusunan" disabled>
+                        Penyusunan Model
+                      </Select.Option>
+                      <Select.Option value="pendampingan" disabled>
+                        Pendampingan
+                      </Select.Option>
+                      <Select.Option value="evauasi" disabled>
+                        Evaluasi dan Pelaporan
+                      </Select.Option>
+                    </Select>
+                  </Form.Item>
+                </div>
               </div>
 
               <Form.Item

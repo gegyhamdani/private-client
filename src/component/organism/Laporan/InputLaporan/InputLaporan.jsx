@@ -274,33 +274,41 @@ const InputLaporan = () => {
             </Form.Item>
           </Form.Item>
 
-          <Form.Item name="tahapan" label="TAHAPAN AKSES REFORMA">
-            <Select
-              mode="multiple"
-              allowClear
-              placeholder="Pilih tahapan akses reforma"
-              style={{ width: "220px" }}
-            >
-              <Select.Option value="pemetaan" disabled={userData.pemetaan}>
-                Pemetaan Sosial
-              </Select.Option>
-              <Select.Option value="penyuluhan" disabled={userData.penyuluhan}>
-                Penyuluhan
-              </Select.Option>
-              <Select.Option value="penyusunan" disabled={userData.penyusunan}>
-                Penyusunan Model
-              </Select.Option>
-              <Select.Option
-                value="pendampingan"
-                disabled={userData.pendampingan}
+          <div style={{ display: "none" }}>
+            <Form.Item name="tahapan" label="TAHAPAN AKSES REFORMA">
+              <Select
+                mode="multiple"
+                allowClear
+                placeholder="Pilih tahapan akses reforma"
+                style={{ width: "220px" }}
               >
-                Pendampingan
-              </Select.Option>
-              <Select.Option value="evauasi" disabled={userData.evaluasi}>
-                Evaluasi dan Pelaporan
-              </Select.Option>
-            </Select>
-          </Form.Item>
+                <Select.Option value="pemetaan" disabled={userData.pemetaan}>
+                  Pemetaan Sosial
+                </Select.Option>
+                <Select.Option
+                  value="penyuluhan"
+                  disabled={userData.penyuluhan}
+                >
+                  Penyuluhan
+                </Select.Option>
+                <Select.Option
+                  value="penyusunan"
+                  disabled={userData.penyusunan}
+                >
+                  Penyusunan Model
+                </Select.Option>
+                <Select.Option
+                  value="pendampingan"
+                  disabled={userData.pendampingan}
+                >
+                  Pendampingan
+                </Select.Option>
+                <Select.Option value="evauasi" disabled={userData.evaluasi}>
+                  Evaluasi dan Pelaporan
+                </Select.Option>
+              </Select>
+            </Form.Item>
+          </div>
         </div>
 
         <Form.Item
