@@ -221,12 +221,12 @@ const EditUser = () => {
             {userLevel === users.Kantah && (
               <Form.Item
                 name="head_name"
-                label="NAMA KEPALA KANTOR"
+                label="KASI PENATAAN DAN PEMBERDAYAAN"
                 labelAlign="left"
                 rules={[
                   {
                     required: true,
-                    message: "Tolong masukan nama kepala kantor"
+                    message: "Tolong masukan kasi"
                   }
                 ]}
               >
@@ -237,7 +237,7 @@ const EditUser = () => {
             {userLevel === users.Kantah && (
               <Form.Item
                 name="nip_head_name"
-                label="NIP KEPALA KANTOR"
+                label="NIP"
                 labelAlign="left"
                 rules={[
                   {

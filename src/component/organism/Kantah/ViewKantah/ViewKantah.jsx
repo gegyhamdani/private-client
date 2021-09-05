@@ -341,18 +341,18 @@ const ViewKantah = () => {
               />
             </div>
             <div className={styles.form__item}>
-              <p>NAMA KEPALA KANTOR</p>
+              <p>KASI PENATAAN DAN PEMBERDAYAAN</p>
               <Input
-                placeholder="Nama Kepala Kantor"
+                placeholder="Kasi Penataan dan Pemberdayaan"
                 value={dataKantah.head_name}
                 onChange={handleChange}
                 name="head"
               />
             </div>
             <div className={styles.form__item}>
-              <p>NIP KEPALA KANTOR</p>
+              <p>NIP</p>
               <Input
-                placeholder="NIP Kepala Kantor"
+                placeholder="NIP"
                 value={dataKantah.nip_head_name}
                 onChange={handleChange}
                 name="nip"

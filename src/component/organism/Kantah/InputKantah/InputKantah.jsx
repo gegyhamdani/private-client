@@ -117,12 +117,12 @@ const InputKantah = () => {
 
         <Form.Item
           name="head"
-          label="NAMA KEPALA KANTOR"
+          label="KASI PENATAAN DAN PEMBERDAYAAN"
           labelAlign="left"
           rules={[
             {
               required: true,
-              message: "Tolong masukan nama kepala kantor"
+              message: "Tolong masukan kasi"
             }
           ]}
         >
@@ -131,7 +131,7 @@ const InputKantah = () => {
 
         <Form.Item
           name="nip"
-          label="NIP KEPALA KANTOR"
+          label="NIP"
           labelAlign="left"
           rules={[
             {
