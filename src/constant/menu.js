@@ -29,13 +29,27 @@ const menu = [
   },
   {
     key: 5,
+    title: "Tahapan",
+    level: ["all"],
+    page: "datatahapan",
+    subMenu: []
+  },
+  {
+    key: 6,
+    title: "Rencana Bulanan",
+    level: ["all"],
+    page: "datarencana",
+    subMenu: []
+  },
+  {
+    key: 7,
     title: "Lokasi",
     level: ["kanwil", "kantah"],
     page: "https://ptm.atrbpn.go.id",
     subMenu: []
   },
   {
-    key: 6,
+    key: 8,
     title: "Peserta Pemberdayaan",
     level: ["all"],
     page: "https://ptm.atrbpn.go.id",
