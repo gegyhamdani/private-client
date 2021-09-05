@@ -16,6 +16,7 @@ import styles from "./index.module.css";
 import fieldstaffAPI from "../../../../api/fieldstaffAPI";
 import users from "../../../../constant/user";
 import kantahAPI from "../../../../api/kantahAPI";
+import dateHelper from "../../../../helpers/dateHelper";
 
 const { Search, TextArea } = Input;
 const { Column } = Table;
@@ -203,17 +204,9 @@ const ViewFieldstaff = () => {
         setData();
       } else {
         const value = fieldstaffKantah.map(val => {
-          const date = new Date(val.date_born);
-          const dateDay =
-            date.getDate().toString().length < 2
-              ? `0${date.getDate()}`
-              : date.getDate();
-          const dateMonth = date.getMonth().toString().length
-            ? `0${date.getMonth() + 1}`
-            : date.getMonth() + 1;
           return {
             ...val,
-            date_born: `${dateDay} - ${dateMonth} - ${date.getFullYear()}`
+            date_born: dateHelper.convertDate(val.date_born)
           };
         });
         const sort = value.sort((a, b) => b.id - a.id);
@@ -238,18 +231,10 @@ const ViewFieldstaff = () => {
 
       const updateValue = datas.map(fs => {
         const fsData = fs.fieldstaffKantah.map(val => {
-          const date = new Date(val.date_born);
-          const dateDay =
-            date.getDate().toString().length < 2
-              ? `0${date.getDate()}`
-              : date.getDate();
-          const dateMonth = date.getMonth().toString().length
-            ? `0${date.getMonth() + 1}`
-            : date.getMonth() + 1;
           return {
             ...val,
             kantahName: fs.name,
-            date_born: `${dateDay} - ${dateMonth} - ${date.getFullYear()}`
+            date_born: dateHelper.convertDate(val.date_born)
           };
         });
         return fsData;
@@ -348,7 +333,7 @@ const ViewFieldstaff = () => {
                 title="Tanggal Lahir"
                 dataIndex="date_born"
                 key="date_born"
-                width="150px"
+                width="190px"
               />
               <Column title="Alamat" dataIndex="alamat" key="alamat" />
               {userLevel === users.Kanwil && (

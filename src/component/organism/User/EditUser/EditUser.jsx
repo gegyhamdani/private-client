@@ -68,9 +68,16 @@ const EditUser = () => {
   };
 
   const updateKantah = data => {
-    const { name, username, password } = data;
+    const {
+      name,
+      username,
+      email,
+      head_name: head,
+      nip_head_name: nip,
+      password
+    } = data;
     kantahAPI
-      .updateKantah(userId, name, username, password)
+      .updateKantah(userId, name, username, password, email, head, nip)
       .then(() =>
         openNotificationSuccess(() => {
           changeUsername(name);
@@ -194,6 +201,54 @@ const EditUser = () => {
             >
               <Input />
             </Form.Item>
+
+            {userLevel === users.Kantah && (
+              <Form.Item
+                name="email"
+                label="EMAIL"
+                labelAlign="left"
+                rules={[
+                  {
+                    required: true,
+                    message: "Tolong masukan email"
+                  }
+                ]}
+              >
+                <Input />
+              </Form.Item>
+            )}
+
+            {userLevel === users.Kantah && (
+              <Form.Item
+                name="head_name"
+                label="NAMA KEPALA KANTOR"
+                labelAlign="left"
+                rules={[
+                  {
+                    required: true,
+                    message: "Tolong masukan nama kepala kantor"
+                  }
+                ]}
+              >
+                <Input />
+              </Form.Item>
+            )}
+
+            {userLevel === users.Kantah && (
+              <Form.Item
+                name="nip_head_name"
+                label="NIP KEPALA KANTOR"
+                labelAlign="left"
+                rules={[
+                  {
+                    required: true,
+                    message: "Tolong masukan NIP"
+                  }
+                ]}
+              >
+                <Input />
+              </Form.Item>
+            )}
 
             <Form.Item
               name="password"

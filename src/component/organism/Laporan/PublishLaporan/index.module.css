@@ -38,3 +38,8 @@
     margin-top: 2em;
     width: 100%;
 }
+
+.img {
+    width: 100px;
+    height: auto;
+}

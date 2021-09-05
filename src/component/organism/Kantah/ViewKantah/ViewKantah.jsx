@@ -71,7 +71,10 @@ const ViewKantah = () => {
           dataKantah.id,
           dataKantah.name,
           dataKantah.username,
-          dataKantah.password
+          dataKantah.password,
+          dataKantah.email,
+          dataKantah.head_name,
+          dataKantah.nip_head_name
         )
         .then(() => {
           openNotificationSuccess("Data berhasil diubah");
@@ -129,6 +132,30 @@ const ViewKantah = () => {
       clone = {
         ...clone,
         username: value
+      };
+      setDataKantah(clone);
+    }
+    if (name === "email") {
+      let clone = { ...dataKantah };
+      clone = {
+        ...clone,
+        email: value
+      };
+      setDataKantah(clone);
+    }
+    if (name === "head") {
+      let clone = { ...dataKantah };
+      clone = {
+        ...clone,
+        head_name: value
+      };
+      setDataKantah(clone);
+    }
+    if (name === "nip") {
+      let clone = { ...dataKantah };
+      clone = {
+        ...clone,
+        nip_head_name: value
       };
       setDataKantah(clone);
     }
@@ -302,6 +329,33 @@ const ViewKantah = () => {
                 value={dataKantah.username}
                 onChange={handleChange}
                 name="username"
+              />
+            </div>
+            <div className={styles.form__item}>
+              <p>EMAIL</p>
+              <Input
+                placeholder="Email Kantah"
+                value={dataKantah.email}
+                onChange={handleChange}
+                name="email"
+              />
+            </div>
+            <div className={styles.form__item}>
+              <p>NAMA KEPALA KANTOR</p>
+              <Input
+                placeholder="Nama Kepala Kantor"
+                value={dataKantah.head_name}
+                onChange={handleChange}
+                name="head"
+              />
+            </div>
+            <div className={styles.form__item}>
+              <p>NIP KEPALA KANTOR</p>
+              <Input
+                placeholder="NIP Kepala Kantor"
+                value={dataKantah.nip_head_name}
+                onChange={handleChange}
+                name="nip"
               />
             </div>
             <div className={styles.form__item}>

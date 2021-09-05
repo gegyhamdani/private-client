@@ -1,6 +1,15 @@
 import axiosInstance from "./axiosInstance";
 
-const saveKantah = (name, username, password, level, idKanwil) => {
+const saveKantah = (
+  name,
+  username,
+  password,
+  email,
+  head,
+  nip,
+  level,
+  idKanwil
+) => {
   const { getInstance, routes } = axiosInstance;
   return new Promise((resolve, reject) => {
     getInstance()
@@ -8,6 +17,9 @@ const saveKantah = (name, username, password, level, idKanwil) => {
         name,
         username,
         password,
+        email,
+        head_name: head,
+        nip_head_name: nip,
         level,
         id_kanwil: idKanwil
       })
@@ -42,14 +54,17 @@ const getAllKantah = () => {
   });
 };
 
-const updateKantah = (id, name, username, password) => {
+const updateKantah = (id, name, username, password, email, head, nip) => {
   const { getInstance, routes } = axiosInstance;
   return new Promise((resolve, reject) => {
     getInstance()
       .put(routes.kantah(id), {
         name,
         username,
-        password
+        password,
+        email,
+        head_name: head,
+        nip_head_name: nip
       })
       .then(res => {
         resolve(res.data);

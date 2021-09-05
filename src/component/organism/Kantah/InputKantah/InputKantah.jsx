@@ -29,8 +29,17 @@ const InputKantah = () => {
   };
 
   const saveKantah = values => {
-    const { name, username, password } = values;
-    return kantahAPI.saveKantah(name, username, password, users.Kantah, userId);
+    const { name, username, email, head, nip, password } = values;
+    return kantahAPI.saveKantah(
+      name,
+      username,
+      password,
+      email,
+      head,
+      nip,
+      users.Kantah,
+      userId
+    );
   };
 
   const onFinish = field => {
@@ -86,6 +95,48 @@ const InputKantah = () => {
             {
               required: true,
               message: "Tolong masukan username"
+            }
+          ]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          name="email"
+          label="EMAIL"
+          labelAlign="left"
+          rules={[
+            {
+              required: true,
+              message: "Tolong masukan email"
+            }
+          ]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          name="head"
+          label="NAMA KEPALA KANTOR"
+          labelAlign="left"
+          rules={[
+            {
+              required: true,
+              message: "Tolong masukan nama kepala kantor"
+            }
+          ]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          name="nip"
+          label="NIP KEPALA KANTOR"
+          labelAlign="left"
+          rules={[
+            {
+              required: true,
+              message: "Tolong masukan NIP"
             }
           ]}
         >
