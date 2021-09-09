@@ -28,7 +28,8 @@ const routes = {
   laporan: (id = "") => (id ? `laporan/${id}` : "laporan"),
   laporanUser: (id = "") => `laporan/user/${id}`,
   location: (id = "") => (id ? `location/${id}` : "location"),
-  image: (id = "") => (id ? `image/${id}` : "image")
+  image: (id = "") => (id ? `image/${id}` : "image"),
+  rencana: (id = "") => (id ? `rencana/${id}` : "rencana")
 };
 
 export default {
