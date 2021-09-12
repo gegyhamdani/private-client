@@ -153,7 +153,7 @@ const InputLaporan = () => {
       !fields.koordinasi &&
       !fields.kunjungan &&
       !fields.meeting &&
-      !fields.penampingan &&
+      !fields.pendampingan &&
       !fields.lainnya
     )
       return openNotificationFormCheckboxError("kegiatan");
@@ -181,6 +181,8 @@ const InputLaporan = () => {
       foto: JSON.stringify(imageId)
     };
 
+    console.log({ values });
+
     return saveLaporan(values)
       .then(() => {
         fieldstaffAPI
@@ -189,6 +191,7 @@ const InputLaporan = () => {
             userData.name,
             userData.alamat,
             userData.phone_number,
+            userData.target,
             userData.username,
             userData.password,
             pemetaan,
