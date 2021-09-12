@@ -30,7 +30,9 @@ const routes = {
   location: (id = "") => (id ? `location/${id}` : "location"),
   image: (id = "") => (id ? `image/${id}` : "image"),
   rencana: (id = "") => (id ? `rencana/${id}` : "rencana"),
-  rencanaUser: (id = "") => `rencana/user/${id}`
+  rencanaUser: (id = "") => `rencana/user/${id}`,
+  tahapan: (id = "") => (id ? `tahapan/${id}` : "tahapan"),
+  tahapanUser: (id = "") => `tahapan/user/${id}`
 };
 
 export default {
