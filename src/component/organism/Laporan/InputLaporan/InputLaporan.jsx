@@ -181,8 +181,6 @@ const InputLaporan = () => {
       foto: JSON.stringify(imageId)
     };
 
-    console.log({ values });
-
     return saveLaporan(values)
       .then(() => {
         fieldstaffAPI
