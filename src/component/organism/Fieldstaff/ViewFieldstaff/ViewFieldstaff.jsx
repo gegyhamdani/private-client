@@ -74,6 +74,8 @@ const ViewFieldstaff = () => {
       openNotificationError("Field tidak boleh kosong");
     } else if (!/^\d+$/.test(dataFieldstaff.phone_number)) {
       openNotificationError("No. Telepon hanya boleh diisi angka");
+    } else if (!/^\d+$/.test(dataFieldstaff.target)) {
+      openNotificationError("Target hanya boleh diisi angka");
     } else {
       setConfirmLoadingUpdate(true);
       fieldstaffAPI
@@ -82,6 +84,7 @@ const ViewFieldstaff = () => {
           dataFieldstaff.name,
           dataFieldstaff.alamat,
           dataFieldstaff.phone_number,
+          dataFieldstaff.target,
           dataFieldstaff.username,
           dataFieldstaff.password
         )
@@ -190,6 +193,21 @@ const ViewFieldstaff = () => {
     clone = {
       ...clone,
       phone_number: value
+    };
+    setDataFieldstaff(clone);
+  };
+
+  const handleChangeTarget = e => {
+    const {
+      target: { value }
+    } = e;
+
+    if (value.length > 13) return;
+
+    let clone = { ...dataFieldstaff };
+    clone = {
+      ...clone,
+      target: value
     };
     setDataFieldstaff(clone);
   };
@@ -336,6 +354,7 @@ const ViewFieldstaff = () => {
                 width="190px"
               />
               <Column title="Alamat" dataIndex="alamat" key="alamat" />
+              <Column title="Target" dataIndex="target" key="target" />
               {userLevel === users.Kanwil && (
                 <Column
                   title="Nama Kantah"
@@ -427,6 +446,15 @@ const ViewFieldstaff = () => {
                 onChange={handleChangeNumber}
                 name="phone_number"
                 addonBefore="0"
+              />
+            </div>
+            <div className={styles.form__item}>
+              <p>TARGET</p>
+              <Input
+                placeholder="Target"
+                value={dataFieldstaff.target}
+                onChange={handleChangeTarget}
+                name="target"
               />
             </div>
             <div className={styles.form__item}>

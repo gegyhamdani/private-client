@@ -44,13 +44,14 @@ const InputFieldStaff = () => {
   };
 
   const saveFieldstaff = values => {
-    const { name, date, alamat, phone, username, password } = values;
+    const { name, date, alamat, phone, target, username, password } = values;
     if (userLevel === users.Kantah) {
       return fieldstaffAPI.saveFieldstaff(
         name,
         date,
         alamat,
         phone,
+        target,
         username,
         password,
         users.Fieldstaff,
@@ -64,6 +65,7 @@ const InputFieldStaff = () => {
         date,
         alamat,
         phone,
+        target,
         username,
         password,
         users.Fieldstaff,
@@ -164,6 +166,29 @@ const InputFieldStaff = () => {
           className={styles.form__phone}
         >
           <Input addonBefore="0" />
+        </Form.Item>
+
+        <Form.Item
+          name="target"
+          label="TARGET KK"
+          labelAlign="left"
+          rules={[
+            {
+              required: true,
+              message: "Tolong masukan target"
+            },
+            {
+              pattern: /^(?:\d*)$/,
+              message: "Hanya boleh diisi angka"
+            },
+            {
+              pattern: /^[\d]{0,3}$/,
+              message: "Maksimum 3 angka"
+            }
+          ]}
+          className={styles.form__phone}
+        >
+          <Input />
         </Form.Item>
 
         <Form.Item
