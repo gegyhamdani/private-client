@@ -6,7 +6,8 @@ import {
   LoadingOutlined,
   PlusCircleOutlined,
   SearchOutlined,
-  DeleteOutlined
+  DeleteOutlined,
+  DownloadOutlined
 } from "@ant-design/icons";
 import { useRouter } from "next/router";
 
@@ -245,13 +246,13 @@ const ViewRencana = () => {
               dataIndex="fieldstaff_name"
               key="fieldstaff_name"
             />
+            <Column title="Periode" dataIndex="periode" key="periode" />
             <Column title="Lokasi" dataIndex="lokasi" key="lokasi" />
             <Column
               title="Rencana Tindak Lanjut"
               dataIndex="tindak_lanjut"
               key="tindak_lanjut"
             />
-            <Column title="Periode" dataIndex="periode" key="periode" />
             <Column
               title="Action"
               key="action"
@@ -278,6 +279,21 @@ const ViewRencana = () => {
             />
           </Table>
         )}
+        <div className={styles.footer}>
+          {userLevel === users.Fieldstaff && (
+            <Button
+              type="primary"
+              style={{ width: 220 }}
+              icon={<DownloadOutlined style={{ fontSize: "18px" }} />}
+              onClick={() => {
+                router.push("/cetakrencana");
+              }}
+              className={styles.button}
+            >
+              Cetak Rencana Bulanan
+            </Button>
+          )}
+        </div>
       </div>
     </>
   );
