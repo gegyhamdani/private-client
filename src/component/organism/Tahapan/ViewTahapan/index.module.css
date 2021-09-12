@@ -6,6 +6,15 @@
     max-width: 480px;
 }
 
+.field {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin: 1em 0;
+    align-items: center;
+}
+
 .form__keluhan--container {
     width: 100%;
     display: flex;
