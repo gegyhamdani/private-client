@@ -18,12 +18,11 @@ const saveRencana = (name, date, lokasi, tindak, userId) => {
   });
 };
 
-const updateRencana = (id, date, lokasi, tindak) => {
+const updateRencana = (id, lokasi, tindak) => {
   const { getInstance, routes } = axiosInstance;
   return new Promise((resolve, reject) => {
     getInstance()
       .put(routes.rencana(id), {
-        date,
         lokasi,
         tindak_lanjut: tindak
       })
@@ -50,7 +49,7 @@ const getUserRencana = userId => {
   const { getInstance, routes } = axiosInstance;
   return new Promise((resolve, reject) => {
     getInstance()
-      .get(routes.laporanUser(userId))
+      .get(routes.rencanaUser(userId))
       .then(res => {
         resolve(res.data);
       })

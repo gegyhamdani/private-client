@@ -11,4 +11,11 @@ const convertDate = value => {
   return `${dateDay} ${dateMonth} ${date.getFullYear()}`;
 };
 
-export default { convertDate };
+const convertMonthDate = value => {
+  const date = new Date(value);
+  const dateMonth = monthNames[date.getMonth()];
+
+  return `${dateMonth} ${date.getFullYear()}`;
+};
+
+export default { convertDate, convertMonthDate };

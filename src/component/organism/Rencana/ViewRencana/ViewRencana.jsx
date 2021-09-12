@@ -1,8 +1,7 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { Table, Input, Spin, Space, Tag, Button, notification } from "antd";
+import { Table, Spin, Space, Button, notification } from "antd";
 import {
   LoadingOutlined,
   PlusCircleOutlined,
@@ -13,14 +12,13 @@ import { useRouter } from "next/router";
 
 import Modal from "antd/lib/modal/Modal";
 import styles from "./index.module.css";
-import laporanAPI from "../../../../api/laporanAPI";
 import fieldstaffAPI from "../../../../api/fieldstaffAPI";
 import users from "../../../../constant/user";
-import ModalLaporan from "../../../molecules/Modal";
 import dateHelper from "../../../../helpers/dateHelper";
 import kantahAPI from "../../../../api/kantahAPI";
+import rencanaAPI from "../../../../api/rencanaAPI";
+import ModalRencana from "../../../molecules/ModalRencana.jsx";
 
-const { Search } = Input;
 const { Column } = Table;
 
 const antIcon = <LoadingOutlined style={{ fontSize: 72 }} spin />;
@@ -32,7 +30,8 @@ const ViewRencana = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalDeleteVisible, setIsModalDeleteVisible] = useState(false);
   const [confirmLoadingDelete, setConfirmLoadingDelete] = useState(false);
-  const [laporanId, setLaporanId] = useState(0);
+  const [rencanaId, setRencanaId] = useState(0);
+  const [emptyData, setEmptyData] = useState(false);
   const [isUpdate, setUpdate] = useState(false);
 
   const router = useRouter();
@@ -47,34 +46,169 @@ const ViewRencana = () => {
     });
   };
 
-  const handleOpenModal = () => {
+  const handleOpenModal = id => {
     setIsModalVisible(true);
+    setRencanaId(id);
   };
 
   const handleCloseModal = () => {
     setIsModalVisible(false);
   };
 
-  const handleDelete = () => {
+  const handleDelete = id => {
     setIsModalDeleteVisible(true);
+    setRencanaId(id);
   };
 
   const handleOkModalDelete = () => {
     setConfirmLoadingDelete(true);
-    setIsModalDeleteVisible(false);
+    rencanaAPI
+      .deleteRencana(rencanaId)
+      .then(() => {
+        openNotificationSuccess("Data berhasil di hapus");
+        setUpdate(true);
+        setConfirmLoadingDelete(false);
+      })
+      .finally(() => setIsModalDeleteVisible(false));
   };
 
   const handleCancelModalDelete = () => {
     setIsModalDeleteVisible(false);
-    setLaporanId(0);
+    setRencanaId(0);
   };
+
+  const getRencanaData = id => {
+    return new Promise(resolve => {
+      rencanaAPI
+        .getUserRencana(id)
+        .then(res => {
+          const value = res.map(val => {
+            return {
+              ...val,
+              periode: dateHelper.convertMonthDate(val.periode)
+            };
+          });
+
+          return resolve(value.sort((a, b) => b.id - a.id));
+        })
+        .catch(() => {
+          setLoading(false);
+        });
+    });
+  };
+
+  const getKanwilKantahFieldstaffLaporan = async () => {
+    const fieldstaffKanwil = await fieldstaffAPI.getFieldstaffKanwil(userId);
+    const kantahData = await kantahAPI.getKantah();
+
+    const kantahFieldstaffPromise = kantahData.map(async item => {
+      const fieldstaff = await fieldstaffAPI.getFieldstaffKantah(item.id);
+      return fieldstaff;
+    });
+    const kantahFieldstaffData = await Promise.all(kantahFieldstaffPromise);
+    const fieldstaffData = kantahFieldstaffData.flat(1);
+    const mergeData = [...fieldstaffData, ...fieldstaffKanwil];
+
+    const dataPromises = mergeData.map(async item => {
+      const fieldstaffKantah = await rencanaAPI.getUserRencana(item.id);
+      return fieldstaffKantah;
+    });
+    const datas = await Promise.all(dataPromises);
+    const flattenData = datas.flat(1);
+
+    if (flattenData.length === 0) {
+      setLoading(false);
+    } else {
+      const convertData = flattenData.map(val => {
+        return {
+          ...val,
+          periode: dateHelper.convertMonthDate(val.periode)
+        };
+      });
+
+      const sortData = convertData.sort((a, b) => b.id - a.id);
+
+      setInitData(sortData);
+      setEmptyData(sortData.length === 0);
+    }
+  };
+
+  const getKantahFieldstaffLaporan = async () => {
+    const fieldstaff = await fieldstaffAPI.getFieldstaffKantah(userId);
+    if (fieldstaff.length === 0) {
+      setLoading(false);
+    } else {
+      const dataPromises = fieldstaff.map(async item => {
+        const fieldstaffKantah = await rencanaAPI.getUserRencana(item.id);
+        return fieldstaffKantah;
+      });
+      const datas = await Promise.all(dataPromises);
+      const flattenData = datas.flat(1);
+
+      if (flattenData.length === 0) {
+        setLoading(false);
+      } else {
+        const convertData = flattenData.map(val => {
+          return {
+            ...val,
+            periode: dateHelper.convertMonthDate(val.periode)
+          };
+        });
+
+        const sortData = convertData.sort((a, b) => b.id - a.id);
+
+        setInitData(sortData);
+        setEmptyData(sortData.length === 0);
+      }
+    }
+  };
+
+  const getFieldstaffRencana = () => {
+    getRencanaData(userId).then(res => {
+      if (res.length === 0) setLoading(false);
+      setInitData(res);
+      setEmptyData(res.length === 0);
+    });
+  };
+
+  const getRencana = () => {
+    setLoading(true);
+    if (userLevel === users.Kantah) return getKantahFieldstaffLaporan();
+    if (userLevel === users.Kanwil) return getKanwilKantahFieldstaffLaporan();
+    return getFieldstaffRencana();
+  };
+
+  useEffect(() => {
+    getRencana();
+  }, [userLevel, userId]);
+
+  useEffect(() => {
+    if (isUpdate) {
+      getRencana();
+    }
+  }, [isUpdate]);
+
+  useEffect(() => {
+    if (initData.length > 0) {
+      const flattenData = initData.flat();
+      setData(flattenData);
+      setLoading(false);
+      setUpdate(false);
+    }
+    if (emptyData) {
+      setData([]);
+      setLoading(false);
+      setUpdate(false);
+      setEmptyData(false);
+    }
+  }, [initData, emptyData]);
 
   return (
     <>
-      <ModalLaporan
+      <ModalRencana
         isModalVisible={isModalVisible}
         onCloseModal={handleCloseModal}
-        id={laporanId}
+        id={rencanaId}
       />
       <Modal
         title="Delete rencana"

@@ -1,14 +1,13 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/router";
-import { Button, DatePicker, Form, Input } from "antd";
+import { Button, DatePicker, Form, Input, notification } from "antd";
 
 import moment from "moment";
 
 import styles from "./index.module.css";
-import fieldstaffAPI from "../../../../api/fieldstaffAPI";
+import rencanaAPI from "../../../../api/rencanaAPI";
 
 const config = {
   rules: [
@@ -22,24 +21,58 @@ const config = {
 const dateFormat = "MM - yyyy";
 
 const InputRencana = () => {
-  const [userData, setUserData] = useState({});
   const [isLoading, setLoading] = useState(false);
   const [form] = Form.useForm();
   const router = useRouter();
   const nameUser = useSelector(state => state.auth.name);
   const userId = useSelector(state => state.auth.userId);
 
-  const onFinish = fields => {
-    console.log({ fields });
+  const openNotificationSuccess = onSuccess => {
+    notification.success({
+      message: "Data laporan berhasil ditambahkan",
+      duration: 2
+    });
+    setTimeout(() => onSuccess(), 1000);
   };
 
-  useEffect(() => {
-    if (userId) {
-      fieldstaffAPI.getFieldstaff(userId).then(res => {
-        setUserData(res);
-      });
-    }
-  }, [userId]);
+  const openNotificationError = errMsg => {
+    notification.error({
+      message: `Data laporan gagal ditambahkan${errMsg ? `, ${errMsg}` : ""}`,
+      duration: 2
+    });
+  };
+
+  const saveLaporan = values => {
+    const { name, date, lokasi, tindak } = values;
+
+    return rencanaAPI.saveRencana(name, date, lokasi, tindak, userId);
+  };
+
+  const onFinish = fields => {
+    setLoading(true);
+    const values = {
+      ...fields,
+      date: fields.date.format("YYYY-MM-DD")
+    };
+
+    return saveLaporan(values)
+      .then(() => {
+        openNotificationSuccess(() => {
+          form.resetFields();
+          router.push("/datarencana");
+        });
+      })
+      .catch(err => {
+        if (err.response) {
+          if (err.response.status === 401) {
+            openNotificationError("Laporan error");
+          } else {
+            openNotificationError();
+          }
+        }
+      })
+      .finally(() => setLoading(false));
+  };
 
   return (
     <div className={styles.container}>
@@ -82,7 +115,7 @@ const InputRencana = () => {
         </Form.Item>
 
         <Form.Item
-          name="rencana"
+          name="tindak"
           label="RENCANA TINDAK LANJUT"
           labelAlign="left"
           rules={[
