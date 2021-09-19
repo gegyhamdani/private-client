@@ -8,6 +8,7 @@ import styles from "./index.module.css";
 import laporanAPI from "../../../../api/laporanAPI";
 import dateHelper from "../../../../helpers/dateHelper";
 import fieldstaffAPI from "../../../../api/fieldstaffAPI";
+import tahapanAPI from "../../../../api/tahapanAPI";
 
 const antIcon = <LoadingOutlined style={{ fontSize: 72 }} spin />;
 
@@ -17,6 +18,7 @@ const DashboardFieldstaff = () => {
   const [totalInput, setTotalInput] = useState(0);
   const [keluhan, setKeluhan] = useState(0);
   const [saran, setSaran] = useState(0);
+  const [dataTahapan, setDataTahapan] = useState({});
   const [isLoading, setLoading] = useState(false);
   const userId = useSelector(state => state.auth.userId);
 
@@ -55,6 +57,18 @@ const DashboardFieldstaff = () => {
             setSaran(dataSaran.length);
           }
         })
+      )
+      .then(() =>
+        tahapanAPI
+          .getUserTahapan(userId)
+          .then(res => {
+            if (res.length > 0) {
+              setDataTahapan(res[0]);
+            }
+          })
+          .catch(() => {
+            setLoading(false);
+          })
       )
       .finally(() => setLoading(false));
   }, [userId]);
@@ -144,11 +158,14 @@ const DashboardFieldstaff = () => {
           <div className={`${styles["card-container"]} ${styles.total}`}>
             <PieChart
               data={[
-                { value: `${dataUser.pemetaan ? 100 : 0}`, color: "#1890FF" }
+                {
+                  value: dataTahapan.pemetaan ? dataTahapan.pemetaan : 0,
+                  color: "#1890FF"
+                }
               ]}
-              totalValue={100}
+              totalValue={dataUser.target ? dataUser.target : 0}
               lineWidth={20}
-              label={({ dataEntry }) => `${dataEntry.value}%`}
+              label={({ dataEntry }) => `${dataEntry.percentage}%`}
               labelStyle={{
                 fontSize: "25px",
                 fill: "#1890FF"
@@ -176,11 +193,14 @@ const DashboardFieldstaff = () => {
           <div className={`${styles["card-container"]} ${styles.total}`}>
             <PieChart
               data={[
-                { value: `${dataUser.penyuluhan ? 100 : 0}`, color: "#1890FF" }
+                {
+                  value: dataTahapan.penyuluhan ? dataTahapan.penyuluhan : 0,
+                  color: "#1890FF"
+                }
               ]}
-              totalValue={100}
+              totalValue={dataUser.target ? dataUser.target : 0}
               lineWidth={20}
-              label={({ dataEntry }) => `${dataEntry.value}%`}
+              label={({ dataEntry }) => `${dataEntry.percentage}%`}
               labelStyle={{
                 fontSize: "25px",
                 fill: "#1890FF"
@@ -208,11 +228,14 @@ const DashboardFieldstaff = () => {
           <div className={`${styles["card-container"]} ${styles.total}`}>
             <PieChart
               data={[
-                { value: `${dataUser.penyusunan ? 100 : 0}`, color: "#1890FF" }
+                {
+                  value: dataTahapan.penyusunan ? dataTahapan.penyusunan : 0,
+                  color: "#1890FF"
+                }
               ]}
-              totalValue={100}
+              totalValue={dataUser.target ? dataUser.target : 0}
               lineWidth={20}
-              label={({ dataEntry }) => `${dataEntry.value}%`}
+              label={({ dataEntry }) => `${dataEntry.percentage}%`}
               labelStyle={{
                 fontSize: "25px",
                 fill: "#1890FF"
@@ -241,13 +264,15 @@ const DashboardFieldstaff = () => {
             <PieChart
               data={[
                 {
-                  value: `${dataUser.pendampingan ? 100 : 0}`,
+                  value: dataTahapan.pendampingan
+                    ? dataTahapan.pendampingan
+                    : 0,
                   color: "#1890FF"
                 }
               ]}
-              totalValue={100}
+              totalValue={dataUser.target ? dataUser.target : 0}
               lineWidth={20}
-              label={({ dataEntry }) => `${dataEntry.value}%`}
+              label={({ dataEntry }) => `${dataEntry.percentage}%`}
               labelStyle={{
                 fontSize: "25px",
                 fill: "#1890FF"
@@ -275,11 +300,14 @@ const DashboardFieldstaff = () => {
           <div className={`${styles["card-container"]} ${styles.total}`}>
             <PieChart
               data={[
-                { value: `${dataUser.evaluasi ? 100 : 0}`, color: "#1890FF" }
+                {
+                  value: dataTahapan.evaluasi ? dataTahapan.evaluasi : 0,
+                  color: "#1890FF"
+                }
               ]}
-              totalValue={100}
+              totalValue={dataUser.target ? dataUser.target : 0}
               lineWidth={20}
-              label={({ dataEntry }) => `${dataEntry.value}%`}
+              label={({ dataEntry }) => `${dataEntry.percentage}%`}
               labelStyle={{
                 fontSize: "25px",
                 fill: "#1890FF"
