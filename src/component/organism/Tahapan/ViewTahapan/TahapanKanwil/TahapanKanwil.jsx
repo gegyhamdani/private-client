@@ -14,6 +14,14 @@ const antIcon = <LoadingOutlined style={{ fontSize: 72 }} spin />;
 
 const { Column } = Table;
 
+const emptyData = {
+  pemetaan: 0,
+  penyuluhan: 0,
+  penyusunan: 0,
+  pendampingan: 0,
+  evaluasi: 0
+};
+
 const TahapanKanwil = () => {
   const [data, setData] = useState([]);
   const [isLoading, setLoading] = useState(false);
@@ -42,16 +50,18 @@ const TahapanKanwil = () => {
     const flattenData = datas.flat(1);
 
     const merged = [];
-    const objFieldstaff = {};
+    const objTahapan = {};
 
-    mergeData.forEach((e, i) => {
-      objFieldstaff[e.id] = mergeData[i].target;
+    flattenData.forEach((val, i) => {
+      objTahapan[val.id_fieldstaff] = flattenData[i];
     });
 
-    for (let i = 0; i < flattenData.length; i += 1) {
+    for (let i = 0; i < mergeData.length; i += 1) {
       merged.push({
-        ...flattenData[i],
-        target: objFieldstaff[flattenData[i].id_fieldstaff]
+        ...mergeData[i],
+        kinerja: objTahapan[mergeData[i].id]
+          ? objTahapan[mergeData[i].id]
+          : emptyData
       });
     }
 
@@ -70,7 +80,7 @@ const TahapanKanwil = () => {
       {isLoading ? (
         <Spin
           indicator={antIcon}
-          style={{ marginTop: "5em", marginLeft: "15em" }}
+          style={{ marginTop: "5em", marginLeft: "25em" }}
         />
       ) : (
         <Table
@@ -84,23 +94,16 @@ const TahapanKanwil = () => {
             let totalPendampingan = 0;
             let totalEvaluasi = 0;
 
-            pageData.forEach(
-              ({
-                target,
-                pemetaan,
-                penyuluhan,
-                penyusunan,
-                pendampingan,
-                evaluasi
-              }) => {
-                totalTarget += target;
-                totalPemetaan += pemetaan;
-                totalPenyuluhan += penyuluhan;
-                totalPenyusunan += penyusunan;
-                totalPendampingan += pendampingan;
-                totalEvaluasi += evaluasi;
-              }
-            );
+            pageData.forEach(({ target, kinerja }) => {
+              totalTarget += target || 0;
+              totalPemetaan += kinerja.pemetaan ? kinerja.pemetaan : 0;
+              totalPenyuluhan += kinerja.penyuluhan ? kinerja.penyuluhan : 0;
+              totalPenyusunan += kinerja.penyusunan ? kinerja.penyusunan : 0;
+              totalPendampingan += kinerja.pendampingan
+                ? kinerja.pendampingan
+                : 0;
+              totalEvaluasi += kinerja.evaluasi ? kinerja.evaluasi : 0;
+            });
 
             return (
               <>
@@ -131,28 +134,32 @@ const TahapanKanwil = () => {
             );
           }}
         >
-          <Column
-            title="Nama Fieldstaff"
-            dataIndex="fieldstaff_name"
-            key="fieldstaff_name"
-          />
+          <Column title="Nama Fieldstaff" dataIndex="name" key="name" />
           <Column title="Total" dataIndex="target" key="target" />
-          <Column title="Pemetaan Sosial" dataIndex="pemetaan" key="pemetaan" />
-          <Column title="Penyuluhan" dataIndex="penyuluhan" key="penyuluhan" />
+          <Column
+            title="Pemetaan Sosial"
+            dataIndex={["kinerja", "pemetaan"]}
+            key={["kinerja", "pemetaan"]}
+          />
+          <Column
+            title="Penyuluhan"
+            dataIndex={["kinerja", "penyuluhan"]}
+            key={["kinerja", "penyuluhan"]}
+          />
           <Column
             title="Penyusunan Model"
-            dataIndex="penyusunan"
-            key="penyusunan"
+            dataIndex={["kinerja", "penyusunan"]}
+            key={["kinerja", "penyusunan"]}
           />
           <Column
             title="Pendampingan"
-            dataIndex="pendampingan"
-            key="pendampingan"
+            dataIndex={["kinerja", "pendampingan"]}
+            key={["kinerja", "pendampingan"]}
           />
           <Column
             title="Evaluasi dan Pelaporan"
-            dataIndex="evaluasi"
-            key="evaluasi"
+            dataIndex={["kinerja", "evaluasi"]}
+            key={["kinerja", "evaluasi"]}
           />
         </Table>
       )}

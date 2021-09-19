@@ -116,7 +116,7 @@ const DashboardTemplate = ({ children }) => {
     return (
       <span>
         {/* eslint-disable-next-line react/jsx-one-expression-per-line */}
-        Copyright © <span>{new Date().getFullYear()}</span> Kantor Wilayah
+        Copyright © <span>{new Date().getFullYear()}</span>. Kantor Wilayah
         Provinsi Kalimantan Barat.
       </span>
     );

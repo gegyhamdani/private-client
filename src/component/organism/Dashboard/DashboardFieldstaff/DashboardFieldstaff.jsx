@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, { useState, useEffect } from "react";
 import { Card, Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
@@ -21,6 +22,18 @@ const DashboardFieldstaff = () => {
   const [dataTahapan, setDataTahapan] = useState({});
   const [isLoading, setLoading] = useState(false);
   const userId = useSelector(state => state.auth.userId);
+
+  const changeFormatNumber = data => {
+    const numFormatter = new Intl.NumberFormat("en-US", {
+      style: "decimal",
+      maximumFractionDigits: 1
+    });
+    const parseFormatter = parseFloat(
+      numFormatter.format(data).replace(/,/g, "")
+    );
+
+    return parseFormatter || 0;
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -167,7 +180,8 @@ const DashboardFieldstaff = () => {
               ]}
               totalValue={dataUser.target ? dataUser.target : 0}
               lineWidth={20}
-              label={({ dataEntry }) => `${dataEntry.percentage}%`}
+              label={({ dataEntry }) =>
+                `${changeFormatNumber(dataEntry.percentage)}%`}
               labelStyle={{
                 fontSize: "25px",
                 fill: "#1890FF"
@@ -202,7 +216,8 @@ const DashboardFieldstaff = () => {
               ]}
               totalValue={dataUser.target ? dataUser.target : 0}
               lineWidth={20}
-              label={({ dataEntry }) => `${dataEntry.percentage}%`}
+              label={({ dataEntry }) =>
+                `${changeFormatNumber(dataEntry.percentage)}%`}
               labelStyle={{
                 fontSize: "25px",
                 fill: "#1890FF"
@@ -237,7 +252,8 @@ const DashboardFieldstaff = () => {
               ]}
               totalValue={dataUser.target ? dataUser.target : 0}
               lineWidth={20}
-              label={({ dataEntry }) => `${dataEntry.percentage}%`}
+              label={({ dataEntry }) =>
+                `${changeFormatNumber(dataEntry.percentage)}%`}
               labelStyle={{
                 fontSize: "25px",
                 fill: "#1890FF"
@@ -274,7 +290,8 @@ const DashboardFieldstaff = () => {
               ]}
               totalValue={dataUser.target ? dataUser.target : 0}
               lineWidth={20}
-              label={({ dataEntry }) => `${dataEntry.percentage}%`}
+              label={({ dataEntry }) =>
+                `${changeFormatNumber(dataEntry.percentage)}%`}
               labelStyle={{
                 fontSize: "25px",
                 fill: "#1890FF"
@@ -309,7 +326,8 @@ const DashboardFieldstaff = () => {
               ]}
               totalValue={dataUser.target ? dataUser.target : 0}
               lineWidth={20}
-              label={({ dataEntry }) => `${dataEntry.percentage}%`}
+              label={({ dataEntry }) =>
+                `${changeFormatNumber(dataEntry.percentage)}%`}
               labelStyle={{
                 fontSize: "25px",
                 fill: "#1890FF"

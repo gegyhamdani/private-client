@@ -42,7 +42,7 @@ const DashboardKantah = () => {
       numFormatter.format(data).replace(/,/g, "")
     );
 
-    return parseFormatter;
+    return parseFormatter || 0;
   };
 
   const getDataLaporan = () => {
@@ -128,16 +128,18 @@ const DashboardKantah = () => {
   useEffect(() => {
     if (dataTahapan.length > 0) {
       const merged = [];
-      const objFieldstaff = {};
+      const objTahapan = {};
 
-      dataFieldstaff.forEach((e, i) => {
-        objFieldstaff[e.id] = dataFieldstaff[i].target;
+      dataTahapan.forEach((val, i) => {
+        objTahapan[val.id_fieldstaff] = dataTahapan[i];
       });
 
-      for (let i = 0; i < dataTahapan.length; i += 1) {
+      for (let i = 0; i < dataFieldstaff.length; i += 1) {
         merged.push({
-          ...dataTahapan[i],
-          target: objFieldstaff[dataTahapan[i].id_fieldstaff]
+          ...dataFieldstaff[i],
+          kinerja: objTahapan[dataFieldstaff[i].id]
+            ? objTahapan[dataFieldstaff[i].id]
+            : {}
         });
       }
 
@@ -148,31 +150,22 @@ const DashboardKantah = () => {
       let totalPendampingan = 0;
       let totalEvaluasi = 0;
 
-      merged.forEach(
-        ({
-          target,
-          pemetaan: dataPemetaan,
-          penyuluhan: dataPenyuluhan,
-          penyusunan: dataPenyusunan,
-          pendampingan: dataPendampingan,
-          evaluasi: dataEvaluasi
-        }) => {
-          totalTarget += target;
-          totalPemetaan += dataPemetaan;
-          totalPenyuluhan += dataPenyuluhan;
-          totalPenyusunan += dataPenyusunan;
-          totalPendampingan += dataPendampingan;
-          totalEvaluasi += dataEvaluasi;
-        }
-      );
+      merged.forEach(({ target, kinerja }) => {
+        totalTarget += target || 0;
+        totalPemetaan += kinerja.pemetaan ? kinerja.pemetaan : 0;
+        totalPenyuluhan += kinerja.penyuluhan ? kinerja.penyuluhan : 0;
+        totalPenyusunan += kinerja.penyusunan ? kinerja.penyusunan : 0;
+        totalPendampingan += kinerja.pendampingan ? kinerja.pendampingan : 0;
+        totalEvaluasi += kinerja.evaluasi ? kinerja.evaluasi : 0;
+      });
 
-      const persentagePemetaan = (totalPemetaan / totalTarget) * 100;
+      const percentagePemetaan = (totalPemetaan / totalTarget) * 100;
       const percentagePenyuluhan = (totalPenyuluhan / totalTarget) * 100;
       const percentagePenyusunan = (totalPenyusunan / totalTarget) * 100;
       const percentagePendampingan = (totalPendampingan / totalTarget) * 100;
       const percentageEvaluasi = (totalEvaluasi / totalTarget) * 100;
 
-      setPemetaan(changeFormatNumber(persentagePemetaan));
+      setPemetaan(changeFormatNumber(percentagePemetaan));
       setPenyuluhan(changeFormatNumber(percentagePenyuluhan));
       setPenyusunan(changeFormatNumber(percentagePenyusunan));
       setPendampingan(changeFormatNumber(percentagePendampingan));
@@ -181,13 +174,13 @@ const DashboardKantah = () => {
       const getKinerjaFieldstaff = merged.map(fieldstaff => {
         return {
           ...fieldstaff,
-          kinerja: changeFormatNumber(
-            ((fieldstaff.pemetaan +
-              fieldstaff.penyuluhan +
-              fieldstaff.penyusunan +
-              fieldstaff.pendampingan +
-              fieldstaff.evaluasi) /
-              (totalTarget * 5)) *
+          percentageTarget: changeFormatNumber(
+            ((fieldstaff.kinerja.pemetaan +
+              fieldstaff.kinerja.penyuluhan +
+              fieldstaff.kinerja.penyusunan +
+              fieldstaff.kinerja.pendampingan +
+              fieldstaff.kinerja.evaluasi) /
+              (fieldstaff.target * 5)) *
               100
           )
         };
@@ -244,11 +237,9 @@ const DashboardKantah = () => {
                   return (
                     <tr className={styles.tr} key={i.toString()}>
                       <th className={styles.td}>{i + 1}</th>
+                      <td className={styles.td}>{val.name}</td>
                       <td className={styles.td}>
-                        {val.fieldstaff_name || val.name}
-                      </td>
-                      <td className={styles.td}>
-                        {`${val.kinerja ? val.kinerja : 0}%`}
+                        {`${val.percentageTarget ? val.percentageTarget : 0}%`}
                       </td>
                     </tr>
                   );
