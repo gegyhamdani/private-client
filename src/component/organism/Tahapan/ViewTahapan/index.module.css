@@ -1,34 +1,3 @@
 .container {
     margin-top: 3em;
 }
-
-.container__form {
-    max-width: 480px;
-}
-
-.field {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    margin: 1em 0;
-    align-items: center;
-}
-
-.form__keluhan--container {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.form__keluhan {
-    width: 94%;
-    margin-right: 10px;
-}
-
-.form__checkbox--group {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-}
