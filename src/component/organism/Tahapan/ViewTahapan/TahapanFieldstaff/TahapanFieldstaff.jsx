@@ -93,7 +93,10 @@ const TahapanFieldstaff = () => {
         )}
       </div>
       {isLoading ? (
-        <Spin indicator={antIcon} style={{ marginTop: "5em" }} />
+        <Spin
+          indicator={antIcon}
+          style={{ marginTop: "5em", marginLeft: "15em" }}
+        />
       ) : (
         <Table dataSource={data} rowKey="id">
           <Column

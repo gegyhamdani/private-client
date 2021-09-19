@@ -111,49 +111,49 @@ const InputTahapan = () => {
     const targetValue = parseInt(fields.target_tahapan, 10);
     if (targetValue > userData.target) {
       openNotifError(`Maksimum target adalah ${userData.target}`);
-    }
-
-    const value = {
-      ...fields,
-      target_tahapan: targetValue
-    };
-
-    if (isEmpty(tahapanData)) {
-      saveTahapan(value)
-        .then(() => {
-          openNotificationSuccess(() => {
-            form.resetFields();
-            router.push("/datatahapan");
-          });
-        })
-        .catch(err => {
-          if (err.response) {
-            if (err.response.status === 401) {
-              openNotificationError("Tahapan error");
-            } else {
-              openNotificationError();
-            }
-          }
-        })
-        .finally(() => setLoading(false));
     } else {
-      updateTahapan(value)
-        .then(() => {
-          openNotificationSuccess(() => {
-            form.resetFields();
-            router.push("/datatahapan");
-          });
-        })
-        .catch(err => {
-          if (err.response) {
-            if (err.response.status === 401) {
-              openNotificationError("Tahapan error");
-            } else {
-              openNotificationError();
+      const value = {
+        ...fields,
+        target_tahapan: targetValue
+      };
+
+      if (isEmpty(tahapanData)) {
+        saveTahapan(value)
+          .then(() => {
+            openNotificationSuccess(() => {
+              form.resetFields();
+              router.push("/datatahapan");
+            });
+          })
+          .catch(err => {
+            if (err.response) {
+              if (err.response.status === 401) {
+                openNotificationError("Tahapan error");
+              } else {
+                openNotificationError();
+              }
             }
-          }
-        })
-        .finally(() => setLoading(false));
+          })
+          .finally(() => setLoading(false));
+      } else {
+        updateTahapan(value)
+          .then(() => {
+            openNotificationSuccess(() => {
+              form.resetFields();
+              router.push("/datatahapan");
+            });
+          })
+          .catch(err => {
+            if (err.response) {
+              if (err.response.status === 401) {
+                openNotificationError("Tahapan error");
+              } else {
+                openNotificationError();
+              }
+            }
+          })
+          .finally(() => setLoading(false));
+      }
     }
   };
 
