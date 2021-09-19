@@ -10,12 +10,14 @@ import users from "../../../../constant/user";
 import fieldstaffAPI from "../../../../api/fieldstaffAPI";
 import laporanAPI from "../../../../api/laporanAPI";
 import dateHelper from "../../../../helpers/dateHelper";
+import tahapanAPI from "../../../../api/tahapanAPI";
 
 const antIcon = <LoadingOutlined style={{ fontSize: 72 }} spin />;
 
 const DashboardKantah = () => {
   const [dataFieldstaff, setDataFieldstaff] = useState([]);
   const [dataLaporan, setDataLaporan] = useState([]);
+  const [dataTahapan, setDataTahapan] = useState([]);
   const [keluhan, setKeluhan] = useState(0);
   const [saran, setSaran] = useState(0);
   const [lastInputDate, setLastInputDate] = useState("");
@@ -31,8 +33,6 @@ const DashboardKantah = () => {
   const level = useSelector(state => state.auth.level);
   const userId = useSelector(state => state.auth.userId);
 
-  const filterData = data => data.filter(val => val);
-
   const changeFormatNumber = data => {
     const numFormatter = new Intl.NumberFormat("en-US", {
       style: "decimal",
@@ -43,6 +43,38 @@ const DashboardKantah = () => {
     );
 
     return parseFormatter;
+  };
+
+  const getDataLaporan = () => {
+    const promiseArray = [];
+
+    dataFieldstaff.map(val => {
+      const apiCall = laporanAPI.getUserLaporan(val.id).then(res => {
+        return res;
+      });
+      return promiseArray.push(apiCall);
+    });
+
+    Promise.all(promiseArray).then(data => {
+      setDataLaporan(data.flat());
+      if (data.flat().length === 0) setLoading(false);
+    });
+  };
+
+  const getDataTahapan = () => {
+    const promiseArray = [];
+
+    dataFieldstaff.map(val => {
+      const apiCall = tahapanAPI.getUserTahapan(val.id).then(res => {
+        return res;
+      });
+      return promiseArray.push(apiCall);
+    });
+
+    Promise.all(promiseArray).then(data => {
+      setDataTahapan(data.flat());
+      if (data.flat().length === 0) setLoading(false);
+    });
   };
 
   useEffect(() => {
@@ -57,19 +89,8 @@ const DashboardKantah = () => {
 
   useEffect(() => {
     if (dataFieldstaff.length > 0) {
-      const promiseArray = [];
-
-      dataFieldstaff.map(val => {
-        const apiCall = laporanAPI.getUserLaporan(val.id).then(res => {
-          return res;
-        });
-        return promiseArray.push(apiCall);
-      });
-
-      Promise.all(promiseArray).then(data => {
-        setDataLaporan(data.flat());
-        if (data.flat().length === 0) setLoading(false);
-      });
+      getDataLaporan();
+      getDataTahapan();
     }
   }, [dataFieldstaff]);
 
@@ -77,7 +98,9 @@ const DashboardKantah = () => {
     if (dataLaporan.length > 0) {
       const totalDataLaporan = dataLaporan.length;
 
-      const inputDateData = dataLaporan[dataLaporan.length - 1].tanggal_input;
+      const sortInputData = dataLaporan.sort((a, b) => a.id - b.id);
+      const inputDateData =
+        sortInputData[sortInputData.length - 1].tanggal_input;
       const convertedDateData = dateHelper.convertDate(inputDateData);
       setLastInputDate(convertedDateData);
 
@@ -96,54 +119,75 @@ const DashboardKantah = () => {
           return e;
         });
 
-      const totalDataFieldstaff = dataFieldstaff.length;
-      const fieldstaffPemetaan = dataFieldstaff.map(val => val.pemetaan);
-      const fieldstaffPenyuluhan = dataFieldstaff.map(val => val.penyuluhan);
-      const fieldstaffpenyusunan = dataFieldstaff.map(val => val.penyusunan);
-      const fieldstaffPendampingan = dataFieldstaff.map(
-        val => val.pendampingan
-      );
-      const fieldstaffEvaluasi = dataFieldstaff.map(val => val.evaluasi);
-
-      const filterFieldstaffPemetaan = filterData(fieldstaffPemetaan);
-      const filterFieldstaffPenyuluhan = filterData(fieldstaffPenyuluhan);
-      const filterFieldstaffPenyusunan = filterData(fieldstaffpenyusunan);
-      const filterFieldstaffPendampingan = filterData(fieldstaffPendampingan);
-      const filterFieldstaffEvaluasi = filterData(fieldstaffEvaluasi);
-
-      const percentPemetaan =
-        (filterFieldstaffPemetaan.length / totalDataFieldstaff) * 100;
-      const percentPenyuluhan =
-        (filterFieldstaffPenyuluhan.length / totalDataFieldstaff) * 100;
-      const percentPenyusunan =
-        (filterFieldstaffPenyusunan.length / totalDataFieldstaff) * 100;
-      const percentPendampingan =
-        (filterFieldstaffPendampingan.length / totalDataFieldstaff) * 100;
-      const percentEvalusi =
-        (filterFieldstaffEvaluasi.length / totalDataFieldstaff) * 100;
-
-      setPemetaan(changeFormatNumber(percentPemetaan));
-      setPenyuluhan(changeFormatNumber(percentPenyuluhan));
-      setPenyusunan(changeFormatNumber(percentPenyusunan));
-      setPendampingan(changeFormatNumber(percentPendampingan));
-      setEvaluasi(changeFormatNumber(percentEvalusi));
-
       setKeluhan(dataKeluhan.length);
       setSaran(dataSaran.length);
       setTotalLaporan(totalDataLaporan);
+    }
+  }, [dataLaporan]);
 
-      const getKinerjaFieldstaff = dataFieldstaff.map(fieldstaff => {
+  useEffect(() => {
+    if (dataTahapan.length > 0) {
+      const merged = [];
+      const objFieldstaff = {};
+
+      dataFieldstaff.forEach((e, i) => {
+        objFieldstaff[e.id] = dataFieldstaff[i].target;
+      });
+
+      for (let i = 0; i < dataTahapan.length; i += 1) {
+        merged.push({
+          ...dataTahapan[i],
+          target: objFieldstaff[dataTahapan[i].id_fieldstaff]
+        });
+      }
+
+      let totalTarget = 0;
+      let totalPemetaan = 0;
+      let totalPenyuluhan = 0;
+      let totalPenyusunan = 0;
+      let totalPendampingan = 0;
+      let totalEvaluasi = 0;
+
+      merged.forEach(
+        ({
+          target,
+          pemetaan: dataPemetaan,
+          penyuluhan: dataPenyuluhan,
+          penyusunan: dataPenyusunan,
+          pendampingan: dataPendampingan,
+          evaluasi: dataEvaluasi
+        }) => {
+          totalTarget += target;
+          totalPemetaan += dataPemetaan;
+          totalPenyuluhan += dataPenyuluhan;
+          totalPenyusunan += dataPenyusunan;
+          totalPendampingan += dataPendampingan;
+          totalEvaluasi += dataEvaluasi;
+        }
+      );
+
+      const persentagePemetaan = (totalPemetaan / totalTarget) * 100;
+      const percentagePenyuluhan = (totalPenyuluhan / totalTarget) * 100;
+      const percentagePenyusunan = (totalPenyusunan / totalTarget) * 100;
+      const percentagePendampingan = (totalPendampingan / totalTarget) * 100;
+      const percentageEvaluasi = (totalEvaluasi / totalTarget) * 100;
+
+      setPemetaan(changeFormatNumber(persentagePemetaan));
+      setPenyuluhan(changeFormatNumber(percentagePenyuluhan));
+      setPenyusunan(changeFormatNumber(percentagePenyusunan));
+      setPendampingan(changeFormatNumber(percentagePendampingan));
+      setEvaluasi(changeFormatNumber(percentageEvaluasi));
+
+      const getKinerjaFieldstaff = merged.map(fieldstaff => {
         return {
           ...fieldstaff,
           kinerja: changeFormatNumber(
-            (filterData([
-              fieldstaff.pemetaan,
-              fieldstaff.pendampingan,
-              fieldstaff.penyuluhan,
-              fieldstaff.penyusunan,
-              fieldstaff.evaluasi
-            ]).length /
-              5) *
+            ((fieldstaff.pemetaan +
+              fieldstaff.penyuluhan +
+              fieldstaff.penyusunan +
+              fieldstaff.pendampingan +
+              fieldstaff.evaluasi) /
+              (totalTarget * 5)) *
               100
           )
         };
@@ -154,8 +198,11 @@ const DashboardKantah = () => {
       );
 
       setRanking(sortRanking.slice(0, 5));
+    } else {
+      const sortFieldstaffById = dataFieldstaff.sort((a, b) => a.id - b.id);
+      setRanking(sortFieldstaffById.slice(0, 5));
     }
-  }, [dataLaporan]);
+  }, [dataTahapan]);
 
   useEffect(() => {
     if (ranking.length > 0) {
@@ -197,8 +244,12 @@ const DashboardKantah = () => {
                   return (
                     <tr className={styles.tr} key={i.toString()}>
                       <th className={styles.td}>{i + 1}</th>
-                      <td className={styles.td}>{val.name}</td>
-                      <td className={styles.td}>{`${val.kinerja}%`}</td>
+                      <td className={styles.td}>
+                        {val.fieldstaff_name || val.name}
+                      </td>
+                      <td className={styles.td}>
+                        {`${val.kinerja ? val.kinerja : 0}%`}
+                      </td>
                     </tr>
                   );
                 })}

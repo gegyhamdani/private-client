@@ -32,7 +32,9 @@ const DashboardFieldstaff = () => {
           if (res.length > 0) {
             const totalData = res.length;
 
-            const inputDateData = res[res.length - 1].tanggal_input;
+            const sortInputData = res.sort((a, b) => a.id - b.id);
+            const inputDateData =
+              sortInputData[sortInputData.length - 1].tanggal_input;
             const convertedDateData = dateHelper.convertDate(inputDateData);
             setLastInputDate(convertedDateData);
 
