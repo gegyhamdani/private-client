@@ -116,13 +116,9 @@ const PublishRencana = () => {
         doc.text("Field staff", 40, 550);
 
         doc.text("Diketahui oleh,", 600, 460);
-        doc.text("Koordinator Pemberdayaan Hak atas Tanah", 600, 470);
+        doc.text("Kasi Pemberdayaan Hak atas Tanah", 600, 470);
         doc.text("Masyarakat", 600, 480);
-        doc.text(
-          headData.head_name ? headData.head_name : "Koordinator",
-          600,
-          540
-        );
+        doc.text(headData.head_name ? headData.head_name : "Kasi", 600, 540);
         doc.text(
           headData.nip_head_name ? `NIP: ${headData.nip_head_name}` : "NIP: -",
           600,
