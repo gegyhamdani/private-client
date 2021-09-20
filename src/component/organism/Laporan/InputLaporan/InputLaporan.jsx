@@ -248,7 +248,7 @@ const InputLaporan = () => {
         }}
         onFinish={onFinish}
       >
-        <Form.Item name="name" label="NAMA FS" labelAlign="left">
+        <Form.Item name="name" label="NAMA FIELDSTAFF" labelAlign="left">
           <Input disabled />
         </Form.Item>
 

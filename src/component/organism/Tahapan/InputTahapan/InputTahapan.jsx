@@ -205,21 +205,17 @@ const InputTahapan = () => {
           }}
           onFinish={onFinish}
         >
-          <Form.Item name="name" label="NAMA FS" labelAlign="left">
+          <Form.Item name="name" label="NAMA FIELDSTAFF" labelAlign="left">
             <Input disabled />
           </Form.Item>
 
-          <Form.Item
-            name="target"
-            label="TARGET REALISASI FS"
-            labelAlign="left"
-          >
+          <Form.Item name="target" label="TARGET FISIK (KK)" labelAlign="left">
             <Input disabled />
           </Form.Item>
 
           <Form.Item
             name="tahapan"
-            label="TAHAPAN AKSES REFORMA"
+            label="TAHAPAN AKSES REFORMA AGRARIA"
             rules={[
               {
                 required: true,
@@ -244,7 +240,7 @@ const InputTahapan = () => {
 
           <Form.Item
             name="target_tahapan"
-            label="TARGET TAHAPAN"
+            label="REALISASI FISIK"
             labelAlign="left"
             rules={[
               {

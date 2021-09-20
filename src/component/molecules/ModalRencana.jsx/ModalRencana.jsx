@@ -88,7 +88,7 @@ const ModalRencana = ({ id, isModalVisible, onCloseModal }) => {
               }}
               onFinish={handleFinish}
             >
-              <Form.Item name="name" label="NAMA FS" labelAlign="left">
+              <Form.Item name="name" label="NAMA FIELDSTAFF" labelAlign="left">
                 <Input disabled />
               </Form.Item>
 
