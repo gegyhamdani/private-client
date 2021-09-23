@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import isEmpty from "lodash/isEmpty";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/router";
@@ -20,6 +20,7 @@ const InputTahapan = () => {
   const router = useRouter();
   const nameUser = useSelector(state => state.auth.name);
   const userId = useSelector(state => state.auth.userId);
+  const formRef = useRef();
 
   const openNotifTarget = () => {
     notification.success({
@@ -157,6 +158,12 @@ const InputTahapan = () => {
     }
   };
 
+  const handleChangeTahapan = e => {
+    formRef.current.setFieldsValue({
+      target_realisasi: tahapanData[e] || 0
+    });
+  };
+
   useEffect(() => {
     if (userId) {
       setLoadUser(true);
@@ -193,81 +200,110 @@ const InputTahapan = () => {
           style={{ marginTop: "5em", marginLeft: "15em" }}
         />
       ) : (
-        <Form
-          form={form}
-          name="input-fieldstaff"
-          className={styles.container__form}
-          layout="vertical"
-          initialValues={{
-            remember: true,
-            name: nameUser,
-            target: userData.target
-          }}
-          onFinish={onFinish}
-        >
-          <Form.Item name="name" label="NAMA FIELDSTAFF" labelAlign="left">
-            <Input disabled />
-          </Form.Item>
-
-          <Form.Item name="target" label="TARGET FISIK (KK)" labelAlign="left">
-            <Input disabled />
-          </Form.Item>
-
-          <Form.Item
-            name="tahapan"
-            label="TAHAPAN AKSES REFORMA AGRARIA"
-            rules={[
-              {
-                required: true,
-                message: "Tolong pilih tahapan"
-              }
-            ]}
+        <>
+          <Form
+            form={form}
+            name="input-fieldstaff"
+            className={styles.container__form}
+            layout="vertical"
+            ref={formRef}
+            initialValues={{
+              remember: true,
+              name: nameUser,
+              target: userData.target
+            }}
+            onFinish={onFinish}
           >
-            <Select
-              allowClear
-              placeholder="Pilih tahapan akses reforma"
-              style={{ width: "220px" }}
-            >
-              <Select.Option value="pemetaan">Pemetaan Sosial</Select.Option>
-              <Select.Option value="penyuluhan">Penyuluhan</Select.Option>
-              <Select.Option value="penyusunan">Penyusunan Model</Select.Option>
-              <Select.Option value="pendampingan">Pendampingan</Select.Option>
-              <Select.Option value="evaluasi">
-                Evaluasi dan Pelaporan
-              </Select.Option>
-            </Select>
-          </Form.Item>
+            <div className={styles.row}>
+              <Form.Item
+                name="name"
+                label="NAMA FIELDSTAFF"
+                labelAlign="left"
+                className={styles.item}
+              >
+                <Input disabled />
+              </Form.Item>
 
-          <Form.Item
-            name="target_tahapan"
-            label="REALISASI FISIK"
-            labelAlign="left"
-            rules={[
-              {
-                required: true,
-                message: "Tolong masukan target"
-              },
-              {
-                pattern: /^(?:\d*)$/,
-                message: "Hanya boleh diisi angka"
-              }
-            ]}
-            className={styles.form__phone}
-          >
-            <Input />
-          </Form.Item>
+              <Form.Item
+                name="target"
+                label="TARGET FISIK (KK)"
+                labelAlign="left"
+                className={styles.item}
+              >
+                <Input disabled />
+              </Form.Item>
+            </div>
 
-          <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              disabled={disableSubmit}
-              loading={isLoading}
+            <Form.Item
+              name="tahapan"
+              label="TAHAPAN AKSES REFORMA AGRARIA"
+              rules={[
+                {
+                  required: true,
+                  message: "Tolong pilih tahapan"
+                }
+              ]}
             >
-              SIMPAN
-            </Button>
-          </Form.Item>
-        </Form>
+              <Select
+                allowClear
+                placeholder="Pilih tahapan akses reforma"
+                style={{ width: "220px" }}
+                onChange={handleChangeTahapan}
+              >
+                <Select.Option value="pemetaan">Pemetaan Sosial</Select.Option>
+                <Select.Option value="penyuluhan">Penyuluhan</Select.Option>
+                <Select.Option value="penyusunan">
+                  Penyusunan Model
+                </Select.Option>
+                <Select.Option value="pendampingan">Pendampingan</Select.Option>
+                <Select.Option value="evaluasi">
+                  Evaluasi dan Pelaporan
+                </Select.Option>
+              </Select>
+            </Form.Item>
+
+            <div className={styles.row}>
+              <Form.Item
+                name="target_tahapan"
+                label="REALISASI FISIK"
+                labelAlign="left"
+                rules={[
+                  {
+                    required: true,
+                    message: "Tolong masukan target"
+                  },
+                  {
+                    pattern: /^(?:\d*)$/,
+                    message: "Hanya boleh diisi angka"
+                  }
+                ]}
+                className={styles.item}
+              >
+                <Input />
+              </Form.Item>
+
+              <Form.Item
+                name="target_realisasi"
+                label="REALISASI YANG SUDAH DI INPUT"
+                labelAlign="left"
+                className={styles.item}
+              >
+                <Input disabled />
+              </Form.Item>
+            </div>
+
+            <Form.Item>
+              <Button
+                type="primary"
+                htmlType="submit"
+                disabled={disableSubmit}
+                loading={isLoading}
+              >
+                SIMPAN
+              </Button>
+            </Form.Item>
+          </Form>
+        </>
       )}
     </div>
   );

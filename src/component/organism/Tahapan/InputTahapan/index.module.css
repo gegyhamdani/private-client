@@ -3,7 +3,7 @@
 }
 
 .container__form {
-    max-width: 480px;
+    max-width: 720px;
 }
 
 .form__keluhan--container {
@@ -22,4 +22,13 @@
     width: 100%;
     display: flex;
     justify-content: space-between;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.item {
+    width: 45%;
 }
