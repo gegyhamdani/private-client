@@ -267,12 +267,19 @@ const PublishLaporan = () => {
               title="Tanggal Laporan"
               dataIndex="tanggal_laporan"
               key="tanggal_laporan"
+              width="160px"
             />
-            <Column title="Kegiatan" dataIndex="kegiatan" key="kegiatan" />
+            <Column
+              title="Kegiatan"
+              dataIndex="kegiatan"
+              key="kegiatan"
+              width="160px"
+            />
             <Column
               title="Deskripsi Kegiatan"
               dataIndex="keterangan"
               key="keterangan"
+              width="700px"
             />
             <Column title="Peserta" dataIndex="peserta" key="peserta" />
             <Column
