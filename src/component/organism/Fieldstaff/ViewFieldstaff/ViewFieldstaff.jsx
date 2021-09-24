@@ -354,7 +354,11 @@ const ViewFieldstaff = () => {
                 width="190px"
               />
               <Column title="Alamat" dataIndex="alamat" key="alamat" />
-              <Column title="Target" dataIndex="target" key="target" />
+              <Column
+                title="Target Fisik (KK)"
+                dataIndex="target"
+                key="target"
+              />
               {userLevel === users.Kanwil && (
                 <Column
                   title="Nama Kantah"
@@ -449,9 +453,9 @@ const ViewFieldstaff = () => {
               />
             </div>
             <div className={styles.form__item}>
-              <p>TARGET</p>
+              <p>TARGET FISIK (KK)</p>
               <Input
-                placeholder="Target"
+                placeholder="Target Fisik (KK)"
                 value={dataFieldstaff.target}
                 onChange={handleChangeTarget}
                 name="target"

@@ -170,12 +170,12 @@ const InputFieldStaff = () => {
 
         <Form.Item
           name="target"
-          label="TARGET KK"
+          label="TARGET FISIK (KK)"
           labelAlign="left"
           rules={[
             {
               required: true,
-              message: "Tolong masukan target"
+              message: "Tolong masukan target fisik"
             },
             {
               pattern: /^(?:\d*)$/,
