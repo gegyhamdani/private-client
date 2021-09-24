@@ -55,23 +55,23 @@ const InputTahapan = () => {
   const updateTahapan = value => {
     const pemetaan =
       value.tahapan === "pemetaan"
-        ? value.target_tahapan
+        ? value.target_tahapan + tahapanData.pemetaan
         : tahapanData.pemetaan;
     const penyuluhan =
       value.tahapan === "penyuluhan"
-        ? value.target_tahapan
+        ? value.target_tahapan + tahapanData.penyuluhan
         : tahapanData.penyuluhan;
     const penyusunan =
       value.tahapan === "penyusunan"
-        ? value.target_tahapan
+        ? value.target_tahapan + tahapanData.penyusunan
         : tahapanData.penyusunan;
     const pendampingan =
       value.tahapan === "pendampingan"
-        ? value.target_tahapan
+        ? value.target_tahapan + tahapanData.pendampingan
         : tahapanData.pendampingan;
     const evaluasi =
       value.tahapan === "evaluasi"
-        ? value.target_tahapan
+        ? value.target_tahapan + tahapanData.evaluasi
         : tahapanData.evaluasi;
 
     return tahapanAPI.updateTahapan(
@@ -110,7 +110,10 @@ const InputTahapan = () => {
     setLoading(true);
 
     const targetValue = parseInt(fields.target_tahapan, 10);
-    if (targetValue > userData.target) {
+    const sumTargetValue =
+      parseInt(fields.target_tahapan, 10) + fields.target_realisasi;
+
+    if (targetValue > userData.target || sumTargetValue > userData.target) {
       openNotifError(`Maksimum target adalah ${userData.target}`);
     } else {
       const value = {
