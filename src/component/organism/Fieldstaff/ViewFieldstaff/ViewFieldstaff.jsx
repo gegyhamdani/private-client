@@ -261,18 +261,10 @@ const ViewFieldstaff = () => {
       const flattenValue = updateValue.flat(1);
 
       const updateValueKanwil = fieldstaffKanwil.map(val => {
-        const date = new Date(val.date_born);
-        const dateDay =
-          date.getDate().toString().length < 2
-            ? `0${date.getDate()}`
-            : date.getDate();
-        const dateMonth = date.getMonth().toString().length
-          ? `0${date.getMonth() + 1}`
-          : date.getMonth() + 1;
         return {
           ...val,
           kantahName: userName,
-          date_born: `${dateDay} - ${dateMonth} - ${date.getFullYear()}`
+          date_born: dateHelper.convertDate(val.date_born)
         };
       });
 

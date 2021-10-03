@@ -142,7 +142,7 @@ const PublishLaporan = () => {
     doc.autoTable({
       startY: 110,
       html: "#mytable",
-      bodyStyles: { minCellHeight: 60 },
+      bodyStyles: { minCellHeight: 40 },
       didDrawCell(datas) {
         if (
           datas.column.index === 4 &&
@@ -155,6 +155,15 @@ const PublishLaporan = () => {
           const { x, y } = datas.cell;
           doc.addImage(img.src, x + number, y + number, dim, dim);
         }
+      },
+      tableWidth: "auto",
+      columnWidth: "wrap",
+      columnStyles: {
+        0: { columnWidth: 100 },
+        1: { columnWidth: 120 },
+        2: { columnWidth: 290 },
+        3: { columnWidth: 140 },
+        4: { columnWidth: "auto" }
       }
     });
 
@@ -215,7 +224,7 @@ const PublishLaporan = () => {
           return fieldstaffAPI.getFieldstaff(userId);
         })
         .then(resFS => {
-          if (resFS.id_kanwil === 0) {
+          if (resFS.id_kanwil === 0 || resFS.id_kanwil === null) {
             return kantahAPI.getKantah(resFS.id_kantah);
           }
           return kanwilAPI.getKanwil(resFS.id_kanwil);
@@ -238,7 +247,7 @@ const PublishLaporan = () => {
     <div className={styles.container}>
       <div className={styles.row}>
         <p>Pilih tanggal laporan</p>
-        <RangePicker format="YYYY-MM-DD" onChange={onChange} />
+        <RangePicker onChange={onChange} format="YYYY-MM-DD" />
       </div>
       <div className={`${styles.row} ${styles.row__margin}`}>
         <Button
@@ -267,7 +276,7 @@ const PublishLaporan = () => {
               title="Tanggal Laporan"
               dataIndex="tanggal_laporan"
               key="tanggal_laporan"
-              width="160px"
+              width="170px"
             />
             <Column
               title="Kegiatan"
@@ -279,9 +288,14 @@ const PublishLaporan = () => {
               title="Deskripsi Kegiatan"
               dataIndex="keterangan"
               key="keterangan"
-              width="700px"
+              width="500px"
             />
-            <Column title="Peserta" dataIndex="peserta" key="peserta" />
+            <Column
+              title="Peserta"
+              dataIndex="peserta"
+              key="peserta"
+              width="180px"
+            />
             <Column
               title="Foto"
               dataIndex="foto"

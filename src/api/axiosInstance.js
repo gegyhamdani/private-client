@@ -9,7 +9,7 @@ const errorResponseHandler = error => {
 const getInstance = () => {
   const instance = axios.create({
     baseURL: apiUrl,
-    timeout: 20000
+    timeout: 60000
   });
 
   instance.interceptors.response.use(
