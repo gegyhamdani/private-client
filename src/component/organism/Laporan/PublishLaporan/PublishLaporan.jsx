@@ -197,7 +197,7 @@ const PublishLaporan = () => {
         doc.text("Field staff", 40, 550);
 
         doc.text("Diketahui oleh,", 600, 460);
-        doc.text("Kasi Pemberdayaan Hak atas Tanah", 600, 470);
+        doc.text("Kasi Penataan dan Pemberdayaan", 600, 470);
         doc.text("Masyarakat", 600, 480);
         doc.text(headData.head_name ? headData.head_name : "Kasi", 600, 540);
         doc.text(
