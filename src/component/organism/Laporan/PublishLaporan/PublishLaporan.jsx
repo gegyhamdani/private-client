@@ -90,8 +90,6 @@ const PublishLaporan = () => {
       return date >= startDateDate && date <= endDateDate;
     });
 
-    console.log("test");
-
     const shortByDate = dataByDate.sort(
       (a, b) => new Date(b.tanggal_laporan) - new Date(a.tanggal_laporan)
     );
