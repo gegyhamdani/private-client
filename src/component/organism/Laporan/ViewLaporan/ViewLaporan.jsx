@@ -97,7 +97,10 @@ const ViewLaporan = () => {
       laporanAPI
         .getUserLaporan(id)
         .then(res => {
-          const value = res.map(val => {
+          const shortByDate = res.sort(
+            (a, b) => new Date(b.tanggal_laporan) - new Date(a.tanggal_laporan)
+          );
+          const convertData = shortByDate.map(val => {
             const arrKegiatan = JSON.parse(val.kegiatan);
             const kegiatan = arrKegiatan
               .map(item => {
@@ -112,7 +115,7 @@ const ViewLaporan = () => {
               kegiatan: kegiatan.join(", ")
             };
           });
-          return resolve(value.sort((a, b) => b.id - a.id));
+          return resolve(convertData);
         })
         .catch(() => {
           setLoading(false);
@@ -142,7 +145,10 @@ const ViewLaporan = () => {
     if (flattenData.length === 0) {
       setLoading(false);
     } else {
-      const convertData = flattenData.map(val => {
+      const shortByDate = flattenData.sort(
+        (a, b) => new Date(b.tanggal_laporan) - new Date(a.tanggal_laporan)
+      );
+      const convertData = shortByDate.map(val => {
         const arrKegiatan = JSON.parse(val.kegiatan);
         const kegiatan = arrKegiatan
           .map(item => {
@@ -158,10 +164,8 @@ const ViewLaporan = () => {
         };
       });
 
-      const sortData = convertData.sort((a, b) => b.id - a.id);
-
-      setInitData(sortData);
-      setEmptyData(sortData.length === 0);
+      setInitData(convertData);
+      setEmptyData(convertData.length === 0);
     }
   };
 
@@ -180,7 +184,10 @@ const ViewLaporan = () => {
       if (flattenData.length === 0) {
         setLoading(false);
       } else {
-        const convertData = flattenData.map(val => {
+        const shortByDate = flattenData.sort(
+          (a, b) => new Date(b.tanggal_laporan) - new Date(a.tanggal_laporan)
+        );
+        const convertData = shortByDate.map(val => {
           const arrKegiatan = JSON.parse(val.kegiatan);
           const kegiatan = arrKegiatan
             .map(item => {
@@ -196,10 +203,8 @@ const ViewLaporan = () => {
           };
         });
 
-        const sortData = convertData.sort((a, b) => b.id - a.id);
-
-        setInitData(sortData);
-        setEmptyData(sortData.length === 0);
+        setInitData(convertData);
+        setEmptyData(convertData.length === 0);
       }
     }
   };

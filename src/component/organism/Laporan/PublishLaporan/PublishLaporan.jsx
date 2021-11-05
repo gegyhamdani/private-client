@@ -83,14 +83,18 @@ const PublishLaporan = () => {
 
     setIsLoadingFilterData(true);
 
-    const resultData = await data.filter(a => {
+    const dataByDate = await data.filter(a => {
       const date = new Date(a.tanggal_laporan);
       const startDateDate = new Date(startDate);
       const endDateDate = new Date(endDate);
       return date >= startDateDate && date <= endDateDate;
     });
 
-    const convertData = await resultData.map(val => {
+    const shortByDate = dataByDate.sort(
+      (a, b) => new Date(b.tanggal_laporan) - new Date(a.tanggal_laporan)
+    );
+
+    const convertData = await shortByDate.map(val => {
       const arrKegiatan = JSON.parse(val.kegiatan);
       const kegiatan = arrKegiatan
         .map(item => {
@@ -106,8 +110,8 @@ const PublishLaporan = () => {
         foto: JSON.parse(val.foto)
       };
     });
-    const sortData = await convertData.sort((a, b) => b.id - a.id);
-    const listImage = await getPhoto(sortData);
+
+    const listImage = await getPhoto(convertData);
 
     const cloneData = [...listImage];
     const dataWithKeluhan = cloneData.filter(x => x.keluhan);
