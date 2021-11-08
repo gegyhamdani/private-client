@@ -98,7 +98,7 @@ const ViewLaporan = () => {
         .getUserLaporan(id)
         .then(res => {
           const shortByDate = res.sort(
-            (a, b) => new Date(b.tanggal_laporan) - new Date(a.tanggal_laporan)
+            (a, b) => new Date(a.tanggal_laporan) - new Date(b.tanggal_laporan)
           );
           const convertData = shortByDate.map(val => {
             const arrKegiatan = JSON.parse(val.kegiatan);
@@ -146,7 +146,7 @@ const ViewLaporan = () => {
       setLoading(false);
     } else {
       const shortByDate = flattenData.sort(
-        (a, b) => new Date(b.tanggal_laporan) - new Date(a.tanggal_laporan)
+        (a, b) => new Date(a.tanggal_laporan) - new Date(b.tanggal_laporan)
       );
       const convertData = shortByDate.map(val => {
         const arrKegiatan = JSON.parse(val.kegiatan);
@@ -185,7 +185,7 @@ const ViewLaporan = () => {
         setLoading(false);
       } else {
         const shortByDate = flattenData.sort(
-          (a, b) => new Date(b.tanggal_laporan) - new Date(a.tanggal_laporan)
+          (a, b) => new Date(a.tanggal_laporan) - new Date(b.tanggal_laporan)
         );
         const convertData = shortByDate.map(val => {
           const arrKegiatan = JSON.parse(val.kegiatan);

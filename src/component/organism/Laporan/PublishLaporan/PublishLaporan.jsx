@@ -91,7 +91,7 @@ const PublishLaporan = () => {
     });
 
     const shortByDate = dataByDate.sort(
-      (a, b) => new Date(b.tanggal_laporan) - new Date(a.tanggal_laporan)
+      (a, b) => new Date(a.tanggal_laporan) - new Date(b.tanggal_laporan)
     );
 
     const convertData = await shortByDate.map(val => {
