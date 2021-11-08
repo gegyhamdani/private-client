@@ -146,7 +146,7 @@ const PublishLaporan = () => {
     doc.autoTable({
       startY: 110,
       html: "#mytable",
-      bodyStyles: { minCellHeight: 40 },
+      bodyStyles: { minCellHeight: 50 },
       didDrawCell(datas) {
         if (
           datas.column.index === 4 &&
@@ -163,11 +163,11 @@ const PublishLaporan = () => {
       tableWidth: "auto",
       columnWidth: "wrap",
       columnStyles: {
-        0: { columnWidth: 100 },
-        1: { columnWidth: 120 },
-        2: { columnWidth: 290 },
-        3: { columnWidth: 140 },
-        4: { columnWidth: "auto" }
+        0: { cellWidth: 100 },
+        1: { cellWidth: 120 },
+        2: { cellWidth: 290 },
+        3: { cellWidth: 140 },
+        4: { cellWidth: "auto" }
       }
     });
 
